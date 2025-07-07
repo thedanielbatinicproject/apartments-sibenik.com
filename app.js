@@ -23,7 +23,7 @@ app.use('/en', require('./routes/en'));
 // Glavna ruta → detekcija IP + uređaja + redirect
 app.get('/', async (req, res) => {
   const clientIp = req.ip;
-  console.log('📡 IP klijenta:', clientIp);
+  console.log('IP klijenta:', clientIp);
 
   let countryCode = 'EN'; // Default
   try {
