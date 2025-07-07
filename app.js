@@ -6,6 +6,8 @@ const useragent = require('express-useragent');
 const app = express();
 app.use(useragent.express());
 
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Ako koristiš Plesk ili proxy
 app.set('trust proxy', true);
 
