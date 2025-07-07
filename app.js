@@ -32,7 +32,7 @@ app.get('/', async (req, res) => {
       countryCode = response.data.countryCode;
     }
   } catch (error) {
-    console.warn('⚠️ Greška pri geolokaciji:', error.message);
+    console.warn('Greška pri geolokaciji:', error.message);
   }
 
   let lang = 'en';
@@ -42,12 +42,12 @@ app.get('/', async (req, res) => {
   const isMobile = req.useragent.isMobile;
   const device = isMobile ? 'mobile' : 'desktop';
 
-  console.log(`➡️ Redirect na /${lang}/${device}`);
+  console.log(`Redirect na /${lang}/${device}`);
   res.redirect(`/${lang}/${device}`);
 });
 
-// 🚀 Pokreni aplikaciju na portu koji Plesk postavi
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 App pokrenut na portu ${PORT}`);
+  console.log(`App pokrenuta na portu ${PORT}`);
 });
