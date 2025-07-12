@@ -212,6 +212,6 @@ This project is available for **non-commercial use only**.
 
 **Made with care for promoting beautiful accommodations in Šibenik**
 
-[Live Demo](https://test.apartments-sibenik.com) • [Contact](mailto:contact@apartments-sibenik.com) • [Star this repo](https://github.com/thedanielbatinicproject/apartments-sibenik.com)
+[Live Demo](https://test.apartments-sibenik.com) • [Contact](mailto:daniel.batinic@fer.hr) • [Star this repo](https://github.com/thedanielbatinicproject/apartments-sibenik.com)
 
 </div>
