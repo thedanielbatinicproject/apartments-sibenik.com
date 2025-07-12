@@ -1,1 +1,22 @@
-en desktop
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apartments Sibenik</title>
+    <link rel="stylesheet" href="/stylesheets/desktop.css">
+</head>
+<body>
+    <h1>Apartments Sibenik - Desktop View</h1>
+    
+    <!-- Uključi kalendar -->
+    <%- include('../modules/calendar', { calendar: calendar }) %>
+    
+    <!-- Uključi galeriju -->
+    <% if (galleryImages && galleryImages.length > 0) { %>
+        <h2>Photo Gallery</h2>
+        <%- include('../modules/gallery', { images: galleryImages }) %>
+    <% } %>
+    
+</body>
+</html>

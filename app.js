@@ -3,6 +3,7 @@ const axios = require("axios");
 const path = require("path");
 const useragent = require("express-useragent");
 const ical = require("node-ical");
+const os = require("os");
 require('dotenv').config();
 
 const {
@@ -139,6 +140,23 @@ app.get("/kalendar/:id", async (req, res) => {
   }
 });
 
+app.get("/gallery", (req, res) => {
+  res.render("modules/gallery", {
+    isStandalone: true,
+    images: [
+      { thumbnail: "/images/gallery/studio/studio-slike-1-thumb.jpg", fullsize: "/images/gallery/studio/studio-slike-1.jpg", alt: "Image 1" },
+      { thumbnail: "/images/gallery/studio/studio-slike-2-thumb.jpg", fullsize: "/images/gallery/studio/studio-slike-2.jpg", alt: "Image 2" },
+      { thumbnail: "/images/gallery/studio/studio-slike-3-thumb.jpg", fullsize: "/images/gallery/studio/studio-slike-3.jpg", alt: "Image 3" },
+      { thumbnail: "/images/gallery/studio/studio-slike-4-thumb.jpg", fullsize: "/images/gallery/studio/studio-slike-4.jpg", alt: "Image 4" },
+      { thumbnail: "/images/gallery/studio/studio-slike-5-thumb.jpg", fullsize: "/images/gallery/studio/studio-slike-5.jpg", alt: "Image 5" },
+      { thumbnail: "/images/gallery/studio/studio-slike-6-thumb.jpg", fullsize: "/images/gallery/studio/studio-slike-6.jpg", alt: "Image 6" },
+      { thumbnail: "/images/gallery/studio/studio-slike-7-thumb.jpg", fullsize: "/images/gallery/studio/studio-slike-7.jpg", alt: "Image 7" },
+      { thumbnail: "/images/gallery/studio/studio-slike-8-thumb.jpg", fullsize: "/images/gallery/studio/studio-slike-8.jpg", alt: "Image 8" },
+      { thumbnail: "/images/gallery/studio/studio-slike-9-thumb.jpg", fullsize: "/images/gallery/studio/studio-slike-9.jpg", alt: "Image 9" }
+    ]
+  });
+})
+
 app.use((req, res) => {
   let errorTitle = "Page not found";
   let errorMessage = "The requested page does not exist.";
@@ -160,7 +178,22 @@ app.use((req, res) => {
   });
 });
 
+function getLocalIPAddress() {
+  const interfaces = os.networkInterfaces();
+  for (const name of Object.keys(interfaces)) {
+    for (const iface of interfaces[name]) {
+      if (iface.family === "IPv4" && !iface.internal) {
+        return iface.address;
+      }
+    }
+  }
+  return "localhost";
+}
+
 const PORT = process.env.PORT || 3000;
+const localIPAddress = getLocalIPAddress();
+const localAddress = `http://${localIPAddress}:${PORT}`;
+
 app.listen(PORT, () => {
-  console.log(`App pokrenuta na portu ${PORT}`);
+  console.log(`App pokrenuta na portu ${PORT} (${localAddress})`);
 });
