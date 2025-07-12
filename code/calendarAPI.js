@@ -35,7 +35,6 @@ async function updateCalendarFromIcal(url, fileName) {
 
   function jeIdentican(e1, e2) {
     return (
-      e1.naziv === e2.naziv &&
       String(e1.pocetak) === String(e2.pocetak) &&
       String(e1.kraj) === String(e2.kraj)
     );
