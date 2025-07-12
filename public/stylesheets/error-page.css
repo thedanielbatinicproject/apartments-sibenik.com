@@ -1,0 +1,90 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+  background: linear-gradient(135deg, #74d4e7 0%, #1e90ff 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.error-glass-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.error-glass-box {
+  background: rgba(30, 144, 255, 0.18);
+  border-radius: 24px;
+  box-shadow: 0 4px 16px 0 rgba(31, 38, 135, 0.18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.18);
+  padding: 2.5rem 2rem 2rem 2rem;
+  min-width: 320px;
+  max-width: 90vw;
+  text-align: center;
+  color: #0a355c;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.error-code {
+  font-size: 3.2rem;
+  font-weight: 800;
+  color: #0a355c;
+  margin-bottom: 0.5rem;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 8px rgba(30,144,255,0.18);
+  background: linear-gradient(90deg, #0a355c 0%, #2176ae 60%, #74c7e7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.error-title {
+  font-size: 1.7rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #0a355c;
+  text-shadow: 0 1px 4px rgba(30,144,255,0.12);
+  letter-spacing: 1px;
+}
+
+.error-message {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  color: #0a355c;
+  opacity: 0.85;
+  text-shadow: 0 1px 2px rgba(30,144,255,0.08);
+}
+
+.error-back-btn {
+  display: inline-block;
+  padding: 0.7rem 2.2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(90deg, #1e90ff 0%, #54b6e7 100%);
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px 0 rgba(31, 38, 135, 0.12);
+  text-decoration: none;
+  transition: background 0.7s cubic-bezier(.4,0,.2,1), box-shadow 0.5s, transform 0.5s;
+  cursor: pointer;
+  letter-spacing: 1px;
+  background-size: 200% 100%;
+  background-position: left;
+}
+
+.error-back-btn:hover {
+  background-position: right;
+  box-shadow: 0 4px 16px 0 rgba(31, 38, 135, 0.18);
+  transform: translateY(-1px) scale(1.004);
+  color: #fff;
+}

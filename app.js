@@ -3,6 +3,13 @@ const axios = require("axios");
 const path = require("path");
 const useragent = require("express-useragent");
 const ical = require("node-ical");
+require('dotenv').config();
+
+const {
+  fetchCalendars,
+  fetchIcalReservations,
+  updateCalendarFromIcal
+} = require("./code/calendarAPI");
 
 const app = express();
 app.use(useragent.express());
@@ -14,24 +21,26 @@ app.set("trust proxy", true);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-// Učitavanje ruta
 app.use("/hr", require("./routes/hr"));
 app.use("/de", require("./routes/de"));
 app.use("/en", require("./routes/en"));
 
-// Glavna ruta -> detekcija IP + uređaja + redirect
 app.get("/", async (req, res) => {
   const clientIp = req.ip;
-  console.log("IP klijenta:", clientIp);
-
-  let countryCode = "EN"; // Default
+  let countryCode = "EN";
   try {
     const response = await axios.get(`http://ip-api.com/json/${clientIp}`);
     if (response.data && response.data.countryCode) {
       countryCode = response.data.countryCode;
     }
   } catch (error) {
-    console.warn("Greška pri geolokaciji:", error.message);
+    return res.status(500).render("error", {
+      error: {
+        "error-code": 500,
+        "error-title": "Greška pri geolokaciji",
+        "error-message": error.message || "Neuspješno dohvaćanje lokacije.",
+      },
+    });
   }
 
   let lang = "en";
@@ -40,59 +49,9 @@ app.get("/", async (req, res) => {
 
   const isMobile = req.useragent.isMobile;
   const device = isMobile ? "mobile" : "desktop";
-
-  console.log(`Redirect na /${lang}/${device}`);
   res.redirect(`/${lang}/${device}`);
 });
 
-const airbnbIcalUrl1 =
-  "https://www.airbnb.com/calendar/ical/7392911.ics?s=f0bf8c918d88234909f64e590128eb18";
-const airbnbIcalUrl2 =
-  "https://www.airbnb.com/calendar/ical/7397131.ics?s=1e0c01e4be1ebff3b8ae10aab2060318";
-
-app.get("/kalendar1", async (req, res) => {
-  try {
-    // Dohvati svježe podatke s Airbnb-a
-    const data = await ical.async.fromURL(airbnbIcalUrl1);
-
-    // Filtriraj samo događaje (rezervacije)
-    const rezervacije = Object.values(data)
-      .filter((event) => event.type === "VEVENT")
-      .map((event) => ({
-        naziv: event.summary,
-        pocetak: event.start,
-        kraj: event.end,
-      }));
-
-    res.json(rezervacije);
-  } catch (err) {
-    console.error("Greška pri dohvaćanju iCal:", err);
-    res.status(500).send("Greška pri dohvaćanju kalendara");
-  }
-});
-
-app.get("/kalendar2", async (req, res) => {
-  try {
-    // Dohvati svježe podatke s Airbnb-a
-    const data = await ical.async.fromURL(airbnbIcalUrl2);
-
-    // Filtriraj samo događaje (rezervacije)
-    const rezervacije = Object.values(data)
-      .filter((event) => event.type === "VEVENT")
-      .map((event) => ({
-        naziv: event.summary,
-        pocetak: event.start,
-        kraj: event.end,
-      }));
-
-    res.json(rezervacije);
-  } catch (err) {
-    console.error("Greška pri dohvaćanju iCal:", err);
-    res.status(500).send("Greška pri dohvaćanju kalendara");
-  }
-});
-
-// Desktop i mobile rute
 app.get("/desktop", async (req, res) => {
   let countryCode = "EN";
   try {
@@ -101,7 +60,13 @@ app.get("/desktop", async (req, res) => {
       countryCode = response.data.countryCode;
     }
   } catch (error) {
-    console.warn("Greška pri geolokaciji:", error.message);
+    return res.status(500).render("error", {
+      error: {
+        "error-code": 500,
+        "error-title": "Greška pri geolokaciji",
+        "error-message": error.message || "Neuspješno dohvaćanje lokacije.",
+      },
+    });
   }
 
   let lang = "en";
@@ -119,7 +84,13 @@ app.get("/mobile", async (req, res) => {
       countryCode = response.data.countryCode;
     }
   } catch (error) {
-    console.warn("Greška pri geolokaciji:", error.message);
+    return res.status(500).render("error", {
+      error: {
+        "error-code": 500,
+        "error-title": "Greška pri geolokaciji",
+        "error-message": error.message || "Neuspješno dohvaćanje lokacije.",
+      },
+    });
   }
 
   let lang = "en";
@@ -127,6 +98,66 @@ app.get("/mobile", async (req, res) => {
   else if (countryCode === "DE") lang = "de";
 
   res.redirect(`/${lang}/mobile`);
+});
+
+// Prikaz kalendara 1 ili 2
+app.get("/calendar/:id", async (req, res) => {
+  try {
+    const calendars = await fetchCalendars();
+    const calendarId = req.params.id === '2' ? 'calendar2' : 'calendar1';
+    const calendar = calendars[calendarId] || [];
+    res.render("modules/calendar", { calendar });
+  } catch (err) {
+    res.status(500).render("error", {
+      error: {
+        "error-code": 500,
+        "error-title": "Greška pri dohvaćanju kalendara",
+        "error-message": err.message || "Neuspješno dohvaćanje kalendara.",
+      },
+    });
+  }
+});
+
+// Update kalendara iz Airbnb-a, dodaje samo nove evente
+const airbnbIcalUrl1 = process.env.AIRBNB_ICAL_URL_1;
+const airbnbIcalUrl2 = process.env.AIRBNB_ICAL_URL_2;
+
+app.get("/kalendar/:id", async (req, res) => {
+  try {
+    const url = req.params.id === '1' ? airbnbIcalUrl1 : airbnbIcalUrl2;
+    const fileName = 'calendar' + req.params.id + '.json';
+    const dodaniEventi = await updateCalendarFromIcal(url, fileName);
+    res.json(dodaniEventi);
+  } catch (err) {
+    res.status(500).render("error", {
+      error: {
+        "error-code": 500,
+        "error-title": "Error fetching iCal",
+        "error-message": err.message || "Failed to fetch iCal calendar " + req.params.id + ".",
+      },
+    });
+  }
+});
+
+app.use((req, res) => {
+  let errorTitle = "Page not found";
+  let errorMessage = "The requested page does not exist.";
+
+  if (req.url.startsWith("/hr")) {
+    errorTitle = "Stranica nije pronađena";
+    errorMessage = "Tražena stranica ne postoji.";
+  } else if (req.url.startsWith("/de")) {
+    errorTitle = "Seite nicht gefunden";
+    errorMessage = "Die angeforderte Seite existiert nicht.";
+  }
+
+  res.status(404).render("error", {
+    error: {
+      "error-code": 404,
+      "error-title": errorTitle,
+      "error-message": errorMessage,
+    },
+  });
 });
 
 const PORT = process.env.PORT || 3000;

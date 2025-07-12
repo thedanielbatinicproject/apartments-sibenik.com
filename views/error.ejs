@@ -1,0 +1,9 @@
+<link rel="stylesheet" href="/stylesheets/error-page.css">
+<div class="error-glass-container">
+  <div class="error-glass-box">
+    <div class="error-code"><%= typeof error !== 'undefined' && error ? error['error-code'] : '' %></div>
+    <div class="error-title"><%= typeof error !== 'undefined' && error ? error['error-title'] : '' %></div>
+    <div class="error-message"><%= typeof error !== 'undefined' && error ? error['error-message'] : '' %></div>
+    <a href="/en" class="error-back-btn">Go to Home</a>
+  </div>
+</div>

@@ -1,0 +1,13 @@
+<link rel="stylesheet" href="/stylesheets/calendar.css">
+<div class="calendar-container">
+  <div class="calendar-header">
+    <button class="calendar-arrow" id="prevMonth">&#60;</button>
+    <span id="calendarMonthYear"></span>
+    <button class="calendar-arrow" id="nextMonth">&#62;</button>
+  </div>
+  <div class="calendar-grid" id="calendarGrid"></div>
+</div>
+<script>
+  const calendarData = (<%- JSON.stringify(calendar || []) %>);
+</script>
+<script src="/javascripts/calendar.js"></script>
