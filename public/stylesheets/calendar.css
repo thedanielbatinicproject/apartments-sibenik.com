@@ -126,6 +126,6 @@
 }
 
 .cell-part.event-single-day-orange {
-  background: rgba(255, 140, 0, 0.5) !important; /* narančasta, opacity 0.5 */
+  background: rgba(255, 140, 0, 0.5) !important; /* orange, opacity 0.5 */
   z-index: 3;
 }

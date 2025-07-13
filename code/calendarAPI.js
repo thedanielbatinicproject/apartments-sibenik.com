@@ -32,16 +32,16 @@ function removeDuplicates(events) {
   const seenEvents = new Map();
   
   return events.filter(event => {
-    // Kreiraj jedinstveni ključ za event
+    // Create unique key for event
     const key = `${event.naziv}_${event.pocetak}_${event.kraj}`;
     
     if (seenEvents.has(key)) {
       console.log('Removing duplicate event:', event.naziv, event.pocetak);
-      return false; // Preskačemo duplikat
+      return false; // Skip duplicate
     }
     
     seenEvents.set(key, true);
-    return true; // Zadržavamo prvi occurrence
+    return true; // Keep first occurrence
   });
 }
 
@@ -86,7 +86,7 @@ async function updateCalendarFromIcal(url, fileName) {
   
   writeCalendar(fileName, eventiBeznaDuplikata);
 
-  return zaDodati; // vraća samo dodane evente
+  return addedEvents; // returns only added events
 }
 
 async function cleanDuplicatesFromCalendar(calendarId) {

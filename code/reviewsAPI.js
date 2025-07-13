@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 
-// Mock data za sada - kasnije možete integrirati prave API-jeve
+// Mock data for now - later you can integrate real APIs
 const mockReviewsData = {
   1: {
     airbnb: {
@@ -171,7 +171,7 @@ const mockReviewsData = {
  */
 async function fetchReviews(unitId) {
   try {
-    // Za sada vraćamo mock podatke
+    // For now we return mock data
     // Ovdje biste implementirali pozive na prave API-jeve
     const reviews = mockReviewsData[unitId] || {
       airbnb: { rating: 0, totalReviews: 0, reviews: [] },
@@ -206,7 +206,7 @@ async function getCombinedReviews(unitId) {
     // Sortiramo po datumu (najnovije prvo)
     allReviews.sort((a, b) => new Date(b.date) - new Date(a.date));
     
-    // Računamo ukupnu ocjenu
+    // Calculate total rating
     const totalReviews = reviews.airbnb.totalReviews + reviews.booking.totalReviews;
     const averageRating = totalReviews > 0 ? 
       ((reviews.airbnb.rating * reviews.airbnb.totalReviews) + 

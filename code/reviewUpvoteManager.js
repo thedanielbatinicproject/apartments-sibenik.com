@@ -8,7 +8,7 @@ class ReviewUpvoteManager {
     this.userUpvotesFilePath = path.join(__dirname, '../data/user_data/user_upvotes.json');
   }
 
-  // Učitaj upvote podatke
+  // Load upvote data
   loadUpvotes() {
     try {
       const data = fs.readFileSync(this.upvotesFilePath, 'utf8');
@@ -18,7 +18,7 @@ class ReviewUpvoteManager {
     }
   }
 
-  // Učitaj korisničke upvote podatke
+  // Load user upvote data
   loadUserUpvotes() {
     try {
       const data = fs.readFileSync(this.userUpvotesFilePath, 'utf8');
@@ -33,7 +33,7 @@ class ReviewUpvoteManager {
     fs.writeFileSync(this.upvotesFilePath, JSON.stringify(upvotes, null, 2));
   }
 
-  // Spremi korisničke upvote podatke
+  // Save user upvote data
   saveUserUpvotes(userUpvotes) {
     fs.writeFileSync(this.userUpvotesFilePath, JSON.stringify(userUpvotes, null, 2));
   }
@@ -50,9 +50,9 @@ class ReviewUpvoteManager {
       // Postavi cookie koji vrijedi 1 godinu
       res.cookie('userId', userId, {
         maxAge: 365 * 24 * 60 * 60 * 1000, // 1 godina u milisekundama
-        httpOnly: true, // Sprječava pristup putem JavaScript-a (sigurnost)
+        httpOnly: true, // Prevents access via JavaScript (security)
         secure: false, // Postavi na true u produkciji s HTTPS
-        sameSite: 'lax' // CSRF zaštita
+        sameSite: 'lax' // CSRF protection
       });
     }
     

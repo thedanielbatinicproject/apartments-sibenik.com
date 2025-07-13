@@ -119,7 +119,7 @@ function getEventClass(events, day, year, month) {
 
     // --- SREDINA MJESECA ---
     if (ev._firstDay === ev._lastDay) {
-      // DODAJ POSEBNU KLASU ZA NARANČASTO NA MIDDLE
+      // ADD SPECIAL CLASS FOR ORANGE ON MIDDLE
       middle.push({ className: "event-single-day-orange", eventId: ev._eventId, color: ev._color });
       
     }

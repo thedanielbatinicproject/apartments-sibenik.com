@@ -121,7 +121,7 @@
 </div>
 
 <script>
-// Izvršava se samo jednom po reviews modulu
+// Executes only once per reviews module
 (function() {
   const moduleId = 'reviews-module-<%= unitId %>';
   const module = document.getElementById(moduleId);
@@ -131,12 +131,12 @@
     return;
   }
   
-  // Provjeri je li već inicijaliziran
+  // Check if already initialized
   if (module.hasAttribute('data-initialized')) {
     return;
   }
   
-  // Označava kao inicijaliziran
+  // Mark as initialized
   module.setAttribute('data-initialized', 'true');
   
   // Create Set to track expanded reviews for this module
@@ -237,7 +237,7 @@
         const result = await response.json();
         console.log('Upvote response:', result);
         
-        // Ažuriraj UI
+        // Update UI
         const upvoteElement = module.querySelector(`[data-review-index="${reviewIndex}"]`);
         if (upvoteElement) {
           const countSpan = upvoteElement.querySelector('.upvote-count');

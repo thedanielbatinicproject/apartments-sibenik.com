@@ -24,16 +24,16 @@ const reviewUpvoteManager = require("./code/reviewUpvoteManager");
 const app = express();
 app.use(useragent.express());
 app.use(express.json());
-app.use(cookieParser()); // Dodaj cookie parser middleware
+app.use(cookieParser()); // Add cookie parser middleware
 
 // Session configuration
 app.use(session({
   secret: process.env.SESSION_SECRET || 'your-secret-key-here',
   resave: false,
-  saveUninitialized: true, // Spremi session čak i ako je prazan
+  saveUninitialized: true, // Save session even if empty
   cookie: {
     secure: false, // Set to true in production with HTTPS
-    maxAge: 30 * 24 * 60 * 60 * 1000 // 30 dana
+    maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
   }
 }));
 
@@ -100,8 +100,8 @@ app.get("/", async (req, res) => {
     return res.status(500).render("error", {
       error: {
         "error-code": 500,
-        "error-title": "Greška pri geolokaciji",
-        "error-message": error.message || "Neuspješno dohvaćanje lokacije.",
+        "error-title": "Geolocation error",
+        "error-message": error.message || "Failed to fetch location.",
       },
       validBackPage: req.session.validBackPage
     });
@@ -127,8 +127,8 @@ app.get("/desktop", async (req, res) => {
     return res.status(500).render("error", {
       error: {
         "error-code": 500,
-        "error-title": "Greška pri geolokaciji",
-        "error-message": error.message || "Neuspješno dohvaćanje lokacije.",
+        "error-title": "Geolocation error",
+        "error-message": error.message || "Failed to fetch location.",
       },
       lastVisitedPage: req.session.lastVisitedPage
     });
@@ -152,8 +152,8 @@ app.get("/mobile", async (req, res) => {
     return res.status(500).render("error", {
       error: {
         "error-code": 500,
-        "error-title": "Greška pri geolokaciji",
-        "error-message": error.message || "Neuspješno dohvaćanje lokacije.",
+        "error-title": "Geolocation error",
+        "error-message": error.message || "Failed to fetch location.",
       },
       lastVisitedPage: req.session.lastVisitedPage
     });
@@ -166,18 +166,18 @@ app.get("/mobile", async (req, res) => {
   res.redirect(`/${lang}/mobile`);
 });
 
-// Prikaz kalendara 1 ili 2 - ograničeno na prva dva apartmana
+// Display calendar 1 or 2 - limited to first two apartments
 app.get("/calendar/:id", async (req, res) => {
   try {
     const calendarId = req.params.id;
     
-    // Ograniči na kalendare 1 i 2
+    // Limit to calendars 1 and 2
     if (calendarId !== '1' && calendarId !== '2') {
       return res.status(404).render("error", {
         error: {
           "error-code": 404,
-          "error-title": "Kalendar nije pronađen",
-          "error-message": `Kalendar ${calendarId} ne postoji. Dostupni su samo kalendari 1 i 2.`,
+          "error-title": "Calendar not found",
+          "error-message": `Calendar ${calendarId} does not exist. Only calendars 1 and 2 are available.`,
         },
         lastVisitedPage: req.session.lastVisitedPage
       });
@@ -191,15 +191,15 @@ app.get("/calendar/:id", async (req, res) => {
     res.status(500).render("error", {
       error: {
         "error-code": 500,
-        "error-title": "Greška pri dohvaćanju kalendara",
-        "error-message": err.message || "Neuspješno dohvaćanje kalendara.",
+        "error-title": "Error fetching calendar",
+        "error-message": err.message || "Failed to fetch calendar.",
       },
       lastVisitedPage: req.session.lastVisitedPage
     });
   }
 });
 
-// Update kalendara iz Airbnb-a, dodaje samo nove evente - ograničeno na prva dva apartmana
+// Update calendar from Airbnb, adds only new events - limited to first two apartments
 const airbnbIcalUrl1 = process.env.AIRBNB_ICAL_URL_1;
 const airbnbIcalUrl2 = process.env.AIRBNB_ICAL_URL_2;
 
@@ -207,13 +207,13 @@ app.get("/kalendar/:id", async (req, res) => {
   try {
     const calendarId = req.params.id;
     
-    // Ograniči na kalendare 1 i 2
+    // Limit to calendars 1 and 2
     if (calendarId !== '1' && calendarId !== '2') {
       return res.status(404).render("error", {
         error: {
           "error-code": 404,
-          "error-title": "Kalendar nije pronađen",
-          "error-message": `Kalendar ${calendarId} ne postoji. Dostupni su samo kalendari 1 i 2.`,
+          "error-title": "Calendar not found",
+          "error-message": `Calendar ${calendarId} does not exist. Only calendars 1 and 2 are available.`,
         },
         lastVisitedPage: req.session.lastVisitedPage
       });
@@ -221,8 +221,8 @@ app.get("/kalendar/:id", async (req, res) => {
     
     const url = calendarId === '1' ? airbnbIcalUrl1 : airbnbIcalUrl2;
     const fileName = 'calendar' + calendarId + '.json';
-    const dodaniEventi = await updateCalendarFromIcal(url, fileName);
-    res.json(dodaniEventi);
+    const addedEvents = await updateCalendarFromIcal(url, fileName);
+    res.json(addedEvents);
   } catch (err) {
     res.status(500).render("error", {
       error: {
@@ -235,15 +235,15 @@ app.get("/kalendar/:id", async (req, res) => {
   }
 });
 
-// Čišćenje duplikata iz kalendara
+// Clean duplicates from calendar
 app.get("/clean-calendar/:id", async (req, res) => {
   try {
     const calendarId = req.params.id;
     
-    // Ograniči na kalendare 1 i 2
+    // Limit to calendars 1 and 2
     if (calendarId !== '1' && calendarId !== '2') {
       return res.status(404).json({
-        error: `Kalendar ${calendarId} ne postoji. Dostupni su samo kalendari 1 i 2.`
+        error: `Calendar ${calendarId} does not exist. Only calendars 1 and 2 are available.`
       });
     }
     
@@ -276,21 +276,21 @@ app.get("/gallery", (req, res) => {
   });
 })
 
-// API ruta za recenzije
+// API route for reviews
 app.get("/reviews/:id", async (req, res) => {
   try {
     const unitId = req.params.id;
     
-    // Ograniči na apartmane 1 i 2
+    // Limit to apartments 1 and 2
     if (unitId !== '1' && unitId !== '2') {
       return res.status(404).json({
-        error: `Apartman ${unitId} ne postoji. Dostupni su samo apartmani 1 i 2.`
+        error: `Apartment ${unitId} does not exist. Only apartments 1 and 2 are available.`
       });
     }
     
     const reviews = await getCombinedReviews(unitId);
     
-    // Dodaj upvote podatke
+    // Add upvote data
     const userId = reviewUpvoteManager.getUserId(req, res);
     const upvoteData = reviewUpvoteManager.getUserUpvoteData(userId, reviews.reviews, unitId);
     
@@ -311,10 +311,10 @@ app.post("/reviews/:unitId/:reviewIndex/upvote", (req, res) => {
   try {
     const { unitId, reviewIndex } = req.params;
     
-    // Ograniči na apartmane 1 i 2
+    // Limit to apartments 1 and 2
     if (unitId !== '1' && unitId !== '2') {
       return res.status(404).json({
-        error: `Apartman ${unitId} ne postoji. Dostupni su samo apartmani 1 i 2.`
+        error: `Apartment ${unitId} does not exist. Only apartments 1 and 2 are available.`
       });
     }
     
@@ -346,7 +346,7 @@ app.get("/header", async (req, res) => {
     const reviews1 = await getCombinedReviews('1');
     const reviews2 = await getCombinedReviews('2');
     
-    // Dodaj upvote podatke
+    // Add upvote data
     const userId = reviewUpvoteManager.getUserId(req, res);
     const upvoteData1 = reviewUpvoteManager.getUserUpvoteData(userId, reviews1.reviews, '1');
     const upvoteData2 = reviewUpvoteManager.getUserUpvoteData(userId, reviews2.reviews, '2');
@@ -374,8 +374,8 @@ app.use((req, res) => {
   let errorMessage = "The requested page does not exist.";
 
   if (req.url.startsWith("/hr")) {
-    errorTitle = "Stranica nije pronađena";
-    errorMessage = "Tražena stranica ne postoji.";
+    errorTitle = "Page not found";
+    errorMessage = "The requested page does not exist.";
   } else if (req.url.startsWith("/de")) {
     errorTitle = "Seite nicht gefunden";
     errorMessage = "Die angeforderte Seite existiert nicht.";
