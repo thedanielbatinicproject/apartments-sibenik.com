@@ -36,6 +36,10 @@
   color: #0a355c;
   cursor: pointer;
   transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 .calendar-arrow:hover {
   background: rgba(30,144,255,0.45);
@@ -50,9 +54,14 @@
   font-weight: 500;
   color: #0a355c;
   text-align: center;
-  padding-bottom: 0.5rem;
+  padding: 0.5rem;
   background: rgba(255,255,255,0.12);
   border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2rem;
+  height: 2rem;
 }
 .calendar-cell {
   background: rgba(255,255,255,0.25);

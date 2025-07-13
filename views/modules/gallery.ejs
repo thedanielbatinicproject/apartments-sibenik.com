@@ -7,7 +7,7 @@
           <path d="M15 18l-6-6 6-6"/>
         </svg>
       </div>
-      <div class="main-image-wrapper">
+      <div class="main-image-wrapper" id="mainImageWrapper">
         <img id="mainImage" src="<%= images[0].fullsize || images[0].thumbnail %>" alt="<%= images[0].alt %>" loading="lazy">
       </div>
       <div class="nav-arrow nav-right" id="nextImage">
@@ -32,3 +32,38 @@
   window.galleryImages = <%- JSON.stringify(images) %>;
 </script>
 <script src="/javascripts/gallery.js"></script>
+
+<script>
+  // Create fullscreen modal and append to body when DOM is ready
+  document.addEventListener('DOMContentLoaded', function() {
+    // Check if modal already exists to avoid duplicates
+    if (!document.getElementById('fullscreenModal')) {
+      const fullscreenModal = document.createElement('div');
+      fullscreenModal.id = 'fullscreenModal';
+      fullscreenModal.className = 'fullscreen-modal';
+      fullscreenModal.innerHTML = `
+        <div class="fullscreen-content">
+          <div class="fullscreen-close" id="fullscreenClose">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+          </div>
+          <div class="fullscreen-nav prev" id="fullscreenPrev">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 18l-6-6 6-6"/>
+            </svg>
+          </div>
+          <img id="fullscreenImage" class="fullscreen-image" src="" alt="">
+          <div class="fullscreen-nav next" id="fullscreenNext">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </div>
+        </div>
+      `;
+      
+      // Append to body, not to gallery container
+      document.body.appendChild(fullscreenModal);
+    }
+  });
+</script>

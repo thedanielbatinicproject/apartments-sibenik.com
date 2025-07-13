@@ -1,9 +1,23 @@
-<link rel="stylesheet" href="/stylesheets/error-page.css">
-<div class="error-glass-container">
-  <div class="error-glass-box">
-    <div class="error-code"><%= typeof error !== 'undefined' && error ? error['error-code'] : '' %></div>
-    <div class="error-title"><%= typeof error !== 'undefined' && error ? error['error-title'] : '' %></div>
-    <div class="error-message"><%= typeof error !== 'undefined' && error ? error['error-message'] : '' %></div>
-    <a href="/en" class="error-back-btn">Go to Home</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Error Page</title>
+  <link rel="stylesheet" href="/stylesheets/error-page.css">
+</head>
+<body>
+  <div class="error-glass-container">
+    <div class="error-glass-box">
+      <div class="error-code"><%= typeof error !== 'undefined' && error ? error['error-code'] : '' %></div>
+      <div class="error-title"><%= typeof error !== 'undefined' && error ? error['error-title'] : '' %></div>
+      <div class="error-message"><%= typeof error !== 'undefined' && error ? error['error-message'] : '' %></div>
+      <% if (typeof validBackPage !== 'undefined' && validBackPage) { %>
+        <a href="<%= validBackPage %>" class="error-back-btn">BACK</a>
+      <% } else { %>
+        <a href="/en" class="error-back-btn">BACK TO HOME</a>
+      <% } %>
+    </div>
   </div>
-</div>
+</body>
+</html>

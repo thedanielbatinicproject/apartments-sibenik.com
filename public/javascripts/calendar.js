@@ -21,15 +21,16 @@ function parseEvents(events, year, month) {
     if (!ev.pocetak || !ev.kraj) return;
     if (!ev._color) ev._color = getBlueShade(idx, events.length);
     const start = new Date(ev.pocetak);
-    start.setDate(start.getDate() - 1);
     const end = new Date(ev.kraj);
-    end.setDate(end.getDate() - 1);
+    
+    // Ne oduzimamo dan jer je to bio bug!
     const localStart = new Date(
       start.getFullYear(),
       start.getMonth(),
       start.getDate()
     );
     const localEnd = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+    
     let firstDay = null, lastDay = null;
     for (
       let d = new Date(localStart);
@@ -223,6 +224,7 @@ function addEventHoverHandlers() {
   let year = now.getFullYear();
   let month = now.getMonth();
   let events = parseEvents(calendarData, year, month);
+  
   function update() {
     document.getElementById(
       "calendarMonthYear"
