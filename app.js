@@ -5,6 +5,7 @@ const useragent = require("express-useragent");
 const ical = require("node-ical");
 const os = require("os");
 const session = require("express-session");
+const cookieParser = require("cookie-parser");
 require('dotenv').config();
 
 const {
@@ -14,17 +15,25 @@ const {
   cleanDuplicatesFromCalendar
 } = require("./code/calendarAPI");
 
+const {
+  getCombinedReviews
+} = require("./code/reviewsAPI");
+
+const reviewUpvoteManager = require("./code/reviewUpvoteManager");
+
 const app = express();
 app.use(useragent.express());
+app.use(express.json());
+app.use(cookieParser()); // Dodaj cookie parser middleware
 
 // Session configuration
 app.use(session({
   secret: process.env.SESSION_SECRET || 'your-secret-key-here',
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true, // Spremi session čak i ako je prazan
   cookie: {
     secure: false, // Set to true in production with HTTPS
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    maxAge: 30 * 24 * 60 * 60 * 1000 // 30 dana
   }
 }));
 
@@ -267,20 +276,94 @@ app.get("/gallery", (req, res) => {
   });
 })
 
+// API ruta za recenzije
+app.get("/reviews/:id", async (req, res) => {
+  try {
+    const unitId = req.params.id;
+    
+    // Ograniči na apartmane 1 i 2
+    if (unitId !== '1' && unitId !== '2') {
+      return res.status(404).json({
+        error: `Apartman ${unitId} ne postoji. Dostupni su samo apartmani 1 i 2.`
+      });
+    }
+    
+    const reviews = await getCombinedReviews(unitId);
+    
+    // Dodaj upvote podatke
+    const userId = reviewUpvoteManager.getUserId(req, res);
+    const upvoteData = reviewUpvoteManager.getUserUpvoteData(userId, reviews.reviews, unitId);
+    
+    res.json({
+      ...reviews,
+      upvoteData
+    });
+  } catch (error) {
+    console.error('Error fetching reviews:', error);
+    res.status(500).json({
+      error: 'Greška pri dohvaćanju recenzija'
+    });
+  }
+});
+
+// API ruta za upvote/downvote review
+app.post("/reviews/:unitId/:reviewIndex/upvote", (req, res) => {
+  try {
+    const { unitId, reviewIndex } = req.params;
+    
+    // Ograniči na apartmane 1 i 2
+    if (unitId !== '1' && unitId !== '2') {
+      return res.status(404).json({
+        error: `Apartman ${unitId} ne postoji. Dostupni su samo apartmani 1 i 2.`
+      });
+    }
+    
+    const userId = reviewUpvoteManager.getUserId(req, res);
+    const reviewId = reviewUpvoteManager.getReviewId(unitId, reviewIndex);
+    const result = reviewUpvoteManager.toggleUpvote(userId, reviewId);
+    
+    res.json({
+      success: true,
+      reviewId,
+      upvoted: result.upvoted,
+      count: result.count
+    });
+  } catch (error) {
+    console.error('Error toggling upvote:', error);
+    res.status(500).json({
+      error: 'Greška pri upravljanju upvote'
+    });
+  }
+});
+
 app.get("/header", async (req, res) => {
   try {
     // Fetch real calendar data
     const calendar1 = await fetchCalendars('1');
     const calendar2 = await fetchCalendars('2');
+    
+    // Fetch reviews data
+    const reviews1 = await getCombinedReviews('1');
+    const reviews2 = await getCombinedReviews('2');
+    
+    // Dodaj upvote podatke
+    const userId = reviewUpvoteManager.getUserId(req, res);
+    const upvoteData1 = reviewUpvoteManager.getUserUpvoteData(userId, reviews1.reviews, '1');
+    const upvoteData2 = reviewUpvoteManager.getUserUpvoteData(userId, reviews2.reviews, '2');
+    
     res.render("header-test", {
       calendar1: calendar1 || [],
-      calendar2: calendar2 || []
+      calendar2: calendar2 || [],
+      reviews1: { ...reviews1, upvoteData: upvoteData1 },
+      reviews2: { ...reviews2, upvoteData: upvoteData2 }
     });
   } catch (error) {
     console.error('Error loading calendars for header test:', error);
     res.render("header-test", {
       calendar1: [],
-      calendar2: []
+      calendar2: [],
+      reviews1: { averageRating: 0, totalReviews: 0, reviews: [], platforms: {}, upvoteData: {} },
+      reviews2: { averageRating: 0, totalReviews: 0, reviews: [], platforms: {}, upvoteData: {} }
     });
   }
 })

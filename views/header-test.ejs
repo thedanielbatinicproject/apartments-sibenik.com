@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Header Test - Apartments Šibenik</title>
+    <link rel="stylesheet" href="/stylesheets/reviews.css">
     <style>
         * {
             margin: 0;
@@ -137,6 +138,18 @@
         </div>
         
         <div class="content-section">
+            <h2>Recenzije gostiju - Apartman s vrtom</h2>
+            <p>Pogledajte što naši gosti kažu o apartmanu s vrtom.</p>
+            <%- include('modules/reviews', { ...reviews2, unitId: '2' }) %>
+        </div>
+        
+        <div class="content-section">
+            <h2>Recenzije gostiju - Studio apartman</h2>
+            <p>Pogledajte što naši gosti kažu o studio apartmanu.</p>
+            <%- include('modules/reviews', { ...reviews1, unitId: '1' }) %>
+        </div>
+        
+        <div class="content-section">
             <h2>Soba</h2>
             <p>Udobna soba s privatnom kupaonicom, idealna za samostalne putnike ili kratke posjete Šibeniku.</p>
             <p>Soba je opremljena kvalitetnim krevetom, radnim stolom i ima pogled na stari grad Šibenik.</p>
@@ -170,5 +183,16 @@
             🔝 Testirajte da li header ostaje na vrhu 🔝
         </div>
     </div>
+    
+    <%- include('modules/footer') %>
+    <script src="/javascripts/reviews.js"></script>
+    <script>
+        // Initialize reviews modules for dynamic functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize reviews for both apartments if dynamic functionality needed
+            // This is optional since reviews are already rendered server-side
+            console.log('Reviews modules initialized');
+        });
+    </script>
 </body>
 </html>

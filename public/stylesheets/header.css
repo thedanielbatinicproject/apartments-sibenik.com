@@ -5,9 +5,10 @@
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(13, 71, 161, 0.15);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 0 0 20px 20px;
   padding: 12px 0;
   transition: all 0.3s ease;
@@ -29,11 +30,27 @@
   gap: 12px;
 }
 
+.logo-link {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
 .logo-image {
   width: 40px;
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
+}
+
+.logo-text-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.logo-text-link:hover {
+  text-decoration: none;
+  color: inherit;
 }
 
 .logo-text {

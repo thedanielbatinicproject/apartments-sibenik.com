@@ -1,0 +1,178 @@
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-left">
+            <a href="/" class="website-name">Apartments Šibenik</a>
+        </div>
+        
+        <div class="footer-center">
+            <p class="copyright-text">
+                Sva prava pridržana. Sve fotografije na ovoj web lokaciji su privatne i ne smiju se koristiti bez dopuštenja.
+            </p>
+        </div>
+        
+        <div class="footer-right">
+            <div class="footer-buttons">
+                <a href="https://www.airbnb.com/users/show/16254751" target="_blank" rel="noopener noreferrer" class="footer-button airbnb-button">
+                    <img src="/images/icons/airbnb.png" alt="Airbnb" class="button-icon">
+                    <span>Brigita on AirBnB</span>
+                </a>
+                <a href="https://wa.me/+385989105640" target="_blank" rel="noopener noreferrer" class="footer-button whatsapp-button">
+                    <img src="/images/icons/whatsapp.png" alt="WhatsApp" class="button-icon">
+                    <span>Message us on Whatsapp</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<style>
+    .footer {
+        background-color: #2c3e50;
+        color: white;
+        padding: 40px 20px;
+        margin-top: 50px;
+        position: relative;
+        border-top: 3px solid #3498db;
+    }
+    
+    .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    
+    .footer-left {
+        flex: 1;
+        min-width: 200px;
+    }
+    
+    .website-name {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #3498db;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    
+    .website-name:hover {
+        color: #5dade2;
+    }
+    
+    .footer-center {
+        flex: 2;
+        text-align: center;
+        min-width: 300px;
+    }
+    
+    .copyright-text {
+        font-size: 0.9rem;
+        line-height: 1.4;
+        color: #bdc3c7;
+        margin: 0;
+    }
+    
+    .footer-right {
+        flex: 1;
+        display: flex;
+        justify-content: flex-end;
+        min-width: 200px;
+    }
+    
+    .footer-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .footer-button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background-color: #34495e;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+        white-space: nowrap;
+    }
+    
+    .footer-button:hover {
+        background-color: #4a6741;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .airbnb-button:hover {
+        background-color: #ff5a5f;
+    }
+    
+    .whatsapp-button:hover {
+        background-color: #25d366;
+    }
+    
+    .button-icon {
+        width: 20px;
+        height: 20px;
+        object-fit: contain;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .footer-content {
+            flex-direction: column;
+            text-align: center;
+            gap: 30px;
+        }
+        
+        .footer-left,
+        .footer-center,
+        .footer-right {
+            flex: none;
+            min-width: auto;
+            width: 100%;
+        }
+        
+        .footer-right {
+            justify-content: center;
+        }
+        
+        .footer-buttons {
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .footer-button {
+            justify-content: center;
+        }
+        
+        .copyright-text {
+            font-size: 0.8rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .footer {
+            padding: 30px 15px;
+        }
+        
+        .website-name {
+            font-size: 1.3rem;
+        }
+        
+        .footer-button {
+            padding: 10px 12px;
+            font-size: 0.85rem;
+        }
+        
+        .button-icon {
+            width: 18px;
+            height: 18px;
+        }
+    }
+</style>
