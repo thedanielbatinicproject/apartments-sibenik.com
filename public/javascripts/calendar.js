@@ -162,6 +162,27 @@ function renderCalendar(year, month, events) {
     el.className = "calendar-cell";
     const { left, middle, right } = getEventClass(events, day, year, month);
 
+    // Add classes for connection lines - only show line if current cell has event
+    const hasAnyEvent = left.length > 0 || middle.length > 0 || right.length > 0;
+    
+    if (hasAnyEvent) {
+      // Check if next day also has an event (for connection line)
+      const nextDay = day + 1;
+      if (nextDay <= daysInMonth) {
+        const nextDayEvents = getEventClass(events, nextDay, year, month);
+        const nextHasEvent = nextDayEvents.left.length > 0 || nextDayEvents.middle.length > 0 || nextDayEvents.right.length > 0;
+        
+        if (nextHasEvent) {
+          el.classList.add("has-event-connection");
+        }
+      }
+    }
+    
+    // Add column position classes for edge cases
+    const dayOfWeek = (firstDay + day - 1) % 7;
+    if (dayOfWeek === 0) el.classList.add("first-column");
+    if (dayOfWeek === 6) el.classList.add("last-column");
+
     left.forEach((evClassObj) => {
       const part = document.createElement("div");
       part.className = "cell-part left " + evClassObj.className;

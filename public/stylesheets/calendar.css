@@ -23,7 +23,7 @@
   align-items: center;
   font-size: 1.3rem;
   font-weight: 600;
-  color: #0a355c;
+  color: white;
   margin-bottom: 1rem;
 }
 
@@ -34,7 +34,7 @@
   width: 2.2rem;
   height: 2.2rem;
   font-size: 1.3rem;
-  color: #0a355c;
+  color: white;
   cursor: pointer;
   transition: background 0.2s;
   display: flex;
@@ -125,6 +125,56 @@
   .calendar-cell {
     font-size: 0.9rem;
     min-height: 1.5rem;
+  }
+}
+
+/* Simple red connection lines between adjacent events */
+.calendar-cell {
+  position: relative;
+}
+
+.calendar-cell::before {
+  content: '';
+  position: absolute;
+  height: 2px;
+  background: #ff4444;
+  z-index: 10;
+  opacity: 0;
+  transition: all 0.3s ease;
+  top: 50%;
+  transform: translateY(-50%);
+  right: -0.25rem;
+  width: 0.5rem;
+  border-radius: 1px;
+}
+
+/* Show connection line only when current cell has event and next cell also has event */
+.calendar-cell.has-event-connection::before {
+  opacity: 1;
+}
+
+/* Hide connection lines at the end of rows */
+.calendar-cell.last-column::before {
+  opacity: 0 !important;
+}
+
+/* Adjust connection line on hover */
+.calendar-cell:hover::before {
+  right: -0.2rem;
+  width: 0.4rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .calendar-cell::before {
+    height: 1px;
+    right: -0.15rem;
+    width: 0.3rem;
+  }
+  
+  .calendar-cell:hover::before {
+    right: -0.1rem;
+    width: 0.2rem;
   }
 }
 
