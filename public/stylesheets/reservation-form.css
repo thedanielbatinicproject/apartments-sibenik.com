@@ -470,8 +470,8 @@
   }
   
   .date-input-container {
-    flex-direction: column;
-    gap: 0.4rem;
+    flex-direction: row;
+    gap: 0.6rem;
   }
   
   .form-actions {
@@ -501,5 +501,18 @@
   
   .reservation-form {
     gap: 0.6rem;
+  }
+  
+  .date-input-container {
+    gap: 0.5rem;
+  }
+  
+  .date-field {
+    min-width: 0; /* Allow flex items to shrink */
+  }
+  
+  .form-input[type="date"] {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.6rem;
   }
 }
