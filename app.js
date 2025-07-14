@@ -435,38 +435,38 @@ app.post("/submit-reservation", [
   }
 });
 
-// Test email connection route
-app.get('/test-email', async (req, res) => {
+// Helper function to get apartment name
+function getApartmentName(apartmentId) {
+  const apartmentNames = {
+    '1': 'Studio Apartment',
+    '2': 'Apartment with Garden',
+    '3': 'Room Apartment'
+  };
+  return apartmentNames[apartmentId] || 'Unknown';
+}
+
+// Check availability route
+app.post('/check-availability', async (req, res) => {
   try {
-    const testResult = await emailSenderManager.testConnection();
+    const { apartment, checkIn, checkOut } = req.body;
     
-    if (testResult) {
-      res.json({
-        success: true,
-        message: 'Email connection successful',
-        smtp: {
-          host: process.env.SMTP_HOST,
-          port: process.env.SMTP_PORT,
-          user: process.env.SMTP_USER ? 'Set' : 'Not set'
-        }
-      });
-    } else {
-      res.json({
-        success: false,
-        message: 'Email connection failed',
-        smtp: {
-          host: process.env.SMTP_HOST,
-          port: process.env.SMTP_PORT,
-          user: process.env.SMTP_USER ? 'Set' : 'Not set'
-        }
-      });
+    if (!apartment || !checkIn || !checkOut) {
+      return res.json({ hasConflict: false });
     }
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Error testing email connection',
-      error: error.message
-    });
+    
+    // Only check for apartments 1 and 2
+    if (apartment !== '1' && apartment !== '2') {
+      return res.json({ hasConflict: false });
+    }
+    
+    const checkInDate = new Date(checkIn);
+    const checkOutDate = new Date(checkOut);
+    
+    // Fetch calendar data
+    const calendars = await fetchCalendars();
+    const calendarKey = apartment === '2' ? 'calendar2' : 'calendar1';
+    const calendarEvents = calendars[calendarKey] || [];
+    
     // Check for conflicts
     const hasConflict = calendarEvents.some(event => {
       const eventStart = new Date(event.start);
@@ -478,6 +478,32 @@ app.get('/test-email', async (req, res) => {
   } catch (error) {
     console.error('Error checking availability:', error);
     res.json({ hasConflict: false });
+  }
+});
+
+// Test email connection route
+app.get('/test-email', async (req, res) => {
+  try {
+    const connectionTest = await emailSenderManager.testConnection();
+    
+    if (connectionTest) {
+      res.json({
+        success: true,
+        message: 'Email server connection successful!'
+      });
+    } else {
+      res.json({
+        success: false,
+        message: 'Email server connection failed. Check server logs for details.'
+      });
+    }
+  } catch (error) {
+    console.error('Error testing email connection:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error testing email connection',
+      error: error.message
+    });
   }
 });
 
