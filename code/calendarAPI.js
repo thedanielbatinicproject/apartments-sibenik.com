@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const ical = require("node-ical");
+const { v4: uuidv4 } = require('uuid');
 
 function readCalendar(fileName) {
   const filePath = path.join(__dirname, "../data/calendars", fileName);
@@ -22,6 +23,7 @@ async function fetchIcalReservations(url) {
   return Object.values(data)
     .filter((event) => event.type === "VEVENT")
     .map((event) => ({
+      event_uuid: uuidv4(),
       naziv: event.summary,
       pocetak: event.start,
       kraj: event.end,
@@ -32,6 +34,11 @@ function removeDuplicates(events) {
   const seenEvents = new Map();
   
   return events.filter(event => {
+    // Add UUID if it doesn't exist
+    if (!event.event_uuid) {
+      event.event_uuid = uuidv4();
+    }
+    
     // Create unique key for event
     const key = `${event.naziv}_${event.pocetak}_${event.kraj}`;
     
@@ -49,6 +56,13 @@ function removeDuplicates(events) {
 async function updateCalendarFromIcal(url, fileName) {
   const noviEventi = await fetchIcalReservations(url);
   const postojećiEventi = readCalendar(fileName);
+
+  // Add UUID to existing events that don't have it
+  postojećiEventi.forEach(event => {
+    if (!event.event_uuid) {
+      event.event_uuid = uuidv4();
+    }
+  });
 
   function jeIdentican(e1, e2) {
     const e1Pocetak =
@@ -68,8 +82,6 @@ async function updateCalendarFromIcal(url, fileName) {
       String(e1.naziv) === String(e2.naziv) &&
       e1Pocetak === e2Pocetak &&
       e1Kraj === e2Kraj;
-    console.log(`Comparing: ${JSON.stringify(e1)} with ${JSON.stringify(e2)}`);
-    console.log(`Result: ${result}`);
     return result;
   }
 
@@ -86,7 +98,7 @@ async function updateCalendarFromIcal(url, fileName) {
   
   writeCalendar(fileName, eventiBeznaDuplikata);
 
-  return addedEvents; // returns only added events
+  return zaDodati; // returns only added events
 }
 
 async function cleanDuplicatesFromCalendar(calendarId) {
@@ -103,12 +115,53 @@ async function cleanDuplicatesFromCalendar(calendarId) {
 async function fetchCalendars(id) {
   if (id) {
     // Return specific calendar
-    return readCalendar(`calendar${id}.json`);
+    const events = readCalendar(`calendar${id}.json`);
+    // Add UUID to events that don't have it
+    const eventsWithUUID = events.map(event => {
+      if (!event.event_uuid) {
+        event.event_uuid = uuidv4();
+      }
+      return event;
+    });
+    
+    // Save back to file if UUIDs were added
+    if (eventsWithUUID.some(event => !events.find(e => e.event_uuid === event.event_uuid))) {
+      writeCalendar(`calendar${id}.json`, eventsWithUUID);
+    }
+    
+    return eventsWithUUID;
   }
   // Return all calendars
+  const calendar1 = readCalendar("calendar1.json");
+  const calendar2 = readCalendar("calendar2.json");
+  
+  // Add UUID to calendar1 events
+  const calendar1WithUUID = calendar1.map(event => {
+    if (!event.event_uuid) {
+      event.event_uuid = uuidv4();
+    }
+    return event;
+  });
+  
+  // Add UUID to calendar2 events
+  const calendar2WithUUID = calendar2.map(event => {
+    if (!event.event_uuid) {
+      event.event_uuid = uuidv4();
+    }
+    return event;
+  });
+  
+  // Save back to files if UUIDs were added
+  if (calendar1WithUUID.some(event => !calendar1.find(e => e.event_uuid === event.event_uuid))) {
+    writeCalendar("calendar1.json", calendar1WithUUID);
+  }
+  if (calendar2WithUUID.some(event => !calendar2.find(e => e.event_uuid === event.event_uuid))) {
+    writeCalendar("calendar2.json", calendar2WithUUID);
+  }
+  
   return {
-    calendar1: readCalendar("calendar1.json"),
-    calendar2: readCalendar("calendar2.json"),
+    calendar1: calendar1WithUUID,
+    calendar2: calendar2WithUUID,
   };
 }
 

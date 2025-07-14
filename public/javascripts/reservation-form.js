@@ -34,6 +34,29 @@
         });
       }
     });
+
+    // Add change event listeners to all form fields to clear warning message
+    const allFormFields = ['fullName', 'email', 'phone', 'apartment', 'checkIn', 'checkOut', 'message', 'countryCode'];
+    allFormFields.forEach(fieldName => {
+      const field = document.getElementById(fieldName);
+      if (field) {
+        field.addEventListener('input', function() {
+          // Clear warning message when user starts typing/changing form
+          if (messageDiv.classList.contains('warning')) {
+            hideMessage();
+            forceSubmit = false; // Reset force submit flag
+          }
+        });
+        
+        field.addEventListener('change', function() {
+          // Clear warning message when user changes any field
+          if (messageDiv.classList.contains('warning')) {
+            hideMessage();
+            forceSubmit = false; // Reset force submit flag
+          }
+        });
+      }
+    });
     
     // Email validation
     const emailField = document.getElementById('email');
@@ -111,6 +134,7 @@
       clearAllErrors();
       hideConflictWarning();
       hideMessage();
+      forceSubmit = false; // Reset force submit flag
     });
     
     // Form submission
@@ -118,6 +142,8 @@
       e.preventDefault();
       handleFormSubmit();
     });
+    
+    let forceSubmit = false; // Flag to track if user confirmed submission despite conflict
     
     // Field validation
     function validateField(field) {
@@ -258,6 +284,12 @@
     function hideMessage() {
       messageDiv.style.display = 'none';
     }
+
+    function scrollToMessage() {
+      if (messageDiv.style.display !== 'none') {
+        messageDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
     
     function handleFormSubmit() {
       // Validate all fields
@@ -311,6 +343,11 @@
         message: document.getElementById('message').value.trim()
       };
       
+      // Add forceSubmit flag if user is confirming despite conflict
+      if (forceSubmit) {
+        formData.forceSubmit = true;
+      }
+      
       // Submit form
       fetch('/submit-reservation', {
         method: 'POST',
@@ -326,13 +363,21 @@
           form.reset();
           clearAllErrors();
           hideConflictWarning();
+          forceSubmit = false; // Reset flag
+        } else if (data.warning) {
+          // Show warning message and scroll to it
+          showMessage(data.message, 'warning');
+          scrollToMessage();
+          forceSubmit = true; // Set flag so next submission goes through
         } else {
           showMessage(data.message || 'There was an error submitting your request. Please try again.', 'error');
+          forceSubmit = false; // Reset flag
         }
       })
       .catch(error => {
         console.error('Error submitting form:', error);
         showMessage('There was an error submitting your request. Please try again.', 'error');
+        forceSubmit = false; // Reset flag
       })
       .finally(() => {
         // Reset button state

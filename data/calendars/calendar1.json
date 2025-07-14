@@ -1,32 +1,38 @@
 [
   {
+    "event_uuid": "b07a7e1b-d524-452c-8f41-e360e90f4f3a",
     "naziv": "Reserved",
     "pocetak": "2025-07-07T22:00:00.000Z",
     "kraj": "2025-07-14T22:00:00.000Z"
   },
   {
+    "event_uuid": "8699c238-e35b-40fc-b69a-5287c9291223",
     "naziv": "Reserved",
     "pocetak": "2025-07-25T22:00:00.000Z",
     "kraj": "2025-08-03T22:00:00.000Z"
   },
   {
+    "event_uuid": "c5b73c13-1169-4d74-903d-634f9f00ff6c",
     "naziv": "Reserved",
     "pocetak": "2025-08-03T22:00:00.000Z",
     "kraj": "2025-08-07T22:00:00.000Z"
   },
   {
+    "event_uuid": "be1b52b0-6ceb-404c-8612-ebb2fd0b1536",
     "naziv": "Reserved",
     "pocetak": "2025-08-08T22:00:00.000Z",
     "kraj": "2025-08-12T22:00:00.000Z"
   },
   {
+    "event_uuid": "5d127613-c30a-4ef7-a092-ba253ee291b7",
     "naziv": "Airbnb (Not available)",
     "pocetak": "2025-08-13T22:00:00.000Z",
     "kraj": "2025-08-16T22:00:00.000Z"
   },
   {
+    "event_uuid": "90102b78-b3ea-4156-b806-b8ff7af84f34",
     "naziv": "Airbnb (Not available)",
-    "pocetak": "2026-07-12T22:00:00.000Z",
-    "kraj": "2026-07-13T22:00:00.000Z"
+    "pocetak": "2026-07-13T22:00:00.000Z",
+    "kraj": "2026-07-14T22:00:00.000Z"
   }
 ]

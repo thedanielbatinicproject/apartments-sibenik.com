@@ -68,16 +68,16 @@ class EmailSenderManager {
   createEmailSubject(apartmentName) {
     const currentDate = this.formatDate(new Date());
     const apartmentType = this.getApartmentType(apartmentName);
-    return `${currentDate} - NOVI UPIT - ${apartmentType}`;
+    return `${currentDate} - NOVI UPIT - ${apartmentType}`.toUpperCase();
   }
 
   // Create plain text email body
-  createEmailBody(reservationData) {
+  createEmailBody(reservationData, collisionData = null) {
     const checkInFormatted = this.formatDate(reservationData.checkIn);
     const checkOutFormatted = this.formatDate(reservationData.checkOut);
     const timestampFormatted = this.formatTimestamp(reservationData.timestamp);
 
-    return `
+    let body = `
 Full name: ${reservationData.fullName}
 Email: ${reservationData.email || 'N/A'}
 Phone: ${reservationData.phone}
@@ -88,16 +88,40 @@ Message: ${reservationData.message || 'N/A'}
 DETAILS:
 form_req_id: ${reservationData.id}
 req_timestamp: ${timestampFormatted}
-status: ${reservationData.status}
-    `.trim();
+status: ${reservationData.status}`;
+
+    if (collisionData) {
+      body += `
+
+RESERVATION COLLISION:
+REQUESTED EVENT DATES: ${this.formatDate(collisionData.requestedStart)} - ${this.formatDate(collisionData.requestedEnd)}
+EXISTING EVENT DATES: ${this.formatDate(collisionData.existingStart)} - ${this.formatDate(collisionData.existingEnd)}
+FOR ${reservationData.apartment}
+existing_event_id: ${collisionData.existingEventId}`;
+    }
+
+    return body.trim();
   }
 
   // Create HTML email body
-  createEmailHTML(reservationData) {
+  createEmailHTML(reservationData, collisionData = null) {
     const checkInFormatted = this.formatDate(reservationData.checkIn);
     const checkOutFormatted = this.formatDate(reservationData.checkOut);
     const timestampFormatted = this.formatTimestamp(reservationData.timestamp);
     const durationNights = Math.ceil((new Date(reservationData.checkOut) - new Date(reservationData.checkIn)) / (1000 * 60 * 60 * 24));
+
+    let collisionSection = '';
+    if (collisionData) {
+      collisionSection = `
+        <div style="background: #ff9500; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 4px solid #ff6b00;">
+          <h3 style="color: #000; margin-top: 0; font-weight: bold;">RESERVATION COLLISION</h3>
+          <p style="color: #000; font-weight: bold;"><strong>REQUESTED EVENT DATES:</strong> ${this.formatDate(collisionData.requestedStart)} - ${this.formatDate(collisionData.requestedEnd)}</p>
+          <p style="color: #000; font-weight: bold;"><strong>EXISTING EVENT DATES:</strong> ${this.formatDate(collisionData.existingStart)} - ${this.formatDate(collisionData.existingEnd)}</p>
+          <p style="color: #000; font-weight: bold;"><strong>FOR</strong> <em>${reservationData.apartment}</em></p>
+          <p style="color: #000; font-weight: bold;"><strong>existing_event_id:</strong> ${collisionData.existingEventId}</p>
+        </div>
+      `;
+    }
 
     return `
       <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto;">
@@ -110,7 +134,7 @@ status: ${reservationData.status}
             <h3 style="color: #34495e; margin-top: 0;">Guest Information</h3>
             <p><strong>Full name:</strong> ${reservationData.fullName}</p>
             <p><strong>Email:</strong> ${reservationData.email || 'N/A'}</p>
-            <p><strong>Phone:</strong> ${reservationData.phone}</p>
+            <p><strong>Phone:</strong> <a href="tel:${reservationData.phone}" style="color: #3498db; text-decoration: none;">${reservationData.phone}</a></p>
           </div>
           
           <div style="background: white; padding: 15px; border-radius: 5px; margin: 15px 0;">
@@ -119,6 +143,8 @@ status: ${reservationData.status}
             <p><strong>Dates:</strong> ${checkInFormatted} - ${checkOutFormatted}</p>
             <p><strong>Duration:</strong> ${durationNights} nights</p>
           </div>
+          
+          ${collisionSection}
           
           ${reservationData.message ? `
             <div style="background: white; padding: 15px; border-radius: 5px; margin: 15px 0;">
@@ -139,7 +165,7 @@ status: ${reservationData.status}
   }
 
   // Send reservation email
-  async sendReservationEmail(reservationData) {
+  async sendReservationEmail(reservationData, collisionData = null) {
     try {
       if (!this.transporter) {
         console.error('Email transporter not initialized');
@@ -147,8 +173,8 @@ status: ${reservationData.status}
       }
 
       const subject = this.createEmailSubject(reservationData.apartment);
-      const textBody = this.createEmailBody(reservationData);
-      const htmlBody = this.createEmailHTML(reservationData);
+      const textBody = this.createEmailBody(reservationData, collisionData);
+      const htmlBody = this.createEmailHTML(reservationData, collisionData);
 
       const mailOptions = {
         from: process.env.SMTP_USER,

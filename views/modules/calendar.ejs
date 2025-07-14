@@ -61,7 +61,7 @@
             if (!map[day]) map[day] = [];
             map[day].push({
               ...ev,
-              _eventId: idx,
+              _eventId: ev.event_uuid || `fallback_${idx}`,
               _start: localStart,
               _end: localEnd,
               _color: ev._color,
@@ -74,7 +74,7 @@
           for (let d = firstDay; d <= lastDay; d++) {
             if (!map[d]) map[d] = [];
             map[d].forEach((e) => {
-              if (e._eventId === idx) {
+              if (e._eventId === (ev.event_uuid || `fallback_${idx}`)) {
                 e._firstDay = firstDay;
                 e._lastDay = lastDay;
               }

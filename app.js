@@ -13,7 +13,6 @@ const { getLocalIPAddress, handle404Error } = require("./code/utils");
 const { displayCalendar, updateCalendar, cleanCalendar } = require("./code/calendarRoutes");
 const { getReviews, handleUpvote } = require("./code/reviewRoutes");
 const { displayGallery } = require("./code/galleryRoutes");
-
 const app = express();
 app.use(useragent.express());
 app.use(express.json());

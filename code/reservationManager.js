@@ -27,7 +27,7 @@ async function processReservation(req, res) {
       });
     }
 
-    const { fullName, email, countryCode, phone, apartment, checkIn, checkOut, message } = req.body;
+    const { fullName, email, countryCode, phone, apartment, checkIn, checkOut, message, forceSubmit } = req.body;
 
     // Validate dates
     const checkInDate = new Date(checkIn);
@@ -49,23 +49,55 @@ async function processReservation(req, res) {
       });
     }
 
+    let collisionData = null;
+
     // Check for calendar conflicts (for apartments 1 and 2)
     if (apartment === '1' || apartment === '2') {
       const calendars = await fetchCalendars();
       const calendarKey = apartment === '2' ? 'calendar2' : 'calendar1';
       const calendarEvents = calendars[calendarKey] || [];
       
-      const hasConflict = calendarEvents.some(event => {
-        const eventStart = new Date(event.start);
-        const eventEnd = new Date(event.end);
-        return (checkInDate < eventEnd && checkOutDate > eventStart);
+      console.log(`Checking conflicts for apartment ${apartment}:`, {
+        checkIn: checkInDate.toISOString(),
+        checkOut: checkOutDate.toISOString(),
+        eventsCount: calendarEvents.length
+      });
+      
+      const conflictingEvent = calendarEvents.find(event => {
+        const eventStart = new Date(event.pocetak);
+        const eventEnd = new Date(event.kraj);
+        const overlap = (checkInDate < eventEnd && checkOutDate > eventStart);
+        
+        if (overlap) {
+          console.log('Conflict found with event:', {
+            event: event.naziv,
+            eventStart: eventStart.toISOString(),
+            eventEnd: eventEnd.toISOString(),
+            requestedCheckIn: checkInDate.toISOString(),
+            requestedCheckOut: checkOutDate.toISOString()
+          });
+        }
+        
+        return overlap;
       });
 
-      if (hasConflict) {
-        return res.status(409).json({
+      if (conflictingEvent && !forceSubmit) {
+        return res.status(200).json({
           success: false,
-          message: 'There is already a reservation that conflicts with your selected dates.'
+          warning: true,
+          message: 'There is already a reservation that conflicts with your selected dates. Press SUBMIT button again to send request.'
         });
+      }
+      
+      // If there's a conflict but forceSubmit is true, prepare collision data for email
+      if (conflictingEvent && forceSubmit) {
+        collisionData = {
+          requestedStart: checkInDate.toISOString(),
+          requestedEnd: checkOutDate.toISOString(),
+          existingStart: conflictingEvent.pocetak,
+          existingEnd: conflictingEvent.kraj,
+          existingEventId: conflictingEvent.event_uuid || 'N/A'
+        };
       }
     }
 
@@ -102,7 +134,7 @@ async function processReservation(req, res) {
     fs.writeFileSync(filePath, JSON.stringify(existingData, null, 2));
 
     // Send email notification
-    await emailSenderManager.sendReservationEmail(reservationData);
+    await emailSenderManager.sendReservationEmail(reservationData, collisionData);
 
     res.json({
       success: true,
@@ -142,8 +174,8 @@ async function checkAvailability(req, res) {
     
     // Check for conflicts
     const hasConflict = calendarEvents.some(event => {
-      const eventStart = new Date(event.start);
-      const eventEnd = new Date(event.end);
+      const eventStart = new Date(event.pocetak);
+      const eventEnd = new Date(event.kraj);
       return (checkInDate < eventEnd && checkOutDate > eventStart);
     });
     

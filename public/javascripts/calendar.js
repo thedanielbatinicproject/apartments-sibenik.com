@@ -42,7 +42,7 @@ function parseEvents(events, year, month) {
         if (!map[day]) map[day] = [];
         map[day].push({
           ...ev,
-          _eventId: idx,
+          _eventId: ev.event_uuid || `fallback_${idx}`,
           _start: localStart,
           _end: localEnd,
           _color: ev._color,
@@ -55,7 +55,7 @@ function parseEvents(events, year, month) {
       for (let d = firstDay; d <= lastDay; d++) {
         if (!map[d]) map[d] = [];
         map[d].forEach((e) => {
-          if (e._eventId === idx) {
+          if (e._eventId === (ev.event_uuid || `fallback_${idx}`)) {
             e._firstDay = firstDay;
             e._lastDay = lastDay;
           }
@@ -162,27 +162,6 @@ function renderCalendar(year, month, events) {
     el.className = "calendar-cell";
     const { left, middle, right } = getEventClass(events, day, year, month);
 
-    // Add classes for connection lines - only show line if current cell has event
-    const hasAnyEvent = left.length > 0 || middle.length > 0 || right.length > 0;
-    
-    if (hasAnyEvent) {
-      // Check if next day also has an event (for connection line)
-      const nextDay = day + 1;
-      if (nextDay <= daysInMonth) {
-        const nextDayEvents = getEventClass(events, nextDay, year, month);
-        const nextHasEvent = nextDayEvents.left.length > 0 || nextDayEvents.middle.length > 0 || nextDayEvents.right.length > 0;
-        
-        if (nextHasEvent) {
-          el.classList.add("has-event-connection");
-        }
-      }
-    }
-    
-    // Add column position classes for edge cases
-    const dayOfWeek = (firstDay + day - 1) % 7;
-    if (dayOfWeek === 0) el.classList.add("first-column");
-    if (dayOfWeek === 6) el.classList.add("last-column");
-
     left.forEach((evClassObj) => {
       const part = document.createElement("div");
       part.className = "cell-part left " + evClassObj.className;
@@ -275,5 +254,6 @@ function addEventHoverHandlers() {
     now.setMonth(month);
     update();
   };
+  
   update();
 })();

@@ -9,7 +9,7 @@ const reservationValidationRules = [
     .withMessage('Full name must be at least 2 characters'),
   
   body('email')
-    .optional()
+    .optional({ nullable: true, checkFalsy: true })
     .isEmail()
     .withMessage('Please enter a valid email address'),
   
