@@ -14,9 +14,11 @@
     "express": "^4.21.2",
     "express-session": "^1.18.1",
     "express-useragent": "^1.0.15",
+    "express-validator": "^7.2.1",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
     "node-ical": "^0.20.1",
+    "nodemailer": "^7.0.5",
     "nodemon": "^3.1.10",
     "pug": "^2.0.4",
     "uuid": "^11.1.0"

@@ -1,0 +1,713 @@
+<!-- Reservation Form Module -->
+<div class="reservation-form-container">
+  <div class="reservation-form-backdrop">
+    <div class="reservation-form-content">
+      <h2 class="reservation-form-title">Make a Reservation</h2>
+      
+      <!-- Success/Error Messages -->
+      <div id="reservation-message" class="reservation-message" style="display: none;"></div>
+      
+      <form id="reservationForm" class="reservation-form" novalidate>
+        <!-- Full Name -->
+        <div class="form-group">
+          <label for="fullName" class="form-label">Full Name *</label>
+          <input type="text" id="fullName" name="fullName" class="form-input" required>
+          <div class="error-message" id="fullName-error"></div>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" id="email" name="email" class="form-input">
+          <div class="error-message" id="email-error"></div>
+        </div>
+
+        <!-- Phone Number with Country Code -->
+        <div class="form-group">
+          <label for="phone" class="form-label">Phone Number *</label>
+          <div class="phone-input-container">
+            <select id="countryCode" name="countryCode" class="country-code-select" required>
+              <option value="+385" data-flag="🇭🇷">🇭🇷 +385</option>
+              <option value="+1" data-flag="🇺🇸">🇺🇸 +1</option>
+              <option value="+44" data-flag="🇬🇧">🇬🇧 +44</option>
+              <option value="+49" data-flag="🇩🇪">🇩🇪 +49</option>
+              <option value="+33" data-flag="🇫🇷">🇫🇷 +33</option>
+              <option value="+39" data-flag="🇮🇹">🇮🇹 +39</option>
+              <option value="+43" data-flag="🇦🇹">🇦🇹 +43</option>
+              <option value="+41" data-flag="🇨🇭">🇨🇭 +41</option>
+              <option value="+34" data-flag="🇪🇸">🇪🇸 +34</option>
+              <option value="+31" data-flag="🇳🇱">🇳🇱 +31</option>
+              <option value="+32" data-flag="🇧🇪">🇧🇪 +32</option>
+              <option value="+45" data-flag="🇩🇰">🇩🇰 +45</option>
+              <option value="+46" data-flag="🇸🇪">🇸🇪 +46</option>
+              <option value="+47" data-flag="🇳🇴">🇳🇴 +47</option>
+            </select>
+            <input type="tel" id="phone" name="phone" class="form-input phone-input" placeholder="123456789" required>
+          </div>
+          <div class="error-message" id="phone-error"></div>
+        </div>
+
+        <!-- Apartment Selection -->
+        <div class="form-group">
+          <label for="apartment" class="form-label">Apartment Type *</label>
+          <select id="apartment" name="apartment" class="form-select" required>
+            <option value="">Select an apartment</option>
+            <option value="2">Apartment with Garden</option>
+            <option value="1">Studio Apartment</option>
+            <option value="3">Room Apartment</option>
+          </select>
+          <div class="error-message" id="apartment-error"></div>
+        </div>
+
+        <!-- Check-in Date -->
+        <div class="form-group">
+          <label for="checkIn" class="form-label">Check-in Date *</label>
+          <input type="date" id="checkIn" name="checkIn" class="form-input" required>
+          <div class="error-message" id="checkIn-error"></div>
+        </div>
+
+        <!-- Check-out Date -->
+        <div class="form-group">
+          <label for="checkOut" class="form-label">Check-out Date *</label>
+          <input type="date" id="checkOut" name="checkOut" class="form-input" required>
+          <div class="error-message" id="checkOut-error"></div>
+        </div>
+
+        <!-- Message -->
+        <div class="form-group">
+          <label for="message" class="form-label">Message</label>
+          <textarea id="message" name="message" class="form-textarea" rows="4" placeholder="Additional information or special requests..."></textarea>
+          <div class="error-message" id="message-error"></div>
+        </div>
+
+        <!-- Date Conflict Warning -->
+        <div id="dateConflictWarning" class="date-conflict-warning" style="display: none;">
+          <span class="warning-icon">⚠️</span>
+          <span class="warning-text">There is already a reservation that conflicts with your selected dates.</span>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button type="button" id="clearForm" class="btn btn-secondary">Clear All</button>
+          <button type="submit" id="submitForm" class="btn btn-primary">Submit Reservation</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+.reservation-form-container {
+  margin: 2rem auto;
+  max-width: 600px;
+  padding: 0 1rem;
+}
+
+.reservation-form-backdrop {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  transition: all 0.3s ease;
+}
+
+.reservation-form-backdrop:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.reservation-form-title {
+  color: #2c3e50;
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 2rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.reservation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-label {
+  color: #34495e;
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  padding: 0.75rem 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+  font-size: 1rem;
+  color: #2c3e50;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: #3498db;
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  transform: scale(1.02);
+}
+
+.form-input.error,
+.form-select.error,
+.form-textarea.error {
+  border-color: #e74c3c;
+  background: rgba(231, 76, 60, 0.1);
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.phone-input-container {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.country-code-select {
+  flex: 0 0 120px;
+  padding: 0.75rem 0.5rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+  font-size: 0.9rem;
+  color: #2c3e50;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.country-code-select:focus {
+  border-color: #3498db;
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.phone-input {
+  flex: 1;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  min-height: 1.2rem;
+}
+
+.error-message.show {
+  opacity: 1;
+}
+
+.date-conflict-warning {
+  background: rgba(255, 165, 0, 0.2);
+  border: 1px solid rgba(255, 165, 0, 0.4);
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.date-conflict-warning .warning-icon {
+  font-size: 1.2rem;
+  margin-right: 0.5rem;
+}
+
+.date-conflict-warning .warning-text {
+  color: #d35400;
+  font-weight: 500;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  outline: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn-secondary {
+  background: rgba(149, 165, 166, 0.2);
+  color: #2c3e50;
+  border: 2px solid rgba(149, 165, 166, 0.3);
+  flex: 1;
+}
+
+.btn-secondary:hover {
+  background: rgba(149, 165, 166, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(149, 165, 166, 0.2);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+  border: 2px solid transparent;
+  flex: 2;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #2980b9, #3498db);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.reservation-message {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  text-align: center;
+  animation: slideIn 0.5s ease-in-out;
+}
+
+.reservation-message.success {
+  background: rgba(46, 204, 113, 0.2);
+  border: 1px solid rgba(46, 204, 113, 0.4);
+  color: #27ae60;
+}
+
+.reservation-message.error {
+  background: rgba(231, 76, 60, 0.2);
+  border: 1px solid rgba(231, 76, 60, 0.4);
+  color: #e74c3c;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .reservation-form-container {
+    margin: 1rem auto;
+    padding: 0 0.5rem;
+  }
+  
+  .reservation-form-backdrop {
+    padding: 1.5rem;
+  }
+  
+  .reservation-form-title {
+    font-size: 1.5rem;
+  }
+  
+  .phone-input-container {
+    flex-direction: column;
+  }
+  
+  .country-code-select {
+    flex: none;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .btn-secondary,
+  .btn-primary {
+    flex: none;
+  }
+}
+</style>
+
+<script>
+// Reservation form functionality
+(function() {
+  'use strict';
+  
+  // Initialize form when DOM is ready
+  document.addEventListener('DOMContentLoaded', function() {
+    initializeReservationForm();
+  });
+  
+  function initializeReservationForm() {
+    const form = document.getElementById('reservationForm');
+    const clearBtn = document.getElementById('clearForm');
+    const submitBtn = document.getElementById('submitForm');
+    const apartmentSelect = document.getElementById('apartment');
+    const checkInInput = document.getElementById('checkIn');
+    const checkOutInput = document.getElementById('checkOut');
+    const conflictWarning = document.getElementById('dateConflictWarning');
+    const messageDiv = document.getElementById('reservation-message');
+    
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    checkInInput.setAttribute('min', today);
+    checkOutInput.setAttribute('min', today);
+    
+    // Form validation setup
+    const requiredFields = ['fullName', 'phone', 'apartment', 'checkIn', 'checkOut'];
+    
+    // Add blur event listeners for required fields
+    requiredFields.forEach(fieldName => {
+      const field = document.getElementById(fieldName);
+      if (field) {
+        field.addEventListener('blur', function() {
+          validateField(field);
+        });
+      }
+    });
+    
+    // Email validation
+    const emailField = document.getElementById('email');
+    emailField.addEventListener('blur', function() {
+      if (this.value && !isValidEmail(this.value)) {
+        showFieldError(this, 'Please enter a valid email address');
+      } else {
+        hideFieldError(this);
+      }
+    });
+    
+    // Phone validation
+    const phoneField = document.getElementById('phone');
+    phoneField.addEventListener('blur', function() {
+      if (this.value && !isValidPhone(this.value)) {
+        showFieldError(this, 'Please enter a valid phone number');
+      } else if (this.value) {
+        hideFieldError(this);
+      }
+    });
+    
+    // Check-in date change
+    checkInInput.addEventListener('change', function() {
+      const checkInDate = new Date(this.value);
+      const checkOutDate = new Date(checkOutInput.value);
+      
+      // Set minimum check-out date to day after check-in
+      if (this.value) {
+        const minCheckOut = new Date(checkInDate);
+        minCheckOut.setDate(minCheckOut.getDate() + 1);
+        checkOutInput.setAttribute('min', minCheckOut.toISOString().split('T')[0]);
+        
+        // If check-out is before check-in, clear it
+        if (checkOutInput.value && checkOutDate <= checkInDate) {
+          checkOutInput.value = '';
+        }
+      }
+      
+      checkDateConflicts();
+    });
+    
+    // Check-out date change
+    checkOutInput.addEventListener('change', function() {
+      const checkInDate = new Date(checkInInput.value);
+      const checkOutDate = new Date(this.value);
+      
+      // Validate check-out is after check-in
+      if (checkInInput.value && checkOutDate <= checkInDate) {
+        showFieldError(this, 'Check-out date must be after check-in date');
+        return;
+      } else {
+        hideFieldError(this);
+      }
+      
+      checkDateConflicts();
+    });
+    
+    // Apartment selection change
+    apartmentSelect.addEventListener('change', function() {
+      checkDateConflicts();
+    });
+    
+    // Clear form
+    clearBtn.addEventListener('click', function() {
+      form.reset();
+      clearAllErrors();
+      hideConflictWarning();
+      hideMessage();
+    });
+    
+    // Form submission
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      handleFormSubmit();
+    });
+    
+    // Field validation
+    function validateField(field) {
+      const value = field.value.trim();
+      
+      if (field.hasAttribute('required') && !value) {
+        showFieldError(field, 'This field is required');
+        return false;
+      } else {
+        hideFieldError(field);
+        return true;
+      }
+    }
+    
+    function isValidEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }
+    
+    function isValidPhone(phone) {
+      const phoneRegex = /^\d{6,15}$/;
+      return phoneRegex.test(phone.replace(/\s+/g, ''));
+    }
+    
+    function showFieldError(field, message) {
+      field.classList.add('error');
+      const errorDiv = document.getElementById(field.id + '-error');
+      if (errorDiv) {
+        errorDiv.textContent = message;
+        errorDiv.classList.add('show');
+      }
+    }
+    
+    function hideFieldError(field) {
+      field.classList.remove('error');
+      const errorDiv = document.getElementById(field.id + '-error');
+      if (errorDiv) {
+        errorDiv.textContent = '';
+        errorDiv.classList.remove('show');
+      }
+    }
+    
+    function clearAllErrors() {
+      const errorMessages = document.querySelectorAll('.error-message');
+      const errorFields = document.querySelectorAll('.form-input.error, .form-select.error, .form-textarea.error');
+      
+      errorMessages.forEach(msg => {
+        msg.textContent = '';
+        msg.classList.remove('show');
+      });
+      
+      errorFields.forEach(field => {
+        field.classList.remove('error');
+      });
+    }
+    
+    function checkDateConflicts() {
+      const apartment = apartmentSelect.value;
+      const checkIn = checkInInput.value;
+      const checkOut = checkOutInput.value;
+      
+      if (!apartment || !checkIn || !checkOut) {
+        hideConflictWarning();
+        return;
+      }
+      
+      // Only check for apartments 1 and 2 (Studio and Garden)
+      if (apartment !== '1' && apartment !== '2') {
+        hideConflictWarning();
+        return;
+      }
+      
+      // Fetch calendar data and check for conflicts
+      fetch('/check-availability', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          apartment: apartment,
+          checkIn: checkIn,
+          checkOut: checkOut
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.hasConflict) {
+          showConflictWarning();
+        } else {
+          hideConflictWarning();
+        }
+      })
+      .catch(error => {
+        console.error('Error checking availability:', error);
+        hideConflictWarning();
+      });
+    }
+    
+    function checkForDateConflicts(checkIn, checkOut, apartment) {
+      // This is a simplified implementation
+      // In a real app, you'd check against actual calendar data
+      const checkInDate = new Date(checkIn);
+      const checkOutDate = new Date(checkOut);
+      
+      // For now, return false (no conflicts)
+      // You can implement actual conflict checking here
+      return false;
+    }
+    
+    function showConflictWarning() {
+      conflictWarning.style.display = 'block';
+    }
+    
+    function hideConflictWarning() {
+      conflictWarning.style.display = 'none';
+    }
+    
+    function showMessage(message, type) {
+      messageDiv.textContent = message;
+      messageDiv.className = `reservation-message ${type}`;
+      messageDiv.style.display = 'block';
+      
+      // Auto-hide success messages after 5 seconds
+      if (type === 'success') {
+        setTimeout(() => {
+          hideMessage();
+        }, 5000);
+      }
+    }
+    
+    function hideMessage() {
+      messageDiv.style.display = 'none';
+    }
+    
+    function handleFormSubmit() {
+      // Validate all fields
+      let isValid = true;
+      
+      requiredFields.forEach(fieldName => {
+        const field = document.getElementById(fieldName);
+        if (!validateField(field)) {
+          isValid = false;
+        }
+      });
+      
+      // Additional validations
+      const emailField = document.getElementById('email');
+      if (emailField.value && !isValidEmail(emailField.value)) {
+        showFieldError(emailField, 'Please enter a valid email address');
+        isValid = false;
+      }
+      
+      const phoneField = document.getElementById('phone');
+      if (!isValidPhone(phoneField.value)) {
+        showFieldError(phoneField, 'Please enter a valid phone number');
+        isValid = false;
+      }
+      
+      const checkInDate = new Date(checkInInput.value);
+      const checkOutDate = new Date(checkOutInput.value);
+      if (checkOutDate <= checkInDate) {
+        showFieldError(checkOutInput, 'Check-out date must be after check-in date');
+        isValid = false;
+      }
+      
+      if (!isValid) {
+        showMessage('Please fix the errors in the form', 'error');
+        return;
+      }
+      
+      // Show loading state
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+      
+      // Prepare form data
+      const formData = {
+        fullName: document.getElementById('fullName').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        countryCode: document.getElementById('countryCode').value,
+        phone: document.getElementById('phone').value.trim(),
+        apartment: document.getElementById('apartment').value,
+        checkIn: document.getElementById('checkIn').value,
+        checkOut: document.getElementById('checkOut').value,
+        message: document.getElementById('message').value.trim()
+      };
+      
+      // Submit form
+      fetch('/submit-reservation', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          showMessage('Reservation request submitted successfully! We will contact you soon.', 'success');
+          form.reset();
+          clearAllErrors();
+          hideConflictWarning();
+        } else {
+          showMessage(data.message || 'There was an error submitting your request. Please try again.', 'error');
+        }
+      })
+      .catch(error => {
+        console.error('Error submitting form:', error);
+        showMessage('There was an error submitting your request. Please try again.', 'error');
+      })
+      .finally(() => {
+        // Reset button state
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Reservation';
+      });
+    }
+  }
+})();
+</script>
