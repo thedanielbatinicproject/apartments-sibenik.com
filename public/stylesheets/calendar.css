@@ -26,6 +26,7 @@
   color: #0a355c;
   margin-bottom: 1rem;
 }
+
 .calendar-arrow {
   background: rgba(30,144,255,0.25);
   border: none;
@@ -41,6 +42,7 @@
   justify-content: center;
   line-height: 1;
 }
+
 .calendar-arrow:hover {
   background: rgba(30,144,255,0.45);
 }
@@ -63,6 +65,7 @@
   min-height: 2rem;
   height: 2rem;
 }
+
 .calendar-cell {
   background: rgba(255,255,255,0.25);
   border-radius: 12px;

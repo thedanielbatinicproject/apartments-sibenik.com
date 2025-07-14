@@ -327,11 +327,6 @@ document.addEventListener('DOMContentLoaded', function() {
         nextImage();
       } else if (e.key === 'Escape' && isFullscreen) {
         closeFullscreen();
-      } else if (e.key === 'Enter') {
-        if (!isFullscreen) {
-          e.preventDefault();
-          openFullscreen();
-        }
       }
     });
     

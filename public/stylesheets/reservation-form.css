@@ -1,0 +1,483 @@
+/* Reservation Form Styles */
+.reservation-form-container {
+  margin: 1rem auto;
+  max-width: 550px;
+  padding: 0 1rem;
+}
+
+.reservation-form-backdrop {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 1.2rem;
+  transition: all 0.3s ease;
+}
+
+.reservation-form-backdrop:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.reservation-form-title {
+  color: white;
+  font-size: 1.6rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 1.2rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.reservation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.form-label {
+  color: white;
+  font-weight: 500;
+  font-size: 0.85rem;
+  margin-bottom: 0.1rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.date-label {
+  color: white;
+  font-weight: 400;
+  font-size: 0.75rem;
+  margin-bottom: 0.1rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.date-input-container {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.date-field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  padding: 0.6rem 0.8rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  font-size: 0.95rem;
+  color: #2c3e50;
+  transition: all 0.3s ease;
+  outline: none;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.form-select {
+  cursor: pointer;
+}
+
+.form-input[type="date"] {
+  cursor: pointer;
+}
+
+.form-input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  cursor: pointer;
+}
+
+.form-input[type="date"]::-webkit-inner-spin-button {
+  display: none;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: #3498db;
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  transform: scale(1.02);
+}
+
+
+
+.form-input.error,
+.form-select.error,
+.form-textarea.error {
+  border-color: #e74c3c;
+  background: rgba(231, 76, 60, 0.1);
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.phone-input-container {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.country-code-select {
+  flex: 0 0 120px;
+  padding: 0.6rem 0.4rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  font-size: 0.85rem;
+  color: #2c3e50;
+  transition: all 0.3s ease;
+  outline: none;
+  max-height: 20vh;
+  overflow-y: auto;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.country-code-select:focus {
+  border-color: #3498db;
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  transform: scale(1.02);
+}
+
+.country-code-select:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.country-code-select option {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  color: #2c3e50;
+  padding: 0.5rem;
+  border-radius: 6px;
+  margin: 2px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.country-code-select option:hover {
+  background: rgba(52, 152, 219, 0.2);
+  color: #2c3e50;
+}
+
+.country-code-select option:checked {
+  background: rgba(52, 152, 219, 0.3);
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.phone-input {
+  flex: 1;
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 80px;
+  max-height: 120px;
+  max-width: 100%;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 0.75rem;
+  margin-top: 0.1rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  min-height: 0.8rem;
+}
+
+.error-message.show {
+  opacity: 1;
+}
+
+.date-conflict-warning {
+  background: rgba(255, 165, 0, 0.2);
+  border: 1px solid rgba(255, 165, 0, 0.4);
+  border-radius: 8px;
+  padding: 0.6rem;
+  margin: 0.3rem 0;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.date-conflict-warning .warning-icon {
+  font-size: 1.1rem;
+  margin-right: 0.4rem;
+}
+
+.date-conflict-warning .warning-text {
+  color: #ff8c00;
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 0.3rem;
+}
+
+.btn {
+  padding: 0.65rem 1.2rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  outline: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn-secondary {
+  background: rgba(149, 165, 166, 0.2);
+  color: rgba(149, 165, 166, 0.9);
+  border: 2px solid rgba(149, 165, 166, 0.6);
+  flex: 1;
+}
+
+.btn-secondary:hover {
+  background: rgba(149, 165, 166, 0.3);
+  color: rgba(149, 165, 166, 1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(149, 165, 166, 0.2);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+  border: 2px solid transparent;
+  flex: 2;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #2980b9, #3498db);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.reservation-message {
+  padding: 0.8rem;
+  border-radius: 8px;
+  margin-bottom: 0.8rem;
+  font-weight: 500;
+  text-align: center;
+  animation: slideIn 0.5s ease-in-out;
+  font-size: 0.9rem;
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+.reservation-message.success {
+  background: rgba(46, 204, 113, 0.2);
+  border: 1px solid rgba(46, 204, 113, 0.4);
+  color: #27ae60;
+}
+
+.reservation-message.error {
+  background: rgba(231, 76, 60, 0.2);
+  border: 1px solid rgba(231, 76, 60, 0.4);
+  color: #e74c3c;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Enhanced dropdown option styles */
+.form-select option {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  color: #2c3e50;
+  padding: 0.5rem;
+  border-radius: 6px;
+  margin: 2px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.form-select option:hover {
+  background: rgba(52, 152, 219, 0.2);
+  color: #2c3e50;
+}
+
+.form-select option:checked {
+  background: rgba(52, 152, 219, 0.3);
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+/* Modern scrollbar for dropdowns */
+.country-code-select::-webkit-scrollbar,
+.form-select::-webkit-scrollbar {
+  width: 6px;
+}
+
+.country-code-select::-webkit-scrollbar-track,
+.form-select::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.country-code-select::-webkit-scrollbar-thumb,
+.form-select::-webkit-scrollbar-thumb {
+  background: rgba(52, 152, 219, 0.4);
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+.country-code-select::-webkit-scrollbar-thumb:hover,
+.form-select::-webkit-scrollbar-thumb:hover {
+  background: rgba(52, 152, 219, 0.6);
+}
+
+
+
+/* Improved placeholder styling */
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: rgba(44, 62, 80, 0.6);
+  font-style: italic;
+}
+
+/* Enhanced date picker styling */
+.form-input[type="date"]::-webkit-datetime-edit {
+  color: #2c3e50;
+}
+
+.form-input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+  padding: 0;
+}
+
+.form-input[type="date"]::-webkit-datetime-edit-text {
+  color: rgba(44, 62, 80, 0.6);
+}
+
+.form-input[type="date"]::-webkit-datetime-edit-month-field,
+.form-input[type="date"]::-webkit-datetime-edit-day-field,
+.form-input[type="date"]::-webkit-datetime-edit-year-field {
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+/* Loading state animations */
+@keyframes pulse {
+  0% { opacity: 0.7; }
+  50% { opacity: 1; }
+  100% { opacity: 0.7; }
+}
+
+.form-input.loading,
+.form-select.loading,
+.form-textarea.loading {
+  animation: pulse 1.5s infinite;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .reservation-form-container {
+    margin: 0.8rem auto;
+    padding: 0 0.5rem;
+  }
+  
+  .reservation-form-backdrop {
+    padding: 1rem;
+  }
+  
+  .reservation-form-title {
+    font-size: 1.4rem;
+  }
+  
+  .phone-input-container {
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  
+  .country-code-select {
+    flex: none;
+  }
+  
+  .date-input-container {
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  
+  .btn-secondary,
+  .btn-primary {
+    flex: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .reservation-form-container {
+    margin: 0.5rem auto;
+  }
+  
+  .reservation-form-backdrop {
+    padding: 0.8rem;
+  }
+  
+  .reservation-form-title {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+  
+  .reservation-form {
+    gap: 0.6rem;
+  }
+}

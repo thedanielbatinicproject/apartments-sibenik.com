@@ -23,20 +23,10 @@ class EmailSenderManager {
         },
         connectionTimeout: 60000, // 60 seconds
         greetingTimeout: 30000, // 30 seconds
-        socketTimeout: 60000, // 60 seconds
-        debug: true, // Enable debug mode
-        logger: true // Enable logging
+        socketTimeout: 60000 // 60 seconds
       };
 
-      console.log('Email configuration:', {
-        host: emailConfig.host,
-        port: emailConfig.port,
-        secure: emailConfig.secure,
-        user: emailConfig.auth.user,
-        passLength: emailConfig.auth.pass ? emailConfig.auth.pass.length : 0
-      });
-
-      this.transporter = nodemailer.createTransporter(emailConfig);
+      this.transporter = nodemailer.createTransport(emailConfig);
     } catch (error) {
       console.error('Error initializing email transporter:', error);
     }
@@ -156,15 +146,6 @@ status: ${reservationData.status}
         return false;
       }
 
-      console.log('Attempting to send reservation email...');
-      
-      // Test connection first
-      const connectionTest = await this.testConnection();
-      if (!connectionTest) {
-        console.error('Email server connection failed, skipping email send');
-        return false;
-      }
-
       const subject = this.createEmailSubject(reservationData.apartment);
       const textBody = this.createEmailBody(reservationData);
       const htmlBody = this.createEmailHTML(reservationData);
@@ -177,21 +158,17 @@ status: ${reservationData.status}
         html: htmlBody
       };
 
-      console.log('Sending email with options:', {
-        from: mailOptions.from,
-        to: mailOptions.to,
-        subject: mailOptions.subject
+      // Add timeout to email sending
+      const sendPromise = this.transporter.sendMail(mailOptions);
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Email send timeout')), 30000); // 30 second timeout
       });
 
-      const result = await this.transporter.sendMail(mailOptions);
-      console.log('Email sent successfully:', result.messageId);
+      const result = await Promise.race([sendPromise, timeoutPromise]);
+      console.log('Reservation email sent successfully');
       return true;
     } catch (error) {
       console.error('Error sending reservation email:', error);
-      console.error('Error details:', error.message);
-      if (error.code) {
-        console.error('Error code:', error.code);
-      }
       return false;
     }
   }
@@ -204,28 +181,17 @@ status: ${reservationData.status}
         return false;
       }
 
-      console.log('Testing email server connection...');
-      await this.transporter.verify();
+      // Add timeout to prevent hanging
+      const connectionPromise = this.transporter.verify();
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Connection timeout')), 10000); // 10 second timeout
+      });
+
+      await Promise.race([connectionPromise, timeoutPromise]);
       console.log('Email server connection successful');
       return true;
     } catch (error) {
       console.error('Email server connection failed:', error);
-      console.error('Connection error details:', error.message);
-      if (error.code) {
-        console.error('Connection error code:', error.code);
-      }
-      
-      // Common error explanations
-      if (error.code === 'ECONNREFUSED') {
-        console.error('HINT: Connection refused - check if SMTP server is accessible from your network');
-      } else if (error.code === 'ENOTFOUND') {
-        console.error('HINT: Host not found - check SMTP_HOST setting');
-      } else if (error.code === 'EAUTH') {
-        console.error('HINT: Authentication failed - check SMTP_USER and SMTP_PASS');
-      } else if (error.code === 'ETIMEDOUT') {
-        console.error('HINT: Connection timeout - this often happens on localhost/local networks');
-      }
-      
       return false;
     }
   }
