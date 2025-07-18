@@ -4,8 +4,8 @@ const { v4: uuidv4 } = require('uuid');
 
 class ReviewUpvoteManager {
   constructor() {
-    this.upvotesFilePath = path.join(__dirname, '../data/public_data/upvotes.json');
-    this.userUpvotesFilePath = path.join(__dirname, '../data/user_data/user_upvotes.json');
+    this.upvotesFilePath = path.join(__dirname, '../../data/public_data/upvotes.json');
+    this.userUpvotesFilePath = path.join(__dirname, '../../data/user_data/user_upvotes.json');
   }
 
   // Load upvote data

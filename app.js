@@ -18,6 +18,15 @@ app.set('io', io);
 
 // Internal API middleware - automatically adds API key for internal server requests only
 app.use('/api', (req, res, next) => {
+  // Skip API key requirement for upvote endpoint from browser
+  if (req.path.includes('/upvote') && req.get('User-Agent') && 
+      (req.get('User-Agent').includes('Mozilla') || 
+       req.get('User-Agent').includes('Chrome') || 
+       req.get('User-Agent').includes('Safari') || 
+       req.get('User-Agent').includes('Firefox'))) {
+    return next();
+  }
+  
   // Add API key ONLY for internal server-to-server requests (not browser requests)
   // Check if this is an internal request by looking for specific headers or user agent
   const userAgent = req.get('User-Agent') || '';
