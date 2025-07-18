@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/management/solar-dashboard.css">
+</head>
+<body>
+    <div class="management-container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Management Dashboard</h1>
+            <p class="dashboard-subtitle">Apartments Šibenik - Administrative Panel</p>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <h3 class="card-title">🌞 Solar Dashboard</h3>
+                <p style="color: rgba(255,255,255,0.8); margin-bottom: 1rem;">
+                    Monitor solar panel performance, battery status, and environmental data in real-time.
+                </p>
+                <a href="/management/solar-dashboard" style="
+                    display: inline-block;
+                    padding: 0.8rem 1.5rem;
+                    background: rgba(74, 222, 128, 0.2);
+                    color: #4ade80;
+                    text-decoration: none;
+                    border-radius: 12px;
+                    border: 1px solid rgba(74, 222, 128, 0.3);
+                    font-weight: 600;
+                    transition: all 0.3s ease;
+                " onmouseover="this.style.background='rgba(74, 222, 128, 0.3)'" 
+                   onmouseout="this.style.background='rgba(74, 222, 128, 0.2)'">
+                    View Solar Dashboard
+                </a>
+            </div>
+
+            <div class="dashboard-card">
+                <h3 class="card-title">📊 Analytics</h3>
+                <p style="color: rgba(255,255,255,0.8); margin-bottom: 1rem;">
+                    View detailed analytics and reports for all systems.
+                </p>
+                <div class="card-status status-offline">Coming Soon</div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3 class="card-title">🏠 Property Management</h3>
+                <p style="color: rgba(255,255,255,0.8); margin-bottom: 1rem;">
+                    Manage apartment bookings, calendars, and reservations.
+                </p>
+                <div class="card-status status-offline">Coming Soon</div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3 class="card-title">⚙️ Settings</h3>
+                <p style="color: rgba(255,255,255,0.8); margin-bottom: 1rem;">
+                    Configure system settings and user preferences.
+                </p>
+                <div class="card-status status-offline">Coming Soon</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

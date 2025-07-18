@@ -3,10 +3,19 @@ const path = require("path");
 const useragent = require("express-useragent");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
+const http = require("http");
+const socketIo = require("socket.io");
 require('dotenv').config();
 
 const { getLocalIPAddress, handle404Error } = require("./code/utils");
+const { calendarScheduler } = require("./code/calendarScheduler");
 const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
+
+// Make io accessible to routes
+app.set('io', io);
+
 app.use(useragent.express());
 app.use(express.json());
 app.use(cookieParser()); // Add cookie parser middleware
@@ -78,6 +87,9 @@ app.use("/hr", require("./routes/hr"));
 app.use("/de", require("./routes/de"));
 app.use("/en", require("./routes/en"));
 
+// Management routes
+app.use("/management", require("./routes/management"));
+
 // Main routes (root, desktop, mobile, gallery, header)
 app.use("/", require("./routes/main"));
 
@@ -94,6 +106,20 @@ const PORT = process.env.PORT || 3000;
 const localIPAddress = getLocalIPAddress();
 const localAddress = `http://${localIPAddress}:${PORT}`;
 
-app.listen(PORT, () => {
+// Socket.IO connection handling
+io.on('connection', (socket) => {
+  console.log('Client connected to socket');
+  
+  socket.on('disconnect', () => {
+    console.log('Client disconnected from socket');
+  });
+});
+
+server.listen(PORT, () => {
   console.log(`App started on port ${PORT} (${localAddress})`);
+  
+  // Pokreni kalendar scheduler nakon što se server pokrene
+  setTimeout(() => {
+    calendarScheduler.start();
+  }, 2000); // Čekaj 2 sekunde da se server potpuno pokrene
 });

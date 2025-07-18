@@ -94,8 +94,6 @@ async function updateCalendarFromIcal(url, fileName) {
   // Ukloni duplikate iz svih evenata
   const eventiBeznaDuplikata = removeDuplicates(sviEventi);
   
-  console.log(`Calendar ${fileName}: ${sviEventi.length} -> ${eventiBeznaDuplikata.length} events (removed ${sviEventi.length - eventiBeznaDuplikata.length} duplicates)`);
-  
   writeCalendar(fileName, eventiBeznaDuplikata);
 
   return zaDodati; // returns only added events
