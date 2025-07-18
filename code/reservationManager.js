@@ -150,6 +150,52 @@ async function processReservation(req, res) {
   }
 }
 
+// Standalone function for testing availability
+async function testAvailabilityCheck(checkIn, checkOut, apartment) {
+  try {
+    if (!apartment || !checkIn || !checkOut) {
+      return { available: true, message: 'Missing required parameters' };
+    }
+    
+    // Only check for apartments 1 and 2
+    if (apartment !== '1' && apartment !== '2') {
+      return { available: true, message: 'Invalid apartment number' };
+    }
+    
+    const checkInDate = new Date(checkIn);
+    const checkOutDate = new Date(checkOut);
+    
+    // Fetch calendar data
+    const calendars = await fetchCalendars();
+    const calendarKey = apartment === '2' ? 'calendar2' : 'calendar1';
+    const calendarEvents = calendars[calendarKey] || [];
+    
+    // Check for conflicts
+    const hasConflict = calendarEvents.some(event => {
+      const eventStart = new Date(event.pocetak);
+      const eventEnd = new Date(event.kraj);
+      
+      // Convert to Croatian timezone properly
+      const eventStartCroatian = new Date(eventStart.toLocaleString('en-US', {timeZone: 'Europe/Zagreb'}));
+      const eventEndCroatian = new Date(eventEnd.toLocaleString('en-US', {timeZone: 'Europe/Zagreb'}));
+      
+      // Extract just date parts for comparison  
+      const eventStartDate = new Date(Date.UTC(eventStartCroatian.getFullYear(), eventStartCroatian.getMonth(), eventStartCroatian.getDate()));
+      const eventEndDate = new Date(Date.UTC(eventEndCroatian.getFullYear(), eventEndCroatian.getMonth(), eventEndCroatian.getDate()));
+      
+      return (checkInDate < eventEndDate && checkOutDate > eventStartDate);
+    });
+    
+    return { 
+      available: !hasConflict, 
+      message: hasConflict ? 'Dates conflict with existing reservation' : 'Dates are available'
+    };
+  } catch (error) {
+    console.error('Error checking availability:', error);
+    return { available: false, message: 'Error checking availability' };
+  }
+}
+
 // Check availability for dates
 async function checkAvailability(req, res) {
   try {
@@ -176,7 +222,16 @@ async function checkAvailability(req, res) {
     const hasConflict = calendarEvents.some(event => {
       const eventStart = new Date(event.pocetak);
       const eventEnd = new Date(event.kraj);
-      return (checkInDate < eventEnd && checkOutDate > eventStart);
+      
+      // Convert to Croatian timezone properly
+      const eventStartCroatian = new Date(eventStart.toLocaleString('en-US', {timeZone: 'Europe/Zagreb'}));
+      const eventEndCroatian = new Date(eventEnd.toLocaleString('en-US', {timeZone: 'Europe/Zagreb'}));
+      
+      // Extract just date parts for comparison  
+      const eventStartDate = new Date(Date.UTC(eventStartCroatian.getFullYear(), eventStartCroatian.getMonth(), eventStartCroatian.getDate()));
+      const eventEndDate = new Date(Date.UTC(eventEndCroatian.getFullYear(), eventEndCroatian.getMonth(), eventEndCroatian.getDate()));
+      
+      return (checkInDate < eventEndDate && checkOutDate > eventStartDate);
     });
     
     res.json({ hasConflict });
@@ -189,5 +244,6 @@ async function checkAvailability(req, res) {
 module.exports = {
   processReservation,
   checkAvailability,
-  getApartmentName
+  getApartmentName,
+  testAvailabilityCheck
 };

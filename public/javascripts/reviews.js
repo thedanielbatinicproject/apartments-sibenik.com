@@ -25,7 +25,7 @@ class ReviewsModule {
 
   async fetchReviews() {
     try {
-      const response = await fetch(`/reviews/${this.unitId}`);
+      const response = await fetch(`/api/reviews/${this.unitId}`);
       if (!response.ok) {
         throw new Error('Failed to fetch reviews');
       }

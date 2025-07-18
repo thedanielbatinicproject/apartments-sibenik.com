@@ -8,7 +8,7 @@
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.18);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   padding: 1rem 1rem 0.5rem 1rem;
   display: flex;
   flex-direction: column;
@@ -28,7 +28,7 @@
 }
 
 .calendar-arrow {
-  background: rgba(30,144,255,0.25);
+  background: rgba(30, 144, 255, 0.25);
   border: none;
   border-radius: 50%;
   width: 2.2rem;
@@ -44,7 +44,7 @@
 }
 
 .calendar-arrow:hover {
-  background: rgba(30,144,255,0.45);
+  background: rgba(30, 144, 255, 0.45);
 }
 .calendar-grid {
   display: grid;
@@ -57,7 +57,7 @@
   color: #0a355c;
   text-align: center;
   padding: 0.5rem;
-  background: rgba(255,255,255,0.12);
+  background: rgba(255, 255, 255, 0.12);
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -67,7 +67,7 @@
 }
 
 .calendar-cell {
-  background: rgba(255,255,255,0.25);
+  background: rgba(255, 255, 255, 0.25);
   border-radius: 12px;
   min-height: 2rem;
   aspect-ratio: 1/1;
@@ -80,6 +80,10 @@
   overflow: visible;
   transition: box-shadow 0.2s;
 }
+
+.calendar-cell.today {
+  border: 2px solid rgba(200, 200, 200, 0.8) !important;
+}
 .cell-part {
   position: absolute;
   top: 0;
@@ -87,26 +91,34 @@
   width: 33.33%;
   height: 100%;
   pointer-events: auto;
-  transition: background 0.3s cubic-bezier(.4,0,.2,1);
+  transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 2;
 }
-.cell-part.left { left: 0; border-top-left-radius: 12px; border-bottom-left-radius: 12px; }
-.cell-part.middle { left: 33.33%; }
-.cell-part.right { right: 0; border-top-right-radius: 12px; border-bottom-right-radius: 12px; }
+.cell-part.left {
+  left: 0;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+.cell-part.middle {
+  left: 33.33%;
+}
+.cell-part.right {
+  right: 0;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
 .cell-part.event-full,
 .cell-part.event-middle,
 .cell-part.event-start,
 .cell-part.event-end {
-  background: rgba(30,144,255,0.55);
   z-index: 2;
-  transition: background 0.3s cubic-bezier(.4,0,.2,1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .cell-part.event-hover,
 .cell-part.event-hover-start,
 .cell-part.event-hover-end {
-  background: rgba(30,144,255,0.75) !important;
+  filter: brightness(1.15) saturate(1.2) !important;
   z-index: 3;
-  transition: background 0.3s cubic-bezier(.4,0,.2,1);
 }
 .calendar-cell span {
   position: relative;

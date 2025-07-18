@@ -234,7 +234,7 @@
       conflictWarning.innerHTML = '<span class="warning-icon">⏳</span><span class="warning-text">Checking availability...</span>';
       
       // Fetch calendar data and check for conflicts
-      fetch('/check-availability', {
+      fetch('/api/check-availability', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -349,7 +349,7 @@
       }
       
       // Submit form
-      fetch('/submit-reservation', {
+      fetch('/api/submit-reservation', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

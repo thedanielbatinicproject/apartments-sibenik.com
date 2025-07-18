@@ -46,5 +46,23 @@
     "naziv": "Airbnb (Not available)",
     "pocetak": "2026-07-13T22:00:00.000Z",
     "kraj": "2026-07-14T22:00:00.000Z"
+  },
+  {
+    "event_uuid": "151a4738-1091-4b90-bcad-75a0f92fd610",
+    "naziv": "Reserved",
+    "pocetak": "2025-07-13T22:00:00.000Z",
+    "kraj": "2025-07-18T22:00:00.000Z"
+  },
+  {
+    "event_uuid": "7293fd3e-ba79-4302-9fd7-0fb99da7fe60",
+    "naziv": "Airbnb (Not available)",
+    "pocetak": "2026-07-16T22:00:00.000Z",
+    "kraj": "2026-07-17T22:00:00.000Z"
+  },
+  {
+    "event_uuid": "fc4cd4fc-cb11-4bb5-ad77-1b8cfcc0a971",
+    "naziv": "Airbnb (Not available)",
+    "pocetak": "2026-07-17T22:00:00.000Z",
+    "kraj": "2026-07-18T22:00:00.000Z"
   }
 ]

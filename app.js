@@ -5,14 +5,7 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 require('dotenv').config();
 
-const { reservationValidationRules } = require("./code/validatorManager");
-const { processReservation, checkAvailability } = require("./code/reservationManager");
-const { handleRootRedirect, handleDesktopRedirect, handleMobileRedirect } = require("./code/redirectManager");
-const { handleHeaderTest } = require("./code/headerTestManager");
 const { getLocalIPAddress, handle404Error } = require("./code/utils");
-const { displayCalendar, updateCalendar, cleanCalendar } = require("./code/calendarRoutes");
-const { getReviews, handleUpvote } = require("./code/reviewRoutes");
-const { displayGallery } = require("./code/galleryRoutes");
 const app = express();
 app.use(useragent.express());
 app.use(express.json());
@@ -36,9 +29,7 @@ app.use((req, res, next) => {
   // Skip tracking for error pages, API endpoints, and static files
   if (
     !req.path.includes("/error") &&
-    !req.path.includes("/kalendar/") &&
-    !req.path.includes("/calendar/") &&
-    !req.path.includes("/clean-calendar/") &&
+    !req.path.includes("/api/") && // Skip all API routes
     !req.path.includes("/gallery") &&
     !req.path.includes(".") && // Skip static files
     req.method === "GET"
@@ -87,36 +78,14 @@ app.use("/hr", require("./routes/hr"));
 app.use("/de", require("./routes/de"));
 app.use("/en", require("./routes/en"));
 
-app.get("/", handleRootRedirect);
+// Main routes (root, desktop, mobile, gallery, header)
+app.use("/", require("./routes/main"));
 
-app.get("/desktop", handleDesktopRedirect);
+// API routes with /api prefix
+app.use("/api", require("./routes/api"));
 
-app.get("/mobile", handleMobileRedirect);
-
-// Display calendar 1 or 2 - limited to first two apartments
-app.get("/calendar/:id", displayCalendar);
-
-// Update calendar from Airbnb, adds only new events - limited to first two apartments
-app.get("/kalendar/:id", updateCalendar);
-
-// Clean duplicates from calendar
-app.get("/clean-calendar/:id", cleanCalendar);
-
-app.get("/gallery", displayGallery);
-
-// Reservation form submission route
-app.post("/submit-reservation", reservationValidationRules, processReservation);
-
-// Check availability route
-app.post('/check-availability', checkAvailability);
-
-// API route for reviews
-app.get("/reviews/:id", getReviews);
-
-// API route for upvote/downvote review
-app.post("/reviews/:unitId/:reviewIndex/upvote", handleUpvote);
-
-app.get("/header", handleHeaderTest);
+// Legacy routes for backward compatibility
+app.use("/", require("./routes/legacy"));
 
 // Error handling for unsupported routes
 app.use(handle404Error);

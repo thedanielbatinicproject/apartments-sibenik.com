@@ -28,18 +28,30 @@
       return jsDay === 0 ? 6 : jsDay - 1;
     }
     
-    function getBlueShade(idx, total) {
-      const hue = 210;
-      const sat = 60 + Math.floor((idx / Math.max(total, 1)) * 30);
-      const light = 65 - Math.floor((idx / Math.max(total, 1)) * 25);
-      return `hsl(${hue}, ${sat}%, ${light}%)`;
-    }
-    
     function parseEvents(events, year, month) {
       const map = {};
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
       events.forEach((ev, idx) => {
         if (!ev.pocetak || !ev.kraj) return;
-        if (!ev._color) ev._color = getBlueShade(idx, events.length);
+        
+        // Postavlja boju na osnovu datuma eventi
+        if (!ev._color) {
+          const eventStart = new Date(ev.pocetak);
+          const eventEnd = new Date(ev.kraj);
+          
+          if (eventEnd < today) {
+            // Prošli eventi - svetlo plava
+            ev._color = 'rgba(100, 180, 255, 0.55)';
+          } else if (eventStart > today) {
+            // Budući eventi - tamno plava
+            ev._color = 'rgba(30, 100, 200, 0.65)';
+          } else {
+            // Trenutni eventi - srednja plava
+            ev._color = 'rgba(30, 144, 255, 0.6)';
+          }
+        }
         const start = new Date(ev.pocetak);
         const end = new Date(ev.kraj);
         
@@ -174,6 +186,13 @@
       for (let day = 1; day <= daysInMonth; day++) {
         const el = document.createElement("div");
         el.className = "calendar-cell";
+        
+        // Označava današnji dan
+        const now = new Date();
+        if (now.getFullYear() === year && now.getMonth() === month && now.getDate() === day) {
+          el.className += " today";
+        }
+        
         const { left, middle, right } = getEventClass(events, day, year, month);
 
         left.forEach((evClassObj) => {

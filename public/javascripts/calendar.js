@@ -9,19 +9,33 @@ function getFirstDayOfMonth(year, month) {
   let jsDay = new Date(year, month, 1).getDay();
   return jsDay === 0 ? 6 : jsDay - 1;
 }
-function getBlueShade(idx, total) {
-  const hue = 210;
-  const sat = 60 + Math.floor((idx / Math.max(total, 1)) * 30);
-  const light = 65 - Math.floor((idx / Math.max(total, 1)) * 25);
-  return `hsl(${hue}, ${sat}%, ${light}%)`;
-}
+
 function parseEvents(events, year, month) {
   const map = {};
+  // Get today's date for comparison
+  const today = new Date();
+  const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  
   events.forEach((ev, idx) => {
     if (!ev.pocetak || !ev.kraj) return;
-    if (!ev._color) ev._color = getBlueShade(idx, events.length);
+    
     const start = new Date(ev.pocetak);
     const end = new Date(ev.kraj);
+    
+    // Determine color based on event timing relative to today
+    const eventStartDate = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+    const eventEndDate = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+    
+    if (eventEndDate < todayDate) {
+      // Events that end before today - lighter blue
+      ev._color = 'rgba(100, 180, 255, 0.55)';
+    } else if (eventStartDate >= todayDate) {
+      // Events that start today or in the future - darker blue
+      ev._color = 'rgba(30, 100, 200, 0.65)';
+    } else {
+      // Current ongoing events - medium blue
+      ev._color = 'rgba(30, 144, 255, 0.6)';
+    }
     
     // Ne oduzimamo dan jer je to bio bug!
     const localStart = new Date(
@@ -160,6 +174,17 @@ function renderCalendar(year, month, events) {
   for (let day = 1; day <= daysInMonth; day++) {
     const el = document.createElement("div");
     el.className = "calendar-cell";
+    
+    // Check if this is today
+    const now = new Date();
+    const today = now.getDate();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    
+    if (day === today && month === currentMonth && year === currentYear) {
+      el.classList.add("today");
+    }
+    
     const { left, middle, right } = getEventClass(events, day, year, month);
 
     left.forEach((evClassObj) => {

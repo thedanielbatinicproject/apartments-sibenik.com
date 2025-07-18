@@ -223,7 +223,7 @@
       console.log('Handle upvote called with:', reviewIndex, unitId);
       
       try {
-        const response = await fetch(`/reviews/${unitId}/${reviewIndex}/upvote`, {
+        const response = await fetch(`/api/reviews/${unitId}/${reviewIndex}/upvote`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
