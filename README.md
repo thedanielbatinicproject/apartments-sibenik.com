@@ -66,6 +66,9 @@
 - **ESP32 Integration** - Hardware-level data acquisition
 - **Interactive Charts** - Multiple timeframe views (1h, 12h, 24h)
 - **Delta Compression** - Efficient data storage with change tracking
+  - Only changed values are stored in delta records (marked with `_type: 'delta'`)
+  - Missing variables in delta records use last known values for reconstruction
+  - Automatically switches to full records when errors/warnings occur
 - **API Security** - Protected endpoints with authentication
 - **Socket.IO Updates** - Real-time data streaming to dashboards
 
@@ -76,7 +79,13 @@
 - **Review Management** - Truncation and display optimization
 
 ### **Management Dashboard** 🖥️
-- **Solar Dashboard** - Comprehensive monitoring interface
+- **Enhanced Solar Dashboard** - Comprehensive monitoring interface with 30+ variables
+- **Variable Descriptions** - Interactive info tooltips for all solar metrics
+- **Responsive Design** - Optimized for desktop and mobile viewing
+- **Real-time Charts** - Multiple timeframe analysis (1h, 6h, 12h, 24h)
+- **Full-screen Layout** - Maximized data visualization space
+- **Horizontal Scrolling** - Mobile-optimized data table navigation
+- **API-secured Variables** - Protected endpoint for solar variable information
 - **Scheduler Control** - Start/stop automated calendar sync
 - **Data Visualization** - Charts and graphs for performance analysis
 - **Authentication Ready** - Basic auth middleware implementation
@@ -146,6 +155,7 @@ apartments-sibenik.com/
 │   │   └── calendar2.json      # Property 2 availability
 │   ├── public_data/            # Public datasets
 │   │   ├── solars_public.json  # Solar monitoring data
+│   │   ├── solar_variables.json # Solar variable definitions
 │   │   └── upvotes.json        # Review upvotes
 │   ├── user_data/              # User-specific data
 │   │   └── user_upvotes.json   # User voting history
@@ -277,11 +287,17 @@ The integrated solar monitoring system provides comprehensive energy tracking:
 - **JSON Storage**: Human-readable data format for easy debugging
 - **Backup Systems**: Redundant data storage for reliability
 
-#### **Dashboard Features**
-- **Interactive Charts**: Real-time visualization with Chart.js
-- **Multiple Timeframes**: 1h, 12h, and 24h analysis views
-- **Performance Metrics**: Efficiency calculations and trends
-- **Alert System**: Notifications for system anomalies
+#### **Enhanced Dashboard Features**
+- **30+ Solar Variables**: Complete monitoring of all ESP32 sensor data
+- **Interactive Tooltips**: Click 'i' button for detailed variable descriptions
+- **Full-screen Design**: Dashboard spans entire viewport for maximum data visibility
+- **Responsive Grid**: 5 cards per row on desktop, 2 on mobile, 1 on small screens
+- **Glassy Modern UI**: Backdrop blur effects with rounded corners
+- **Mobile Scrolling**: Horizontal scroll for data tables on mobile devices
+- **Variable Definitions**: JSON-based variable descriptions with units and explanations
+- **API Protection**: Solar variables endpoint secured with secret key authentication
+- **Real-time Updates**: Socket.IO integration for live data streaming
+- **Multiple Chart Views**: 1h, 6h, 12h, and 24h data visualization options
 
 ### **Advanced Review System** ⭐
 Comprehensive guest feedback management:
@@ -376,9 +392,13 @@ Comprehensive administrative interface:
 | Endpoint | Method | Description |
 |----------|--------|-------------|
 | `/api/solar-data` | POST | Submit solar data (ESP32) |
-| `/api/chart-data/:timeRange` | GET | Get chart data (1h/12h/24h) |
+| `/api/solar/chart-data?range=` | GET | Get chart data (1h/6h/12h/24h) |
+| `/api/solar/variables` | GET | Get solar variable definitions |
+| `/api/solar/history` | POST | Get paginated solar history data |
 | `/api/backyard-management` | GET | Get relay status |
 | `/api/relay/:id/toggle` | POST | Toggle relay control |
+
+> **Delta Compression**: Solar data uses intelligent delta compression where only changed values are stored. Records with errors/warnings always save as full records. The system automatically reconstructs missing values from the last known state when displaying data or charts.
 
 ### **Review System API**
 | Endpoint | Method | Description |
@@ -434,6 +454,18 @@ Comprehensive administrative interface:
 - ✅ Removed test files and mock data
 - ✅ Professional code standards
 - ✅ Updated all import/require statements
+
+### **Phase 6: Enhanced Solar Dashboard** ⚡
+- ✅ Solar variable definitions database (30+ variables)
+- ✅ Interactive variable descriptions with tooltips
+- ✅ Full-screen responsive dashboard design
+- ✅ Enhanced mobile experience with horizontal scrolling
+- ✅ Modern glassy UI with backdrop blur effects
+- ✅ Expanded chart visualization options (1h/6h/12h/24h)
+- ✅ API endpoint for solar variable information
+- ✅ Comprehensive data table with all sensor readings
+- ✅ Professional modern card layout (5 per row desktop, 2 mobile)
+- ✅ Complete solar monitoring system documentation
 
 ## Performance Optimizations
 

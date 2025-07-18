@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/management/solar-dashboard.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="management-container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Management Dashboard</h1>
+            <p class="dashboard-subtitle">Real-time monitoring of MPPT solar charge controller</p>
+            <div class="live-indicator">
+                <div class="live-dot"></div>
+                <span>Live Data</span>
+            </div>
+        </div>
+
+        <% if (latestData) { %>
+        <div class="dashboard-grid">
+            <!-- Power Data -->
+            <div class="dashboard-card">
+                <h3 class="card-title">PV Voltage</h3>
+                <div class="card-value" id="pv-voltage"><%= latestData.PV_voltage_V || '0' %></div>
+                <div class="card-unit">Volts</div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3 class="card-title">Battery Voltage</h3>
+                <div class="card-value" id="battery-voltage"><%= latestData.Battery_voltage_V || '0' %></div>
+                <div class="card-unit">Volts</div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3 class="card-title">Charger Current</h3>
+                <div class="card-value" id="charger-current"><%= latestData.Charger_current_A || '0' %></div>
+                <div class="card-unit">Amperes</div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3 class="card-title">Charger Power</h3>
+                <div class="card-value" id="charger-power"><%= latestData.Charger_power_W || '0' %></div>
+                <div class="card-unit">Watts</div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3 class="card-title">External Temperature</h3>
+                <div class="card-value" id="external-temp"><%= latestData.External_temp_C || '0' %></div>
+                <div class="card-unit">°C</div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3 class="card-title">Radiator Temperature</h3>
+                <div class="card-value" id="radiator-temp"><%= latestData.Radiator_temp_C || '0' %></div>
+                <div class="card-unit">°C</div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3 class="card-title">Humidity</h3>
+                <div class="card-value" id="humidity"><%= latestData.Humidity_percent || '0' %></div>
+                <div class="card-unit">%</div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3 class="card-title">DC Current</h3>
+                <div class="card-value" id="dc-current"><%= latestData.DC_current_A || '0' %></div>
+                <div class="card-unit">A</div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3 class="card-title">DC Voltage</h3>
+                <div class="card-value" id="dc-voltage"><%= latestData.DC_voltage_V || '0' %></div>
+                <div class="card-unit">V</div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3 class="card-title">DC Power</h3>
+                <div class="card-value" id="dc-power"><%= latestData.DC_power_W || '0' %></div>
+                <div class="card-unit">W</div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3 class="card-title">AC Power</h3>
+                <div class="card-value" id="ac-power"><%= latestData.AC_power_W || '0' %></div>
+                <div class="card-unit">W</div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3 class="card-title">AC Frequency</h3>
+                <div class="card-value" id="ac-freq"><%= latestData.AC_freq_Hz || '0' %></div>
+                <div class="card-unit">Hz</div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3 class="card-title">Cabinet Temperature</h3>
+                <div class="card-value" id="temp-cabinet"><%= latestData.Temp_cabinet_C || '0' %></div>
+                <div class="card-unit">°C</div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3 class="card-title">Battery Relay</h3>
+                <div class="card-value" id="battery-relay"><%= latestData.Battery_relay || '0' %></div>
+                <div class="card-unit">State</div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3 class="card-title">PV Relay</h3>
+                <div class="card-value" id="pv-relay"><%= latestData.PV_relay || '0' %></div>
+                <div class="card-unit">State</div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3 class="card-title">Error Code</h3>
+                <div class="card-value" id="error-code"><%= latestData.Error_code || '0' %></div>
+                <div class="card-unit">Code</div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3 class="card-title">Warning Code</h3>
+                <div class="card-value" id="warning-code"><%= latestData.Warning_code || '0' %></div>
+                <div class="card-unit">Code</div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3 class="card-title">Accumulated Power</h3>
+                <div class="card-value" id="accum-power"><%= latestData.Accum_power_Wh || '0' %></div>
+                <div class="card-unit">Wh</div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3 class="card-title">Status</h3>
+                <div class="card-value" id="status"><%= latestData.Status || '0' %></div>
+                <div class="card-unit">Code</div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3 class="card-title">Source IP</h3>
+                <div class="card-value" id="source-ip"><%= latestData.source_ip || 'Unknown' %></div>
+                <div class="card-unit">Address</div>
+            </div>
+        </div>
+        <% } else { %>
+        <div class="dashboard-card">
+            <h3 class="card-title">No Data Available</h3>
+            <p style="color: rgba(255,255,255,0.7);">Waiting for ESP32 to send data...</p>
+        </div>
+        <% } %>
+
+        <!-- Live Charts Section -->
+        <div class="charts-section">
+            <h3 class="charts-title">Live Data Charts</h3>
+            <div class="time-range-toggle">
+                <button class="toggle-btn active" data-range="24h">24h</button>
+                <button class="toggle-btn" data-range="12h">12h</button>
+                <button class="toggle-btn" data-range="1h">1h</button>
+            </div>
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <h4 class="chart-title">PV Voltage (24h)</h4>
+                    <canvas id="pvVoltageChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h4 class="chart-title">Accumulated Power (24h)</h4>
+                    <canvas id="accumPowerChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h4 class="chart-title">Radiator Temperature (24h)</h4>
+                    <canvas id="radiatorTempChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data History -->
+        <div class="data-history">
+            <h3 class="history-title">Recent Data History (<span id="total-records"><%= totalRecords %></span> total records)</h3>
+            <% if (solarData && solarData.length > 0) { %>
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Source IP</th>
+                        <th>PV Voltage</th>
+                        <th>Battery V</th>
+                        <th>Current</th>
+                        <th>Power</th>
+                        <th>Ext Temp</th>
+                        <th>Rad Temp</th>
+                        <th>Humidity</th>
+                        <th>DC Current</th>
+                        <th>DC Voltage</th>
+                        <th>DC Power</th>
+                        <th>AC Power</th>
+                        <th>Status</th>
+                        <th>Error</th>
+                    </tr>
+                </thead>
+                <tbody id="history-tbody" data-current-limit="10">
+                    <% solarData.slice(-10).reverse().forEach(function(record) { %>
+                    <tr>
+                        <td><%= record.local_time %></td>
+                        <td><%= record.source_ip || 'Unknown' %></td>
+                        <td><%= record.PV_voltage_V || '0' %>V</td>
+                        <td><%= record.Battery_voltage_V || '0' %>V</td>
+                        <td><%= record.Charger_current_A || '0' %>A</td>
+                        <td><%= record.Charger_power_W || '0' %>W</td>
+                        <td><%= record.External_temp_C || '0' %>°C</td>
+                        <td><%= record.Radiator_temp_C || '0' %>°C</td>
+                        <td><%= record.Humidity_percent || '0' %>%</td>
+                        <td><%= record.DC_current_A || '0' %>A</td>
+                        <td><%= record.DC_voltage_V || '0' %>V</td>
+                        <td><%= record.DC_power_W || '0' %>W</td>
+                        <td><%= record.AC_power_W || '0' %>W</td>
+                        <td><%= record.Status || '0' %></td>
+                        <td><%= record.Error_code || '0' %></td>
+                    </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+            <% if (totalRecords > 10) { %>
+            <button class="load-more-btn" id="load-more-btn" onclick="loadMoreRecords()">
+                Load More (10 records)
+            </button>
+            <% } %>
+            <% } else { %>
+            <p style="color: rgba(255,255,255,0.7);">No historical data available yet.</p>
+            <% } %>
+        </div>
+    </div>
+
+    <script>
+        // API Configuration
+        const API_KEY = '<%= process.env.API_SECRET || "your-secret-api-key-here" %>';
+        
+        // Socket.IO connection for real-time updates
+        const socket = io();
+        
+        // Chart.js configuration and initialization
+        let pvVoltageChart, accumPowerChart, radiatorTempChart;
+        let chartData = {
+            pvVoltage: [],
+            accumPower: [],
+            radiatorTemp: [],
+            labels: [],
+            avgData: {
+                pvVoltage: [],
+                accumPower: [],
+                radiatorTemp: []
+            }
+        };
+
+        // Initialize charts
+        function initializeCharts() {
+            // Get or destroy existing charts to prevent overlapping
+            const existingPvChart = Chart.getChart('pvVoltageChart');
+            if (existingPvChart) {
+                existingPvChart.destroy();
+            }
+            const existingAccumChart = Chart.getChart('accumPowerChart');
+            if (existingAccumChart) {
+                existingAccumChart.destroy();
+            }
+            const existingRadiatorChart = Chart.getChart('radiatorTempChart');
+            if (existingRadiatorChart) {
+                existingRadiatorChart.destroy();
+            }
+            
+            const now = new Date();
+            
+            // Generate initial labels for 300 time points (will be updated by API)
+            const labels = Array(300).fill('').map((_, i) => {
+                const timePoint = new Date(now.getTime() - (24 * 60 * 60 * 1000) + (i * (24 * 60 * 60 * 1000) / 300));
+                return timePoint.toLocaleTimeString('hr-HR', { hour: '2-digit', minute: '2-digit' });
+            });
+            
+            const baseChartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: 'rgba(255, 255, 255, 0.9)',
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)',
+                            font: {
+                                size: 10
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)',
+                            font: {
+                                size: 10
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        }
+                    }
+                },
+                animation: {
+                    duration: 0 // Disable animations for better performance
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                elements: {
+                    point: {
+                        radius: 0,
+                        hoverRadius: 4,
+                        hoverBorderWidth: 2
+                    },
+                    line: {
+                        borderWidth: 2,
+                        tension: 0.1
+                    }
+                }
+            };
+
+            // PV Voltage Chart (0-35V range)
+            const pvOptions = { ...baseChartOptions };
+            pvOptions.scales.y.min = 0;
+            pvOptions.scales.y.max = 35;
+            pvOptions.scales.y.title = {
+                display: true,
+                text: 'Voltage (V)',
+                color: 'rgba(255, 255, 255, 0.8)'
+            };
+
+            const pvCtx = document.getElementById('pvVoltageChart').getContext('2d');
+            pvVoltageChart = new Chart(pvCtx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Today (Live)',
+                        data: Array(300).fill(null),
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        fill: true,
+                        pointRadius: 0, // Disable points for performance
+                        pointHoverRadius: 3,
+                        pointBackgroundColor: function(context) {
+                            const index = context.dataIndex;
+                            if (index === 299) { // Current time point
+                                return '#ef4444';
+                            }
+                            return 'rgba(239, 68, 68, 0.8)';
+                        },
+                        pointRadius: function(context) {
+                            const index = context.dataIndex;
+                            if (index === 299) { // Current time point
+                                return 6;
+                            }
+                            return 1;
+                        }
+                    }, {
+                        label: 'Weekly Average',
+                        data: Array(300).fill(null),
+                        borderColor: 'rgba(156, 163, 175, 0.6)',
+                        backgroundColor: 'rgba(156, 163, 175, 0.1)',
+                        fill: false,
+                        borderDash: [5, 5],
+                        pointRadius: 0
+                    }, {
+                        label: 'Hourly History',
+                        data: Array(300).fill(null),
+                        borderColor: 'rgba(250, 204, 21, 0.7)',
+                        backgroundColor: 'rgba(250, 204, 21, 0.1)',
+                        fill: false,
+                        borderDash: [2, 2],
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    ...pvOptions,
+                    plugins: {
+                        ...pvOptions.plugins,
+                        legend: {
+                            ...pvOptions.plugins.legend,
+                            labels: {
+                                ...pvOptions.plugins.legend.labels,
+                                usePointStyle: true,
+                                pointStyle: 'line'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Accumulated Power Chart (0-2000Wh range)
+            const accumOptions = { ...baseChartOptions };
+            accumOptions.scales.y.min = 0;
+            accumOptions.scales.y.max = 2000;
+            accumOptions.scales.y.title = {
+                display: true,
+                text: 'Power (Wh)',
+                color: 'rgba(255, 255, 255, 0.8)'
+            };
+
+            const accumCtx = document.getElementById('accumPowerChart').getContext('2d');
+            accumPowerChart = new Chart(accumCtx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Today (Live)',
+                        data: Array(300).fill(null),
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        fill: true,
+                        pointBackgroundColor: function(context) {
+                            const index = context.dataIndex;
+                            if (index === 299) { // Current time point
+                                return '#ef4444';
+                            }
+                            return 'rgba(239, 68, 68, 0.8)';
+                        },
+                        pointRadius: function(context) {
+                            const index = context.dataIndex;
+                            if (index === 299) { // Current time point
+                                return 6;
+                            }
+                            return 1;
+                        }
+                    }, {
+                        label: 'Weekly Average',
+                        data: Array(300).fill(null),
+                        borderColor: 'rgba(156, 163, 175, 0.6)',
+                        backgroundColor: 'rgba(156, 163, 175, 0.1)',
+                        fill: false,
+                        borderDash: [5, 5],
+                        pointRadius: 0
+                    }, {
+                        label: 'Hourly History',
+                        data: Array(300).fill(null),
+                        borderColor: 'rgba(250, 204, 21, 0.7)',
+                        backgroundColor: 'rgba(250, 204, 21, 0.1)',
+                        fill: false,
+                        borderDash: [2, 2],
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    ...accumOptions,
+                    plugins: {
+                        ...accumOptions.plugins,
+                        legend: {
+                            ...accumOptions.plugins.legend,
+                            labels: {
+                                ...accumOptions.plugins.legend.labels,
+                                usePointStyle: true,
+                                pointStyle: 'line'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Radiator Temperature Chart (-10 to 100°C range)
+            const radiatorOptions = { ...baseChartOptions };
+            radiatorOptions.scales.y.min = -10;
+            radiatorOptions.scales.y.max = 100;
+            radiatorOptions.scales.y.title = {
+                display: true,
+                text: 'Temperature (°C)',
+                color: 'rgba(255, 255, 255, 0.8)'
+            };
+
+            const radCtx = document.getElementById('radiatorTempChart').getContext('2d');
+            radiatorTempChart = new Chart(radCtx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Today (Live)',
+                        data: Array(300).fill(null),
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        fill: true,
+                        pointBackgroundColor: function(context) {
+                            const index = context.dataIndex;
+                            if (index === 299) { // Current time point
+                                return '#ef4444';
+                            }
+                            return 'rgba(239, 68, 68, 0.8)';
+                        },
+                        pointRadius: function(context) {
+                            const index = context.dataIndex;
+                            if (index === 299) { // Current time point
+                                return 6;
+                            }
+                            return 1;
+                        }
+                    }, {
+                        label: 'Weekly Average',
+                        data: Array(300).fill(null),
+                        borderColor: 'rgba(156, 163, 175, 0.6)',
+                        backgroundColor: 'rgba(156, 163, 175, 0.1)',
+                        fill: false,
+                        borderDash: [5, 5],
+                        pointRadius: 0
+                    }, {
+                        label: 'Hourly History',
+                        data: Array(300).fill(null),
+                        borderColor: 'rgba(250, 204, 21, 0.7)',
+                        backgroundColor: 'rgba(250, 204, 21, 0.1)',
+                        fill: false,
+                        borderDash: [2, 2],
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    ...radiatorOptions,
+                    plugins: {
+                        ...radiatorOptions.plugins,
+                        legend: {
+                            ...radiatorOptions.plugins.legend,
+                            labels: {
+                                ...radiatorOptions.plugins.legend.labels,
+                                usePointStyle: true,
+                                pointStyle: 'line'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Load initial chart data
+            loadChartData();
+        }
+
+        // Setup time range toggle functionality
+        function setupTimeRangeToggle() {
+            const toggleButtons = document.querySelectorAll('.toggle-btn');
+            
+            toggleButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    toggleButtons.forEach(b => b.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Update current time range
+                    currentTimeRange = this.dataset.range;
+                    
+                    // Reset last chart shift time when changing time range
+                    lastChartShiftTime = null;
+                    
+                    // Reload chart data with new range
+                    loadChartData();
+                });
+            });
+        }
+
+        // Load chart data from API
+        async function loadChartData() {
+            try {
+                const response = await fetch(`/api/chart-data/${currentTimeRange}`, {
+                    headers: {
+                        'X-API-Key': API_KEY
+                    }
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    updateChartsWithNewData(data);
+                }
+            } catch (error) {
+                console.error('Error loading chart data:', error);
+            }
+        }
+
+        // Update charts with new data structure
+        function updateChartsWithNewData(data) {
+            // Update chart labels
+            pvVoltageChart.data.labels = data.labels;
+            accumPowerChart.data.labels = data.labels;
+            radiatorTempChart.data.labels = data.labels;
+
+            // Update PV Voltage Chart
+            pvVoltageChart.data.datasets[0].data = data.liveData.pvVoltage;
+            pvVoltageChart.data.datasets[1].data = Array(data.labels.length).fill(data.weeklyAverages.pvVoltage);
+            pvVoltageChart.data.datasets[2].data = data.hourlyHistoryData.pvVoltage;
+            
+            // Update Accumulated Power Chart
+            accumPowerChart.data.datasets[0].data = data.liveData.accumPower;
+            accumPowerChart.data.datasets[1].data = Array(data.labels.length).fill(data.weeklyAverages.accumPower);
+            accumPowerChart.data.datasets[2].data = data.hourlyHistoryData.accumPower;
+            
+            // Update Radiator Temperature Chart
+            radiatorTempChart.data.datasets[0].data = data.liveData.radiatorTemp;
+            radiatorTempChart.data.datasets[1].data = Array(data.labels.length).fill(data.weeklyAverages.radiatorTemp);
+            radiatorTempChart.data.datasets[2].data = data.hourlyHistoryData.radiatorTemp;
+            
+            // Debug: provjeri hourly history podatke
+            console.log('📅 Hourly History Data:', {
+                pvVoltage: data.hourlyHistoryData.pvVoltage.filter(v => v !== null).length + ' non-null values',
+                accumPower: data.hourlyHistoryData.accumPower.filter(v => v !== null).length + ' non-null values',  
+                radiatorTemp: data.hourlyHistoryData.radiatorTemp.filter(v => v !== null).length + ' non-null values'
+            });
+            
+            // Hide/show hourly history dataset based on time range
+            const hideHourlyHistory = currentTimeRange === '1h';
+            console.log(`📊 Current time range: ${currentTimeRange}, Hide hourly history: ${hideHourlyHistory}`);
+            
+            [pvVoltageChart, accumPowerChart, radiatorTempChart].forEach(chart => {
+                // Set global point options to ensure no points are shown
+                chart.options.elements.point.radius = 0;
+                chart.options.elements.point.hoverRadius = 0;
+                
+                // Hide or show the hourly history dataset (index 2)
+                chart.data.datasets[2].hidden = hideHourlyHistory;
+                
+                chart.data.datasets.forEach((dataset, index) => {
+                    dataset.borderWidth = 2;
+                    dataset.pointRadius = 0;
+                    dataset.pointHoverRadius = 0;
+                    dataset.tension = 0.1;
+                });
+            });
+            
+            pvVoltageChart.update('none');
+            accumPowerChart.update('none');
+            radiatorTempChart.update('none');
+            
+            // Force point styling after update
+            setTimeout(() => {
+                [pvVoltageChart, accumPowerChart, radiatorTempChart].forEach(chart => {
+                    chart.data.datasets.forEach(dataset => {
+                        dataset.pointRadius = 0;
+                        dataset.pointHoverRadius = 0;
+                    });
+                    chart.update('none');
+                });
+            }, 0);
+        }
+
+        // Update charts with new live data point using time-based averaging
+        function updateChartsWithLiveData(data) {
+            console.log('📊 Processing live data update:', {
+                timestamp: new Date().toLocaleTimeString(),
+                PV_voltage: data.PV_voltage_V,
+                Accum_power: data.Accum_power_Wh,
+                Radiator_temp: data.Radiator_temp_C
+            });
+            
+            // Add incoming data to raw buffer with timestamp
+            rawDataBuffer.push({
+                timestamp: new Date(),
+                PV_voltage_V: data.PV_voltage_V,
+                Accum_power_Wh: data.Accum_power_Wh,
+                Radiator_temp_C: data.Radiator_temp_C
+            });
+            
+            // Keep buffer size manageable (last 2 hours of data)
+            const maxBufferAge = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
+            const cutoffTime = new Date(Date.now() - maxBufferAge);
+            rawDataBuffer = rawDataBuffer.filter(item => new Date(item.timestamp) > cutoffTime);
+            
+            const currentTime = new Date();
+            const shouldShift = checkIfTimeToShift(currentTime);
+            
+            // Always recalculate averages for current time slot to update with new data
+            const currentMinutes = currentTime.getMinutes();
+            const intervalMinutes = getIntervalMinutes();
+            const currentRoundedMinutes = Math.floor(currentMinutes / intervalMinutes) * intervalMinutes;
+            const currentTimeSlot = `${currentTime.getHours().toString().padStart(2, '0')}:${currentRoundedMinutes.toString().padStart(2, '0')}`;
+            
+            console.log(`⏰ Current time range: ${currentTimeRange}, Interval: ${intervalMinutes}min, Time slot: ${currentTimeSlot}`);
+            
+            // Update current time slot with new averaged data
+            const currentAverages = calculateTimeSlotAverage(currentTimeSlot);
+            if (currentAverages) {
+                [pvVoltageChart, accumPowerChart, radiatorTempChart].forEach(chart => {
+                    const currentIndex = chart.data.labels.indexOf(currentTimeSlot);
+                    if (currentIndex !== -1) {
+                        switch(chart) {
+                            case pvVoltageChart:
+                                chart.data.datasets[0].data[currentIndex] = currentAverages.PV_voltage_V;
+                                break;
+                            case accumPowerChart:
+                                chart.data.datasets[0].data[currentIndex] = currentAverages.Accum_power_Wh;
+                                break;
+                            case radiatorTempChart:
+                                chart.data.datasets[0].data[currentIndex] = currentAverages.Radiator_temp_C;
+                                break;
+                        }
+                    }
+                });
+            }
+            
+            // If it's time to shift to a new time interval
+            if (shouldShift) {
+                console.log('⏰ Shifting to new time interval:', currentTimeSlot);
+                
+                [pvVoltageChart, accumPowerChart, radiatorTempChart].forEach(chart => {
+                    // Shift arrays
+                    chart.data.labels.shift();
+                    chart.data.datasets[0].data.shift();
+                    
+                    // Add new time slot
+                    chart.data.labels.push(currentTimeSlot);
+                    chart.data.datasets[0].data.push(null); // Will be updated by averaging
+                });
+                
+                // Recalculate all visible data points with current buffer
+                recalculateChartData();
+            }
+            
+            // Ensure line styling is maintained after updates
+            [pvVoltageChart, accumPowerChart, radiatorTempChart].forEach(chart => {
+                // Set global point options to ensure no points are shown
+                chart.options.elements.point.radius = 0;
+                chart.options.elements.point.hoverRadius = 0;
+                
+                chart.data.datasets.forEach((dataset, index) => {
+                    // Set consistent styling for all datasets
+                    dataset.borderWidth = 2;
+                    dataset.pointRadius = 0;  // No points for any dataset
+                    dataset.pointHoverRadius = 0;  // No hover points
+                    dataset.tension = 0.1;
+                });
+                
+                // Also handle hourly history visibility for 1h view
+                if (currentTimeRange === '1h') {
+                    chart.data.datasets[2].hidden = true;
+                } else {
+                    chart.data.datasets[2].hidden = false;
+                }
+            });
+            
+            // Update charts with no animation for smooth real-time updates
+            [pvVoltageChart, accumPowerChart, radiatorTempChart].forEach(chart => {
+                chart.update('none');
+            });
+            
+            console.log(`📈 Buffer size: ${rawDataBuffer.length} records, Current slot: ${currentTimeSlot}`);
+        }
+
+        // Listen for solar data updates
+        socket.on('solarDataUpdate', function(data) {
+            console.log('Received solar data:', data);
+            
+            // Update total records count
+            totalRecordsCount++;
+            document.getElementById('total-records').textContent = formatRecordCount(totalRecordsCount);
+            
+            // Update live charts
+            updateChartsWithLiveData(data);
+            
+            // Calculate trends first
+            calculateTrends().then(() => {
+                // Update all live values with styling
+                updateValue('pv-voltage', data.PV_voltage_V, 'pv-voltage');
+                updateValue('battery-voltage', data.Battery_voltage_V, 'battery-voltage');
+                updateValue('charger-current', data.Charger_current_A, 'charger-current');
+                updateValue('charger-power', data.Charger_power_W, 'charger-power');
+                updateValue('external-temp', data.External_temp_C, 'external-temp');
+                updateValue('radiator-temp', data.Radiator_temp_C, 'radiator-temp');
+                updateValue('humidity', data.Humidity_percent);
+                updateValue('dc-current', data.DC_current_A, 'dc-current');
+                updateValue('dc-voltage', data.DC_voltage_V);
+                updateValue('dc-power', data.DC_power_W, 'dc-power');
+                updateValue('ac-power', data.AC_power_W, 'ac-power');
+                updateValue('ac-freq', data.AC_freq_Hz, 'ac-freq');
+                updateValue('temp-cabinet', data.Temp_cabinet_C, 'cabinet-temp');
+                updateValue('battery-relay', data.Battery_relay, 'battery-relay');
+                updateValue('pv-relay', data.PV_relay, 'pv-relay');
+                updateValue('error-code', data.Error_code, 'error-code');
+                updateValue('warning-code', data.Warning_code, 'warning-code');
+                updateValue('accum-power', data.Accum_power_Wh, 'accum-power');
+                updateValue('status', data.Status);
+                updateValue('source-ip', data.source_ip, 'source-ip');
+            });
+
+            // Add new row to history table
+            addHistoryRow(data);
+        });
+
+        // Helper functions for styling and trends
+        function roundToDecimals(value, decimals = 2) {
+            return parseFloat(value).toFixed(decimals);
+        }
+
+        function interpolateColor(value, min, max, colorStart, colorEnd) {
+            const ratio = Math.max(0, Math.min(1, (value - min) / (max - min)));
+            const r = Math.round(colorStart.r + ratio * (colorEnd.r - colorStart.r));
+            const g = Math.round(colorStart.g + ratio * (colorEnd.g - colorStart.g));
+            const b = Math.round(colorStart.b + ratio * (colorEnd.b - colorStart.b));
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+
+        function getPVVoltageColor(voltage) {
+            const v = parseFloat(voltage);
+            if (v >= 20) return '#22c55e'; // Green
+            if (v >= 15) return interpolateColor(v, 15, 20, {r: 249, g: 115, b: 22}, {r: 34, g: 197, b: 94}); // Orange to Green
+            return interpolateColor(v, 0, 15, {r: 107, g: 114, b: 128}, {r: 249, g: 115, b: 22}); // Gray to Orange
+        }
+
+        function getBatteryVoltageColor(voltage) {
+            const v = parseFloat(voltage);
+            const optimal = 13;
+            const distance = Math.abs(v - optimal);
+            if (distance <= 0.2) return '#22c55e'; // Green
+            const ratio = Math.min(1, distance / 2);
+            return interpolateColor(ratio, 0, 1, {r: 34, g: 197, b: 94}, {r: 239, g: 68, b: 68}); // Green to Red-Orange
+        }
+
+        function getTemperatureColor(temp, type = 'external') {
+            const t = parseFloat(temp);
+            if (type === 'external') {
+                if (t >= 5 && t <= 30) return '#22c55e'; // Green
+                if (t > 30) return interpolateColor(t, 30, 40, {r: 34, g: 197, b: 94}, {r: 239, g: 68, b: 68}); // Green to Red
+                if (t < 5) return interpolateColor(t, 0, 5, {r: 59, g: 130, b: 246}, {r: 34, g: 197, b: 94}); // Blue to Green
+            }
+            return '#22c55e';
+        }
+
+        function getPowerColor(power, type = 'charger') {
+            const p = parseFloat(power);
+            if (p === 0) return '#9ca3af'; // Gray
+            
+            if (type === 'charger') {
+                if (p >= 500) return '#22c55e'; // Green
+                if (p >= 200) return interpolateColor(p, 200, 500, {r: 249, g: 115, b: 22}, {r: 34, g: 197, b: 94}); // Orange to Green
+                return interpolateColor(p, 0, 200, {r: 239, g: 68, b: 68}, {r: 249, g: 115, b: 22}); // Red to Orange
+            } else {
+                return p > 0 ? '#22c55e' : '#9ca3af'; // Green or Gray
+            }
+        }
+
+        function getFrequencyColor(freq) {
+            const f = parseFloat(freq);
+            return (f >= 49 && f <= 51) ? '#22c55e' : '#ef4444'; // Green or Red
+        }
+
+        // Global variables for trend calculation
+        let solarHistory = [];
+        let trendCache = {};
+        let totalRecordsCount = parseInt(document.getElementById('total-records')?.textContent) || 0;
+        let lastChartShiftTime = null; // Track when we last shifted the chart
+        let rawDataBuffer = []; // Buffer for storing all incoming raw data with timestamps
+
+        // Function to format record count (1000+ -> 1K, 1345 -> 1.3K)
+        function formatRecordCount(count) {
+            if (count >= 1000) {
+                const thousands = count / 1000;
+                if (thousands >= 10) {
+                    return Math.floor(thousands) + 'K';
+                } else {
+                    return (Math.round(thousands * 10) / 10) + 'K';
+                }
+            }
+            return count.toString();
+        }
+        
+        // Get interval minutes based on current time range
+        function getIntervalMinutes() {
+            switch(currentTimeRange) {
+                case '1h': return 1;   // 1-minute intervals
+                case '12h': return 2;  // 2-minute intervals
+                case '24h': return 5;  // 5-minute intervals
+                default: return 5;
+            }
+        }
+        
+        // Check if it's time to shift the chart (based on current time range)
+        function checkIfTimeToShift(currentTime) {
+            const intervalMinutes = getIntervalMinutes();
+            const currentMinutes = currentTime.getMinutes();
+            const currentRounded = Math.floor(currentMinutes / intervalMinutes) * intervalMinutes;
+            
+            if (!lastChartShiftTime) {
+                lastChartShiftTime = new Date(currentTime);
+                lastChartShiftTime.setMinutes(currentRounded, 0, 0);
+                return false;
+            }
+            
+            const lastShiftRounded = Math.floor(lastChartShiftTime.getMinutes() / intervalMinutes) * intervalMinutes;
+            
+            // If we've moved to a new interval
+            if (currentRounded !== lastShiftRounded) {
+                lastChartShiftTime = new Date(currentTime);
+                lastChartShiftTime.setMinutes(currentRounded, 0, 0);
+                return true;
+            }
+            
+            return false;
+        }
+        
+        // Calculate average values for a time slot based on raw data buffer
+        function calculateTimeSlotAverage(targetTimeSlot, divisionMinutes = null) {
+            if (!divisionMinutes) {
+                divisionMinutes = getIntervalMinutes();
+            }
+            
+            const [hours, minutes] = targetTimeSlot.split(':').map(Number);
+            const targetTime = new Date();
+            targetTime.setHours(hours, minutes, 0, 0);
+            
+            // Calculate time range (±half division around target time)
+            const halfDivision = (divisionMinutes * 60 * 1000) / 2; // Convert to milliseconds
+            const startTime = new Date(targetTime.getTime() - halfDivision);
+            const endTime = new Date(targetTime.getTime() + halfDivision);
+            
+            // Filter raw data within the time range
+            const relevantData = rawDataBuffer.filter(item => {
+                const itemTime = new Date(item.timestamp);
+                return itemTime >= startTime && itemTime <= endTime;
+            });
+            
+            if (relevantData.length === 0) {
+                return null; // No data available for this time slot
+            }
+            
+            // Calculate averages
+            const averages = {
+                PV_voltage_V: 0,
+                Accum_power_Wh: 0,
+                Radiator_temp_C: 0
+            };
+            
+            relevantData.forEach(item => {
+                averages.PV_voltage_V += parseFloat(item.PV_voltage_V || 0);
+                averages.Accum_power_Wh += parseFloat(item.Accum_power_Wh || 0);
+                averages.Radiator_temp_C += parseFloat(item.Radiator_temp_C || 0);
+            });
+            
+            const count = relevantData.length;
+            averages.PV_voltage_V /= count;
+            averages.Accum_power_Wh /= count;
+            averages.Radiator_temp_C /= count;
+            
+            console.log(`📊 Calculated average for ${targetTimeSlot} from ${count} records in range ${startTime.toLocaleTimeString()} - ${endTime.toLocaleTimeString()}`);
+            
+            return averages;
+        }
+        
+        // Recalculate all visible chart data based on current raw data buffer
+        function recalculateChartData() {
+            [pvVoltageChart, accumPowerChart, radiatorTempChart].forEach(chart => {
+                for (let i = 0; i < chart.data.labels.length; i++) {
+                    const timeSlot = chart.data.labels[i];
+                    const averages = calculateTimeSlotAverage(timeSlot);
+                    
+                    if (averages) {
+                        chart.data.datasets[0].data[i] = averages.PV_voltage_V;
+                        if (chart === accumPowerChart) {
+                            chart.data.datasets[0].data[i] = averages.Accum_power_Wh;
+                        } else if (chart === radiatorTempChart) {
+                            chart.data.datasets[0].data[i] = averages.Radiator_temp_C;
+                        }
+                    }
+                }
+            });
+        }
+
+        async function calculateTrends() {
+            try {
+                const response = await fetch('/api/solar-history?limit=500');
+                const data = await response.json();
+                if (data.success && data.records.length > 1) {
+                    solarHistory = data.records.reverse(); // Oldest first for trend calculation
+                    
+                    // Calculate trends for multiple parameters
+                    const fields = ['Charger_current_A', 'Radiator_temp_C', 'DC_current_A', 'Temp_cabinet_C'];
+                    fields.forEach(field => {
+                        trendCache[field] = calculateFieldTrend(field);
+                    });
+                }
+            } catch (error) {
+                console.error('Error calculating trends:', error);
+            }
+        }
+
+        function calculateFieldTrend(fieldName) {
+            if (solarHistory.length < 2) return 'neutral';
+            
+            const values = solarHistory.map(record => parseFloat(record[fieldName] || 0));
+            const recentValues = values.slice(-Math.min(50, values.length)); // Last 50 values for trend
+            
+            if (recentValues.length < 2) return 'neutral';
+            
+            const firstHalf = recentValues.slice(0, Math.floor(recentValues.length / 2));
+            const secondHalf = recentValues.slice(Math.floor(recentValues.length / 2));
+            
+            const firstAvg = firstHalf.reduce((a, b) => a + b, 0) / firstHalf.length;
+            const secondAvg = secondHalf.reduce((a, b) => a + b, 0) / secondHalf.length;
+            
+            const change = secondAvg - firstAvg;
+            const threshold = 0.1; // Minimum change to consider as trend
+            
+            if (change > threshold) return 'up';
+            if (change < -threshold) return 'down';
+            return 'neutral';
+        }
+
+        function updateValue(elementId, value, styleType = null) {
+            const element = document.getElementById(elementId);
+            if (!element || value === undefined) return;
+
+            let displayValue = value;
+            let color = '#ffffff';
+            let extraContent = '';
+
+            // Round numeric values to 2 decimals (except for integer codes)
+            if (!isNaN(value) && value !== null && styleType !== 'error-code' && styleType !== 'warning-code' && styleType !== 'battery-relay' && styleType !== 'pv-relay') {
+                displayValue = roundToDecimals(value);
+            }
+
+            // Apply styling based on type
+            switch (styleType) {
+                case 'pv-voltage':
+                    color = getPVVoltageColor(value);
+                    break;
+                case 'battery-voltage':
+                    color = getBatteryVoltageColor(value);
+                    break;
+                case 'charger-current':
+                    const currentTrend = trendCache['Charger_current_A'] || 'neutral';
+                    if (parseFloat(value) === 0) {
+                        color = '#9ca3af';
+                    } else if (currentTrend === 'up') {
+                        color = '#22c55e';
+                        extraContent = ' <img src="/images/management/up_trend.svg" style="width: 16px; height: 16px; vertical-align: middle;">';
+                    } else if (currentTrend === 'down') {
+                        color = '#f97316';
+                        extraContent = ' <img src="/images/management/down_trend.svg" style="width: 16px; height: 16px; vertical-align: middle;">';
+                    }
+                    break;
+                case 'charger-power':
+                    color = getPowerColor(value, 'charger');
+                    break;
+                case 'external-temp':
+                    color = getTemperatureColor(value, 'external');
+                    break;
+                case 'radiator-temp':
+                case 'cabinet-temp':
+                    const tempField = styleType === 'radiator-temp' ? 'Radiator_temp_C' : 'Temp_cabinet_C';
+                    const tempTrend = trendCache[tempField] || 'neutral';
+                    color = getTemperatureColor(value);
+                    if (tempTrend === 'up') {
+                        extraContent = ' <img src="/images/management/up_trend.svg" style="width: 16px; height: 16px; vertical-align: middle;">';
+                    } else if (tempTrend === 'down') {
+                        extraContent = ' <img src="/images/management/down_trend.svg" style="width: 16px; height: 16px; vertical-align: middle;">';
+                    }
+                    break;
+                case 'dc-current':
+                    const dcTrend = trendCache['DC_current_A'] || 'neutral';
+                    if (parseFloat(value) === 0) {
+                        color = '#9ca3af';
+                    } else if (dcTrend === 'up') {
+                        color = '#22c55e';
+                        extraContent = ' <img src="/images/management/up_trend.svg" style="width: 16px; height: 16px; vertical-align: middle;">';
+                    } else if (dcTrend === 'down') {
+                        color = '#f97316';
+                        extraContent = ' <img src="/images/management/down_trend.svg" style="width: 16px; height: 16px; vertical-align: middle;">';
+                    }
+                    break;
+                case 'dc-power':
+                case 'ac-power':
+                    color = getPowerColor(value, 'other');
+                    break;
+                case 'ac-freq':
+                    color = getFrequencyColor(value);
+                    break;
+                case 'battery-relay':
+                case 'pv-relay':
+                    if (parseInt(value) === 0) {
+                        displayValue = 'OFF';
+                        color = '#9ca3af';
+                    } else {
+                        displayValue = 'ON';
+                        color = '#22c55e';
+                    }
+                    break;
+                case 'error-code':
+                    if (parseInt(value) === 0) {
+                        displayValue = 'NONE';
+                        color = '#9ca3af';
+                        element.style.fontStyle = 'italic';
+                    } else {
+                        displayValue = parseInt(value);
+                        color = '#ef4444';
+                        element.style.fontStyle = 'normal';
+                    }
+                    break;
+                case 'warning-code':
+                    if (parseInt(value) === 0) {
+                        displayValue = 'NONE';
+                        color = '#9ca3af';
+                        element.style.fontStyle = 'italic';
+                    } else {
+                        displayValue = parseInt(value);
+                        color = '#f97316';
+                        element.style.fontStyle = 'normal';
+                    }
+                    break;
+                case 'accum-power':
+                    color = parseFloat(value) === 0 ? '#9ca3af' : '#22c55e';
+                    break;
+                case 'source-ip':
+                    color = '#9ca3af';
+                    element.style.fontSize = '0.85em';
+                    element.style.fontStyle = 'italic';
+                    element.style.fontWeight = 'normal';
+                    break;
+            }
+
+            element.style.color = color;
+            element.innerHTML = displayValue + extraContent;
+        }
+
+        function addHistoryRow(data) {
+            const tbody = document.getElementById('history-tbody');
+            if (!tbody) return;
+
+            const newRow = document.createElement('tr');
+            
+            // Format values with proper styling and rounding
+            const formatValue = (value, unit = '', decimals = 2, isInteger = false) => {
+                if (value === undefined || value === null) return '0' + unit;
+                if (isInteger) return parseInt(value) + unit;
+                return roundToDecimals(value, decimals) + unit;
+            };
+
+            const formatRelay = (value) => parseInt(value) === 0 ? 'OFF' : 'ON';
+            const formatError = (value) => parseInt(value) === 0 ? 'NONE' : parseInt(value);
+
+            newRow.innerHTML = `
+                <td>${data.local_time}</td>
+                <td style="font-size: 0.85em; font-style: italic; color: #9ca3af;">${data.source_ip || 'Unknown'}</td>
+                <td>${formatValue(data.PV_voltage_V, 'V')}</td>
+                <td>${formatValue(data.Battery_voltage_V, 'V')}</td>
+                <td>${formatValue(data.Charger_current_A, 'A')}</td>
+                <td>${formatValue(data.Charger_power_W, 'W')}</td>
+                <td>${formatValue(data.External_temp_C, '°C')}</td>
+                <td>${formatValue(data.Radiator_temp_C, '°C')}</td>
+                <td>${formatValue(data.Humidity_percent, '%')}</td>
+                <td>${formatValue(data.DC_current_A, 'A')}</td>
+                <td>${formatValue(data.DC_voltage_V, 'V')}</td>
+                <td>${formatValue(data.DC_power_W, 'W')}</td>
+                <td>${formatValue(data.AC_power_W, 'W')}</td>
+                <td>${formatValue(data.Status, '', 2, true)}</td>
+                <td>${formatError(data.Error_code)}</td>
+            `;
+            
+            // Add to top
+            tbody.insertBefore(newRow, tbody.firstChild);
+            
+            // Remove old rows (keep only current limit)
+            const currentLimit = parseInt(tbody.dataset.currentLimit || '10');
+            while (tbody.children.length > currentLimit) {
+                tbody.removeChild(tbody.lastChild);
+            }
+        }
+
+        // Load more records function
+        async function loadMoreRecords() {
+            const tbody = document.getElementById('history-tbody');
+            const loadMoreBtn = document.getElementById('load-more-btn');
+            const currentLimit = parseInt(tbody.dataset.currentLimit || '10');
+            const newLimit = currentLimit + 10;
+
+            try {
+                loadMoreBtn.disabled = true;
+                loadMoreBtn.textContent = 'Loading...';
+
+                const response = await fetch(`/api/solar-history?limit=${newLimit}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    // Clear current tbody
+                    tbody.innerHTML = '';
+                    
+                    // Update total records count
+                    totalRecordsCount = data.total;
+                    document.getElementById('total-records').textContent = formatRecordCount(totalRecordsCount);
+                    
+                    // Add all records
+                    data.records.forEach(record => {
+                        const row = document.createElement('tr');
+                        
+                        const formatValue = (value, unit = '', decimals = 2, isInteger = false) => {
+                            if (value === undefined || value === null) return '0' + unit;
+                            if (isInteger) return parseInt(value) + unit;
+                            return parseFloat(value).toFixed(decimals) + unit;
+                        };
+                        
+                        const formatRelay = (value) => parseInt(value) === 0 ? 'OFF' : 'ON';
+                        const formatError = (value) => parseInt(value) === 0 ? 'NONE' : parseInt(value);
+
+                        row.innerHTML = `
+                            <td>${record.local_time}</td>
+                            <td style="font-size: 0.85em; font-style: italic; color: #9ca3af;">${record.source_ip || 'Unknown'}</td>
+                            <td>${formatValue(record.PV_voltage_V, 'V')}</td>
+                            <td>${formatValue(record.Battery_voltage_V, 'V')}</td>
+                            <td>${formatValue(record.Charger_current_A, 'A')}</td>
+                            <td>${formatValue(record.Charger_power_W, 'W')}</td>
+                            <td>${formatValue(record.External_temp_C, '°C')}</td>
+                            <td>${formatValue(record.Radiator_temp_C, '°C')}</td>
+                            <td>${formatValue(record.Humidity_percent, '%')}</td>
+                            <td>${formatValue(record.DC_current_A, 'A')}</td>
+                            <td>${formatValue(record.DC_voltage_V, 'V')}</td>
+                            <td>${formatValue(record.DC_power_W, 'W')}</td>
+                            <td>${formatValue(record.AC_power_W, 'W')}</td>
+                            <td>${formatValue(record.Status, '', 2, true)}</td>
+                            <td>${formatError(record.Error_code)}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+
+                    // Update limit
+                    tbody.dataset.currentLimit = newLimit;
+
+                    // Hide button if no more records
+                    if (data.records.length < newLimit) {
+                        loadMoreBtn.style.display = 'none';
+                    } else {
+                        loadMoreBtn.textContent = 'Load More (10 records)';
+                        loadMoreBtn.disabled = false;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading more records:', error);
+                loadMoreBtn.textContent = 'Load More (10 records)';
+                loadMoreBtn.disabled = false;
+            }
+        }
+
+        // Connect to socket
+        socket.on('connect', function() {
+            console.log('Connected to server');
+            // Initialize trends calculation
+            calculateTrends();
+        });
+
+        socket.on('disconnect', function() {
+            console.log('Disconnected from server');
+        });
+
+        let currentTimeRange = '24h'; // Track current time range
+        
+        // Initialize styling on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Format total records count on initial load
+            const totalRecordsElement = document.getElementById('total-records');
+            if (totalRecordsElement) {
+                const currentCount = parseInt(totalRecordsElement.textContent) || 0;
+                totalRecordsElement.textContent = formatRecordCount(currentCount);
+            }
+            
+            // Initialize charts first
+            initializeCharts();
+            setupTimeRangeToggle();
+            
+            calculateTrends().then(() => {
+                // Apply initial styling to displayed values if they exist
+                const initialData = {
+                    PV_voltage_V: parseFloat(document.getElementById('pv-voltage')?.textContent) || 0,
+                    Battery_voltage_V: parseFloat(document.getElementById('battery-voltage')?.textContent) || 0,
+                    Charger_current_A: parseFloat(document.getElementById('charger-current')?.textContent) || 0,
+                    Charger_power_W: parseFloat(document.getElementById('charger-power')?.textContent) || 0,
+                    External_temp_C: parseFloat(document.getElementById('external-temp')?.textContent) || 0,
+                    Radiator_temp_C: parseFloat(document.getElementById('radiator-temp')?.textContent) || 0,
+                    Humidity_percent: parseFloat(document.getElementById('humidity')?.textContent) || 0,
+                    DC_current_A: parseFloat(document.getElementById('dc-current')?.textContent) || 0,
+                    DC_voltage_V: parseFloat(document.getElementById('dc-voltage')?.textContent) || 0,
+                    DC_power_W: parseFloat(document.getElementById('dc-power')?.textContent) || 0,
+                    AC_power_W: parseFloat(document.getElementById('ac-power')?.textContent) || 0,
+                    AC_freq_Hz: parseFloat(document.getElementById('ac-freq')?.textContent) || 0,
+                    Temp_cabinet_C: parseFloat(document.getElementById('temp-cabinet')?.textContent) || 0,
+                    Battery_relay: parseInt(document.getElementById('battery-relay')?.textContent) || 0,
+                    PV_relay: parseInt(document.getElementById('pv-relay')?.textContent) || 0,
+                    Error_code: parseInt(document.getElementById('error-code')?.textContent) || 0,
+                    Warning_code: parseInt(document.getElementById('warning-code')?.textContent) || 0,
+                    Accum_power_Wh: parseFloat(document.getElementById('accum-power')?.textContent) || 0,
+                    Status: document.getElementById('status')?.textContent || '0',
+                    source_ip: document.getElementById('source-ip')?.textContent || 'Unknown'
+                };
+
+                // Apply styling
+                updateValue('pv-voltage', initialData.PV_voltage_V, 'pv-voltage');
+                updateValue('battery-voltage', initialData.Battery_voltage_V, 'battery-voltage');
+                updateValue('charger-current', initialData.Charger_current_A, 'charger-current');
+                updateValue('charger-power', initialData.Charger_power_W, 'charger-power');
+                updateValue('external-temp', initialData.External_temp_C, 'external-temp');
+                updateValue('radiator-temp', initialData.Radiator_temp_C, 'radiator-temp');
+                updateValue('humidity', initialData.Humidity_percent);
+                updateValue('dc-current', initialData.DC_current_A, 'dc-current');
+                updateValue('dc-voltage', initialData.DC_voltage_V);
+                updateValue('dc-power', initialData.DC_power_W, 'dc-power');
+                updateValue('ac-power', initialData.AC_power_W, 'ac-power');
+                updateValue('ac-freq', initialData.AC_freq_Hz, 'ac-freq');
+                updateValue('temp-cabinet', initialData.Temp_cabinet_C, 'cabinet-temp');
+                updateValue('battery-relay', initialData.Battery_relay, 'battery-relay');
+                updateValue('pv-relay', initialData.PV_relay, 'pv-relay');
+                updateValue('error-code', initialData.Error_code, 'error-code');
+                updateValue('warning-code', initialData.Warning_code, 'warning-code');
+                updateValue('accum-power', initialData.Accum_power_Wh, 'accum-power');
+                updateValue('status', initialData.Status);
+                updateValue('source-ip', initialData.source_ip, 'source-ip');
+            });
+        });
+
+        // CSS for flash animation
+        const style = document.createElement('style');
+        style.textContent = `
+            .load-more-btn {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 14px;
+                margin: 20px auto;
+                display: block;
+                transition: all 0.3s ease;
+            }
+            .load-more-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            }
+            .load-more-btn:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+                transform: none;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

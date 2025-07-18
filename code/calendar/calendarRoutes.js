@@ -58,13 +58,10 @@ async function updateCalendar(req, res) {
     const addedEvents = await updateCalendarFromIcal(url, fileName);
     res.json(addedEvents);
   } catch (err) {
-    res.status(500).render("error", {
-      error: {
-        "error-code": 500,
-        "error-title": "Error fetching iCal",
-        "error-message": err.message || "Failed to fetch iCal calendar " + req.params.id + ".",
-      },
-      lastVisitedPage: req.session.lastVisitedPage,
+    console.error(`Error updating calendar ${req.params.id}:`, err);
+    res.status(500).json({
+      error: err.message || `Failed to fetch iCal calendar ${req.params.id}.`,
+      success: false
     });
   }
 }

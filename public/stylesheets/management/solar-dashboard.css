@@ -35,7 +35,7 @@
 /* Grid Layout */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 2rem;
   margin-bottom: 4rem;
 }
@@ -68,6 +68,21 @@
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
+}
+
+/* Voltage-specific gradient colors */
+#pv-voltage-v {
+  background: linear-gradient(135deg, #ff6b6b, #ffa500);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+#battery-voltage-v {
+  background: linear-gradient(135deg, #4ecdc4, #44a08d);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .card-unit {
@@ -256,16 +271,29 @@
   }
   
   .dashboard-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.8rem !important;
+  }
+  
+  .dashboard-card {
+    padding: 1rem;
   }
   
   .dashboard-title {
     font-size: 2rem;
   }
   
+  .card-title {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  
   .card-value {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
+  }
+  
+  .card-unit {
+    font-size: 0.8rem;
   }
   
   .history-table {
@@ -282,6 +310,44 @@
   
   .chart-container canvas {
     height: 250px !important;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+  .management-container {
+    padding: 0.5rem;
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.5rem !important;
+  }
+  
+  .dashboard-card {
+    padding: 0.8rem;
+    min-height: 80px;
+  }
+  
+  .dashboard-title {
+    font-size: 1.5rem;
+  }
+  
+  .dashboard-header {
+    padding: 1rem;
+  }
+  
+  .card-title {
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+  }
+  
+  .card-value {
+    font-size: 1.1rem;
+  }
+  
+  .card-unit {
+    font-size: 0.7rem;
   }
 }
 

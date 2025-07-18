@@ -4,7 +4,7 @@ const ical = require("node-ical");
 const { v4: uuidv4 } = require('uuid');
 
 function readCalendar(fileName) {
-  const filePath = path.join(__dirname, "../data/calendars", fileName);
+  const filePath = path.join(__dirname, "../../data/calendars", fileName);
   if (!fs.existsSync(filePath)) return [];
   try {
     return JSON.parse(fs.readFileSync(filePath, "utf8"));
@@ -14,7 +14,7 @@ function readCalendar(fileName) {
 }
 
 function writeCalendar(fileName, data) {
-  const filePath = path.join(__dirname, "../data/calendars", fileName);
+  const filePath = path.join(__dirname, "../../data/calendars", fileName);
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf8");
 }
 

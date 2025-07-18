@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs').promises;
 const { calendarScheduler } = require('../code/calendar/calendarScheduler');
+const { reconstructDeltaData, reconstructDeltaDataWithHistory } = require('./api');
 const router = express.Router();
 
 // Middleware for basic authentication (can be extended later)
@@ -30,20 +31,71 @@ router.get('/solar-dashboard', requireAuth, async (req, res) => {
       solarData = [];
     }
 
-    // Take last 50 records for display
-    const recentData = solarData.slice(-50);
-    const latestData = solarData.length > 0 ? solarData[solarData.length - 1] : null;
+    // Load solar variables information
+    const variablesPath = path.join(__dirname, '../data/public_data/solar_variables.json');
+    let variablesData = {};
+    
+    try {
+      const variables = await fs.readFile(variablesPath, 'utf8');
+      variablesData = JSON.parse(variables);
+    } catch (err) {
+      console.log('No solar variables data found, using empty object');
+      variablesData = {};
+    }
+
+    // Take last 10 records for initial display
+    const recentData = solarData.slice(-10);
+    
+    // Reconstruct delta records for table display with proper base resolution
+    let reconstructedData;
+    
+    try {
+      if (typeof reconstructDeltaDataWithHistory === 'function') {
+        reconstructedData = await reconstructDeltaDataWithHistory(recentData, solarData);
+      } else if (typeof reconstructDeltaData === 'function') {
+        reconstructedData = reconstructDeltaData(recentData);
+      } else {
+        console.warn('Delta reconstruction functions not available, using raw data');
+        reconstructedData = recentData;
+      }
+    } catch (deltaError) {
+      console.warn('Error in delta reconstruction:', deltaError.message);
+      reconstructedData = recentData; // fallback to raw data
+    }
+
+    // Get latest data with delta reconstruction for dashboard cards
+    let latestData = null;
+    if (solarData.length > 0) {
+      try {
+        if (typeof reconstructDeltaDataWithHistory === 'function') {
+          // Use delta reconstruction to get the latest complete record
+          const latestRecords = await reconstructDeltaDataWithHistory([solarData[solarData.length - 1]], solarData);
+          latestData = latestRecords.length > 0 ? latestRecords[0] : solarData[solarData.length - 1];
+        } else {
+          latestData = solarData[solarData.length - 1];
+        }
+      } catch (deltaError) {
+        console.warn('Error reconstructing latest data for dashboard:', deltaError.message);
+        latestData = solarData[solarData.length - 1];
+      }
+    }
 
     res.render('management/solar-dashboard', {
       title: 'Solar Dashboard - Management',
-      solarData: recentData,
+      solarData: reconstructedData,
       latestData: latestData,
-      totalRecords: solarData.length
+      totalRecords: solarData.length,
+      solarVariables: variablesData
     });
   } catch (error) {
     console.error('Error loading solar dashboard:', error);
     res.status(500).render('error', { 
-      error: { status: 500, message: 'Error loading solar dashboard' } 
+      error: { 
+        'error-code': '500',
+        'error-title': 'SOLAR DASHBOARD ERROR',
+        'error-message': `Failed to load solar dashboard data: ${error.message}`
+      },
+      validBackPage: req.session?.validBackPage || '/management'
     });
   }
 });

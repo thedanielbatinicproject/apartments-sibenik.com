@@ -77,6 +77,94 @@ async function initializeLastSignificantData() {
 // Initialize on startup
 initializeLastSignificantData();
 
+// Function to reconstruct full data from delta records with proper base resolution
+function reconstructDeltaData(dataArray) {
+  if (!dataArray || dataArray.length === 0) return [];
+  
+  const reconstructed = [];
+  let currentFullData = {};
+  
+  // If the first record is a delta, we need to find the last full record before it
+  // For now, we'll use the global lastSignificantData as base if first is delta
+  if (dataArray.length > 0 && dataArray[0]._type === 'delta' && lastSignificantData) {
+    currentFullData = { ...lastSignificantData };
+    
+    // Remove any fields that shouldn't persist across reconstructions
+    delete currentFullData._type;
+  }
+  
+  for (const record of dataArray) {
+    if (record._type === 'delta') {
+      // For delta records, merge with current state
+      currentFullData = { ...currentFullData, ...record };
+      // Clean the result - remove _type for final output
+      const cleanRecord = { ...currentFullData };
+      delete cleanRecord._type;
+      reconstructed.push(cleanRecord);
+    } else {
+      // For full records, use as new base
+      currentFullData = { ...record };
+      reconstructed.push({ ...currentFullData });
+    }
+  }
+  
+  return reconstructed;
+}
+
+// Advanced function for history reconstruction that handles proper delta base resolution
+async function reconstructDeltaDataWithHistory(dataArray, allHistoryData) {
+  if (!dataArray || dataArray.length === 0) return [];
+  
+  const reconstructed = [];
+  let currentFullData = {};
+  
+  // Find the last full record before our data slice
+  const firstRecord = dataArray[0];
+  if (firstRecord._type === 'delta') {
+    // Find the index of the first record in the complete history
+    const firstIndex = allHistoryData.findIndex(r => 
+      r.timestamp === firstRecord.timestamp && r.local_time === firstRecord.local_time
+    );
+    
+    if (firstIndex > 0) {
+      // Look backwards for the last full record
+      for (let i = firstIndex - 1; i >= 0; i--) {
+        if (!allHistoryData[i]._type || allHistoryData[i]._type !== 'delta') {
+          currentFullData = { ...allHistoryData[i] };
+          
+          // Apply all deltas from that point to our first record
+          for (let j = i + 1; j < firstIndex; j++) {
+            if (allHistoryData[j]._type === 'delta') {
+              currentFullData = { ...currentFullData, ...allHistoryData[j] };
+            }
+          }
+          break;
+        }
+      }
+    }
+  }
+  
+  // If we still don't have a base and lastSignificantData exists, use it
+  if (Object.keys(currentFullData).length === 0 && lastSignificantData) {
+    currentFullData = { ...lastSignificantData };
+  }
+  
+  // Now process our data slice
+  for (const record of dataArray) {
+    if (record._type === 'delta') {
+      currentFullData = { ...currentFullData, ...record };
+      const cleanRecord = { ...currentFullData };
+      delete cleanRecord._type;
+      reconstructed.push(cleanRecord);
+    } else {
+      currentFullData = { ...record };
+      reconstructed.push({ ...currentFullData });
+    }
+  }
+  
+  return reconstructed;
+}
+
 // Delta compression function
 function createDeltaRecord(newData, lastData) {
   console.log('[DELTA] === DELTA COMPRESSION ANALIZA ===');
@@ -198,10 +286,12 @@ router.post('/backyard-management', async (req, res) => {
       if (io) {
         // Send current data for real-time (without saving to file)
         const realtimeData = {
-          ...incomingData,
+          ...lastSignificantData,  // Base data
+          ...incomingData,         // Current incoming data (even if identical)
           source_ip: req.ip || req.connection.remoteAddress || req.socket.remoteAddress || 'Unknown'
         };
         console.log('[SOCKET] Emitting identical data update to clients');
+        console.log('[SOCKET] Sample data being sent:', Object.keys(realtimeData).slice(0, 5));
         io.emit('solarDataUpdate', realtimeData);
       }
       
@@ -260,8 +350,17 @@ router.post('/backyard-management', async (req, res) => {
     if (io) {
       // For real-time, always send full data (reconstruct from lastSignificantData)
       const realtimeData = deltaResult.type === 'delta' ? lastSignificantData : dataToSave;
+      
+      // Make sure we send the complete current data
+      const completeRealtimeData = {
+        ...lastSignificantData, // Base data
+        ...incomingData,        // Current incoming data
+        source_ip: req.ip || req.connection.remoteAddress || req.socket.remoteAddress || 'Unknown'
+      };
+      
       console.log('[SOCKET] Emitting solar data update to clients');
-      io.emit('solarDataUpdate', realtimeData);
+      console.log('[SOCKET] Sample data being sent:', Object.keys(completeRealtimeData).slice(0, 5));
+      io.emit('solarDataUpdate', completeRealtimeData);
     }
 
     res.json({ 
@@ -659,4 +758,248 @@ router.get('/chart-data/:timeRange', requireAPIKey, async (req, res) => {
   }
 });
 
+// Solar chart data endpoint (simplified for dashboard) - requires API key
+router.get('/solar/chart-data', requireAPIKey, async (req, res) => {
+  try {
+    const timeRange = req.query.range || '24h';
+    console.log('Solar chart data requested for range:', timeRange);
+    
+    const publicDataPath = path.join(__dirname, '../data/public_data/solars_public.json');
+    let solarData = [];
+    
+    try {
+      const rawData = await fs.readFile(publicDataPath, 'utf8');
+      solarData = JSON.parse(rawData);
+    } catch (err) {
+      console.log('No solar data found');
+      return res.json({
+        success: false,
+        error: 'No solar data available'
+      });
+    }
+
+    if (solarData.length === 0) {
+      return res.json({
+        success: false,
+        error: 'No solar data records found'
+      });
+    }
+
+    const now = new Date();
+    let hoursBack, maxPoints;
+
+    switch (timeRange) {
+      case '1h':
+        hoursBack = 1;
+        maxPoints = 60;
+        break;
+      case '6h':
+        hoursBack = 6;
+        maxPoints = 72;
+        break;
+      case '12h':
+        hoursBack = 12;
+        maxPoints = 72;
+        break;
+      case '24h':
+      default:
+        hoursBack = 24;
+        maxPoints = 96;
+        break;
+    }
+    
+    const timeRangeStart = new Date(now.getTime() - (hoursBack * 60 * 60 * 1000));
+    
+    // Filter data within time range
+    const relevantData = solarData.filter(record => {
+      const recordTime = new Date(record.timestamp);
+      return recordTime >= timeRangeStart && recordTime <= now;
+    }).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+    console.log(`Found ${relevantData.length} records for ${timeRange}`);
+
+    if (relevantData.length === 0) {
+      return res.json({
+        success: false,
+        error: `No data available for the last ${timeRange}`
+      });
+    }
+
+    // Reconstruct delta records before processing chart data
+    console.log('Reconstructing delta records for chart...');
+    const reconstructedData = await reconstructDeltaDataWithHistory(relevantData, solarData);
+    console.log(`Reconstructed ${reconstructedData.length} records`);
+
+    // Create simplified time points and data arrays from reconstructed data
+    const timePoints = [];
+    const pvVoltage = [];
+    const batteryVoltage = [];
+    const chargerPower = [];
+    
+    // Sample data points evenly
+    const step = Math.max(1, Math.floor(reconstructedData.length / maxPoints));
+    
+    for (let i = 0; i < reconstructedData.length; i += step) {
+      const record = reconstructedData[i];
+      timePoints.push(record.timestamp);
+      pvVoltage.push(parseFloat(record.PV_voltage_V) || 0);
+      batteryVoltage.push(parseFloat(record.Battery_voltage_V) || 0);
+      chargerPower.push(parseFloat(record.Charger_power_W) || 0);
+    }
+
+    console.log(`Returning ${timePoints.length} data points`);
+
+    // Calculate weekly averages (last 7 days)
+    const weekAgo = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
+    const weeklyData = solarData.filter(record => {
+      const recordTime = new Date(record.timestamp);
+      return recordTime >= weekAgo && recordTime <= now;
+    });
+
+    console.log(`Found ${weeklyData.length} records for weekly average calculation`);
+
+    // Reconstruct weekly data for accurate averages
+    const reconstructedWeeklyData = await reconstructDeltaDataWithHistory(weeklyData, solarData);
+    
+    let weeklyAvgPV = 0, weeklyAvgBattery = 0, weeklyAvgPower = 0;
+    
+    if (reconstructedWeeklyData.length > 0) {
+      const validPV = reconstructedWeeklyData.filter(r => r.PV_voltage_V != null && !isNaN(r.PV_voltage_V));
+      const validBattery = reconstructedWeeklyData.filter(r => r.Battery_voltage_V != null && !isNaN(r.Battery_voltage_V));
+      const validPower = reconstructedWeeklyData.filter(r => r.Charger_power_W != null && !isNaN(r.Charger_power_W));
+      
+      weeklyAvgPV = validPV.length > 0 ? validPV.reduce((sum, r) => sum + parseFloat(r.PV_voltage_V), 0) / validPV.length : 0;
+      weeklyAvgBattery = validBattery.length > 0 ? validBattery.reduce((sum, r) => sum + parseFloat(r.Battery_voltage_V), 0) / validBattery.length : 0;
+      weeklyAvgPower = validPower.length > 0 ? validPower.reduce((sum, r) => sum + parseFloat(r.Charger_power_W), 0) / validPower.length : 0;
+    }
+
+    console.log('Weekly averages - PV:', weeklyAvgPV.toFixed(2), 'V, Battery:', weeklyAvgBattery.toFixed(2), 'V, Power:', weeklyAvgPower.toFixed(2), 'W');
+
+    const responseData = {
+      success: true,
+      timeRange: timeRange,
+      pvVoltage: pvVoltage,
+      batteryVoltage: batteryVoltage,
+      chargerPower: chargerPower,
+      timePoints: timePoints,
+      weeklyAverages: {
+        pvVoltage: Math.round(weeklyAvgPV * 100) / 100,      // Round to 2 decimals
+        batteryVoltage: Math.round(weeklyAvgBattery * 100) / 100,
+        chargerPower: Math.round(weeklyAvgPower * 100) / 100
+      },
+      dataTimestamp: now.toISOString()
+    };
+
+    res.json(responseData);
+
+  } catch (error) {
+    console.error('Error fetching solar chart data:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Failed to fetch solar chart data' 
+    });
+  }
+});
+
+// Solar variables information endpoint - requires API key
+router.get('/solar/variables', requireAPIKey, async (req, res) => {
+  try {
+    const variablesPath = path.join(__dirname, '../data/public_data/solar_variables.json');
+    const variablesData = await fs.readFile(variablesPath, 'utf8');
+    const variables = JSON.parse(variablesData);
+    
+    res.json({
+      success: true,
+      variables: variables,
+      dataTimestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching solar variables:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Failed to fetch solar variables information' 
+    });
+  }
+});
+
+// Solar history endpoint for pagination - requires API key
+router.post('/solar/history', requireAPIKey, async (req, res) => {
+  try {
+    const { offset = 0, limit = 50 } = req.body;
+    const solarDataPath = path.join(__dirname, '../data/public_data/solars_public.json');
+    
+    let solarData = [];
+    try {
+      const data = await fs.readFile(solarDataPath, 'utf8');
+      solarData = JSON.parse(data);
+    } catch (err) {
+      console.log('No solar data found');
+      return res.json({
+        success: true,
+        records: [],
+        total: 0
+      });
+    }
+    
+    // Get records for pagination (from end, reversed)
+    const total = solarData.length;
+    const startIndex = Math.max(0, total - offset - limit);
+    const endIndex = Math.max(0, total - offset);
+    const slicedData = solarData.slice(startIndex, endIndex);
+    
+    // Reconstruct delta records with proper base resolution before sending
+    const reconstructedRecords = await reconstructDeltaDataWithHistory(slicedData, solarData);
+    
+    res.json({
+      success: true,
+      records: reconstructedRecords.reverse(),
+      total: total,
+      offset: offset,
+      limit: limit
+    });
+  } catch (error) {
+    console.error('Error fetching solar history:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Failed to fetch solar history data' 
+    });
+  }
+});
+
+// Export solar data endpoint
+router.get('/export-solar-data', requireAPIKey, async (req, res) => {
+  try {
+    const publicDataPath = path.join(__dirname, '../data/public_data/solars_public.json');
+    
+    // Check if file exists
+    try {
+      await fs.access(publicDataPath);
+    } catch (error) {
+      return res.status(404).json({ 
+        success: false, 
+        error: 'Solar data file not found' 
+      });
+    }
+    
+    // Read the file
+    const fileContent = await fs.readFile(publicDataPath, 'utf8');
+    
+    // Set headers for file download
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Content-Disposition', 'attachment; filename="solars_public.json"');
+    
+    // Send the file content
+    res.send(fileContent);
+    
+  } catch (error) {
+    console.error('Error exporting solar data:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Failed to export solar data' 
+    });
+  }
+});
+
 module.exports = router;
+module.exports.reconstructDeltaData = reconstructDeltaData;
+module.exports.reconstructDeltaDataWithHistory = reconstructDeltaDataWithHistory;
