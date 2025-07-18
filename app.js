@@ -7,14 +7,38 @@ const http = require("http");
 const socketIo = require("socket.io");
 require('dotenv').config();
 
-const { getLocalIPAddress, handle404Error } = require("./code/utils");
-const { calendarScheduler } = require("./code/calendarScheduler");
+const { getLocalIPAddress, handle404Error } = require("./code/utils/utils");
+const { calendarScheduler } = require("./code/calendar/calendarScheduler");
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
 // Make io accessible to routes
 app.set('io', io);
+
+// Internal API middleware - automatically adds API key for internal server requests only
+app.use('/api', (req, res, next) => {
+  // Add API key ONLY for internal server-to-server requests (not browser requests)
+  // Check if this is an internal request by looking for specific headers or user agent
+  const userAgent = req.get('User-Agent') || '';
+  const xForwardedFor = req.get('x-forwarded-for');
+  const remoteAddress = req.connection.remoteAddress || req.socket.remoteAddress;
+  
+  // Only add API key for actual server-to-server requests (Node.js/axios, not browsers)
+  const isInternalServerRequest = (
+    (userAgent.includes('node') || userAgent.includes('axios')) &&
+    !userAgent.includes('Mozilla') && // Exclude browsers
+    !userAgent.includes('Chrome') &&
+    !userAgent.includes('Safari') &&
+    !userAgent.includes('Firefox') &&
+    req.get('host') && req.get('host').includes('localhost')
+  );
+  
+  if (isInternalServerRequest) {
+    req.headers['x-api-key'] = process.env.API_SECRET || 'your-secret-api-key-here';
+  }
+  next();
+});
 
 app.use(useragent.express());
 app.use(express.json());
@@ -118,8 +142,8 @@ io.on('connection', (socket) => {
 server.listen(PORT, () => {
   console.log(`App started on port ${PORT} (${localAddress})`);
   
-  // Pokreni kalendar scheduler nakon što se server pokrene
+  // Start calendar scheduler after server starts
   setTimeout(() => {
     calendarScheduler.start();
-  }, 2000); // Čekaj 2 sekunde da se server potpuno pokrene
+  }, 2000); // Wait 2 seconds for server to fully start
 });

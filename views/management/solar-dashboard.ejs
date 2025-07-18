@@ -231,6 +231,9 @@
     </div>
 
     <script>
+        // API Configuration
+        const API_KEY = '<%= process.env.API_SECRET || "your-secret-api-key-here" %>';
+        
         // Socket.IO connection for real-time updates
         const socket = io();
         
@@ -309,6 +312,13 @@
                         }
                     }
                 },
+                animation: {
+                    duration: 0 // Disable animations for better performance
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
                 elements: {
                     point: {
                         radius: 0,
@@ -343,6 +353,8 @@
                         borderColor: '#ef4444',
                         backgroundColor: 'rgba(239, 68, 68, 0.1)',
                         fill: true,
+                        pointRadius: 0, // Disable points for performance
+                        pointHoverRadius: 3,
                         pointBackgroundColor: function(context) {
                             const index = context.dataIndex;
                             if (index === 299) { // Current time point
@@ -460,10 +472,10 @@
                 }
             });
 
-            // Radiator Temperature Chart (-10 to 45°C range)
+            // Radiator Temperature Chart (-10 to 100°C range)
             const radiatorOptions = { ...baseChartOptions };
             radiatorOptions.scales.y.min = -10;
-            radiatorOptions.scales.y.max = 45;
+            radiatorOptions.scales.y.max = 100;
             radiatorOptions.scales.y.title = {
                 display: true,
                 text: 'Temperature (°C)',
@@ -547,6 +559,9 @@
                     // Update current time range
                     currentTimeRange = this.dataset.range;
                     
+                    // Reset last chart shift time when changing time range
+                    lastChartShiftTime = null;
+                    
                     // Reload chart data with new range
                     loadChartData();
                 });
@@ -556,7 +571,11 @@
         // Load chart data from API
         async function loadChartData() {
             try {
-                const response = await fetch(`/api/chart-data/${currentTimeRange}`);
+                const response = await fetch(`/api/chart-data/${currentTimeRange}`, {
+                    headers: {
+                        'X-API-Key': API_KEY
+                    }
+                });
                 const data = await response.json();
                 
                 if (data.success) {
@@ -589,8 +608,17 @@
             radiatorTempChart.data.datasets[1].data = Array(data.labels.length).fill(data.weeklyAverages.radiatorTemp);
             radiatorTempChart.data.datasets[2].data = data.hourlyHistoryData.radiatorTemp;
             
+            // Debug: provjeri hourly history podatke
+            console.log('📅 Hourly History Data:', {
+                pvVoltage: data.hourlyHistoryData.pvVoltage.filter(v => v !== null).length + ' non-null values',
+                accumPower: data.hourlyHistoryData.accumPower.filter(v => v !== null).length + ' non-null values',  
+                radiatorTemp: data.hourlyHistoryData.radiatorTemp.filter(v => v !== null).length + ' non-null values'
+            });
+            
             // Hide/show hourly history dataset based on time range
             const hideHourlyHistory = currentTimeRange === '1h';
+            console.log(`📊 Current time range: ${currentTimeRange}, Hide hourly history: ${hideHourlyHistory}`);
+            
             [pvVoltageChart, accumPowerChart, radiatorTempChart].forEach(chart => {
                 // Set global point options to ensure no points are shown
                 chart.options.elements.point.radius = 0;
@@ -650,8 +678,11 @@
             
             // Always recalculate averages for current time slot to update with new data
             const currentMinutes = currentTime.getMinutes();
-            const currentRoundedMinutes = Math.floor(currentMinutes / 5) * 5;
+            const intervalMinutes = getIntervalMinutes();
+            const currentRoundedMinutes = Math.floor(currentMinutes / intervalMinutes) * intervalMinutes;
             const currentTimeSlot = `${currentTime.getHours().toString().padStart(2, '0')}:${currentRoundedMinutes.toString().padStart(2, '0')}`;
+            
+            console.log(`⏰ Current time range: ${currentTimeRange}, Interval: ${intervalMinutes}min, Time slot: ${currentTimeSlot}`);
             
             // Update current time slot with new averaged data
             const currentAverages = calculateTimeSlotAverage(currentTimeSlot);
@@ -839,10 +870,21 @@
             return count.toString();
         }
         
-        // Check if it's time to shift the chart (every 5 minutes)
+        // Get interval minutes based on current time range
+        function getIntervalMinutes() {
+            switch(currentTimeRange) {
+                case '1h': return 1;   // 1-minute intervals
+                case '12h': return 2;  // 2-minute intervals
+                case '24h': return 5;  // 5-minute intervals
+                default: return 5;
+            }
+        }
+        
+        // Check if it's time to shift the chart (based on current time range)
         function checkIfTimeToShift(currentTime) {
+            const intervalMinutes = getIntervalMinutes();
             const currentMinutes = currentTime.getMinutes();
-            const currentRounded = Math.floor(currentMinutes / 5) * 5;
+            const currentRounded = Math.floor(currentMinutes / intervalMinutes) * intervalMinutes;
             
             if (!lastChartShiftTime) {
                 lastChartShiftTime = new Date(currentTime);
@@ -850,9 +892,9 @@
                 return false;
             }
             
-            const lastShiftRounded = Math.floor(lastChartShiftTime.getMinutes() / 5) * 5;
+            const lastShiftRounded = Math.floor(lastChartShiftTime.getMinutes() / intervalMinutes) * intervalMinutes;
             
-            // If we've moved to a new 5-minute interval
+            // If we've moved to a new interval
             if (currentRounded !== lastShiftRounded) {
                 lastChartShiftTime = new Date(currentTime);
                 lastChartShiftTime.setMinutes(currentRounded, 0, 0);
@@ -863,7 +905,11 @@
         }
         
         // Calculate average values for a time slot based on raw data buffer
-        function calculateTimeSlotAverage(targetTimeSlot, divisionMinutes = 5) {
+        function calculateTimeSlotAverage(targetTimeSlot, divisionMinutes = null) {
+            if (!divisionMinutes) {
+                divisionMinutes = getIntervalMinutes();
+            }
+            
             const [hours, minutes] = targetTimeSlot.split(':').map(Number);
             const targetTime = new Date();
             targetTime.setHours(hours, minutes, 0, 0);

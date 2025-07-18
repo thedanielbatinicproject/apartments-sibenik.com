@@ -1,15 +1,15 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs').promises;
-const { calendarScheduler } = require('../code/calendarScheduler');
+const { calendarScheduler } = require('../code/calendar/calendarScheduler');
 const router = express.Router();
 
-// Middleware za osnovnu autentifikaciju (možeš proširiti kasnije)
+// Middleware for basic authentication (can be extended later)
 const requireAuth = (req, res, next) => {
-  // Za sada jednostavna provjera - možeš dodati pravu autentifikaciju kasnije
+  // Simple check for now - add proper authentication later
   const isAuthenticated = req.session.isAdmin || false;
   if (!isAuthenticated) {
-    // Privremeno preskačemo autentifikaciju za development
+    // Temporarily skip authentication for development
     // return res.redirect('/management/login');
   }
   next();
@@ -18,7 +18,7 @@ const requireAuth = (req, res, next) => {
 // Solar Dashboard route
 router.get('/solar-dashboard', requireAuth, async (req, res) => {
   try {
-    // Učitaj solar podatke
+    // Load solar data
     const solarDataPath = path.join(__dirname, '../data/public_data/solars_public.json');
     let solarData = [];
     
@@ -30,7 +30,7 @@ router.get('/solar-dashboard', requireAuth, async (req, res) => {
       solarData = [];
     }
 
-    // Uzmi zadnjih 50 zapisa za prikaz
+    // Take last 50 records for display
     const recentData = solarData.slice(-50);
     const latestData = solarData.length > 0 ? solarData[solarData.length - 1] : null;
 

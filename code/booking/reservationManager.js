@@ -1,7 +1,7 @@
 const { validationResult } = require('express-validator');
 const path = require('path');
 const fs = require('fs');
-const { fetchCalendars } = require('./calendarAPI');
+const { fetchCalendars } = require('../calendar/calendarAPI');
 const emailSenderManager = require('./emailSenderManager');
 
 // Helper function to get apartment name

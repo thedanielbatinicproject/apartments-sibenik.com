@@ -1,5 +1,5 @@
 const express = require('express');
-const { fetchCalendars } = require('../code/calendarAPI');
+const { fetchCalendars } = require('../code/calendar/calendarAPI');
 const router = express.Router();
 
 router.get('/', (req, res) => {

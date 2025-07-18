@@ -1,7 +1,7 @@
 const express = require('express');
-const { handleRootRedirect, handleDesktopRedirect, handleMobileRedirect } = require('../code/redirectManager');
-const { handleHeaderTest } = require('../code/headerTestManager');
-const { displayGallery } = require('../code/galleryRoutes');
+const { handleRootRedirect, handleDesktopRedirect, handleMobileRedirect } = require('../code/utils/redirectManager');
+const { handleHeaderTest } = require('../code/utils/headerTestManager');
+const { displayGallery } = require('../code/gallery/galleryRoutes');
 const router = express.Router();
 
 // Root and redirect routes

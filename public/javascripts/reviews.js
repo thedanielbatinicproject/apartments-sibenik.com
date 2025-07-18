@@ -89,7 +89,7 @@ class ReviewsModule {
           guestAvatar: "/images/avatars/miriam.jpg",
           date: "20. August, 2024",
           rating: 5,
-          comment: "Thank you Brigita! We loved your house and my baby enjoyed the time with the turtles 🐢 We hope to return next year. Thank you for all the recommendations and warm hospitality!",
+          comment: "Thank you Brigita! We loved your house and my baby enjoyed the time with the turtles. We hope to return next year. Thank you for all the recommendations and warm hospitality!",
           isVerified: true,
           platform: "booking"
         },

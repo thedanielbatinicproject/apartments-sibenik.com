@@ -1,6 +1,6 @@
-const { fetchCalendars } = require('./calendarAPI');
-const { getCombinedReviews } = require('./reviewsAPI');
-const reviewUpvoteManager = require('./reviewUpvoteManager');
+const { fetchCalendars } = require('../calendar/calendarAPI');
+const { getCombinedReviews } = require('../reviews/reviewsAPI');
+const reviewUpvoteManager = require('../reviews/reviewUpvoteManager');
 
 // Handle header test page with all data
 async function handleHeaderTest(req, res) {

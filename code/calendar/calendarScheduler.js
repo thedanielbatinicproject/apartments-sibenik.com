@@ -1,4 +1,4 @@
-const { internalAPI } = require('./internalAPIClient');
+const { internalAPI } = require('../utils/internalAPIClient');
 
 class CalendarScheduler {
   constructor() {

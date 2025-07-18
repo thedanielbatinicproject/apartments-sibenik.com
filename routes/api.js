@@ -1,11 +1,32 @@
 const express = require('express');
 const fs = require('fs').promises;
 const path = require('path');
-const { reservationValidationRules } = require('../code/validatorManager');
-const { processReservation, checkAvailability } = require('../code/reservationManager');
-const { displayCalendar, updateCalendar, cleanCalendar } = require('../code/calendarRoutes');
-const { getReviews, handleUpvote } = require('../code/reviewRoutes');
+const { reservationValidationRules } = require('../code/booking/validatorManager');
+const { processReservation, checkAvailability } = require('../code/booking/reservationManager');
+const { displayCalendar, updateCalendar, cleanCalendar } = require('../code/calendar/calendarRoutes');
+const { getReviews, handleUpvote } = require('../code/reviews/reviewRoutes');
 const router = express.Router();
+
+// API Security Configuration
+const API_SECRET = process.env.API_SECRET || 'your-secret-api-key-here';
+
+const requireAPIKey = (req, res, next) => {
+  const providedKey = req.headers['x-api-key'] || req.query.apikey;
+  
+  if (!providedKey || providedKey !== API_SECRET) {
+    // Redirect to error page instead of JSON response
+    return res.status(401).render('error', {
+      error: {
+        'error-code': '401',
+        'error-title': 'UNAUTHORIZED ACCESS',
+        'error-message': 'API access denied. Valid API key required for accessing this resource.'
+      },
+      validBackPage: req.session?.validBackPage || '/'
+    });
+  }
+  
+  next();
+};
 
 // Global variable to store last significant data for delta compression
 let lastSignificantData = null;
@@ -18,16 +39,16 @@ async function initializeLastSignificantData() {
     const history = JSON.parse(existingData);
     
     if (history && history.length > 0) {
-      // Rekonstruiraj pune podatke od zadnjeg full zapisa
+      // Reconstruct full data from last full record
       let reconstructedData = null;
       
-      // Pronađi zadnji full zapis
+      // Find last full record
       for (let i = history.length - 1; i >= 0; i--) {
         if (!history[i]._type || history[i]._type !== 'delta') {
           reconstructedData = { ...history[i] };
           console.log('[INIT] Found base record from:', reconstructedData.local_time);
           
-          // Primjeni sve delta promjene nakon ovog zapisa
+          // Apply all delta changes after this record
           for (let j = i + 1; j < history.length; j++) {
             if (history[j]._type === 'delta') {
               Object.assign(reconstructedData, history[j]);
@@ -42,7 +63,7 @@ async function initializeLastSignificantData() {
         lastSignificantData = reconstructedData;
         console.log('[INIT] Reconstructed data initialized with:', Object.keys(lastSignificantData).length, 'fields');
       } else {
-        // Ako nema full zapisa, uzmi zadnji (čak i ako je delta)
+        // If no full record exists, take the last one (even if it's delta)
         lastSignificantData = history[history.length - 1];
         console.log('[INIT] No full record found, using last delta:', lastSignificantData.local_time);
       }
@@ -62,9 +83,9 @@ function createDeltaRecord(newData, lastData) {
   console.log('[DELTA] Error_code:', newData.Error_code);
   console.log('[DELTA] Warning_code:', newData.Warning_code);
   
-  // RULE 1: Ako ima Error_code > 0 ili Warning_code > 0, spremi cijeli objekt
+  // RULE 1: If Error_code > 0 or Warning_code > 0, save entire object
   if (newData.Error_code > 0 || newData.Warning_code > 0) {
-    console.log('[DELTA] FULL RECORD - Ima greške/upozorenja');
+    console.log('[DELTA] FULL RECORD - Has errors/warnings');
     return { 
       type: 'full', 
       data: newData, 
@@ -72,13 +93,13 @@ function createDeltaRecord(newData, lastData) {
     };
   }
 
-  // RULE 2: Ako nema grešaka, kreiraj delta zapis
+  // RULE 2: If no errors, create delta record
   if (!lastData) {
-    console.log('[DELTA] FULL RECORD - Prvi zapis');
+    console.log('[DELTA] FULL RECORD - First record');
     return { 
       type: 'full', 
       data: newData, 
-      reason: 'Prvi zapis u datoteci' 
+      reason: 'First record in file' 
     };
   }
 
@@ -100,24 +121,24 @@ function createDeltaRecord(newData, lastData) {
     const oldVal = lastData[field];
     const newVal = newData[field];
     
-    // Ako su vrijednosti različite, dodaj u delta
+    // If values are different, add to delta
     if (oldVal !== newVal) {
       delta[field] = newVal;
       changesFound++;
-      console.log(`[DELTA] PROMJENA: ${field}: ${oldVal} → ${newVal}`);
+      console.log(`[DELTA] CHANGE: ${field}: ${oldVal} → ${newVal}`);
     }
   }
 
   if (changesFound === 0) {
-    console.log('[DELTA] BLOKIRA - Nema promjena');
+    console.log('[DELTA] BLOCKED - No changes');
     return { 
       type: 'skip', 
       data: null, 
-      reason: 'Identični podaci - blokirano' 
+      reason: 'Identical data - blocked' 
     };
   }
 
-  console.log(`[DELTA] DELTA RECORD - ${changesFound} promjena`);
+  console.log(`[DELTA] DELTA RECORD - ${changesFound} changes`);
   delta._type = 'delta'; // Mark as delta record
   return { 
     type: 'delta', 
@@ -175,7 +196,7 @@ router.post('/backyard-management', async (req, res) => {
       // Data is identical, don't save to file but emit real-time update
       const io = req.app.get('io');
       if (io) {
-        // Pošalji current podatke za real-time (bez spremanja u file)
+        // Send current data for real-time (without saving to file)
         const realtimeData = {
           ...incomingData,
           source_ip: req.ip || req.connection.remoteAddress || req.socket.remoteAddress || 'Unknown'
@@ -221,23 +242,23 @@ router.post('/backyard-management', async (req, res) => {
       const existingData = await fs.readFile(publicDataPath, 'utf8');
       history = JSON.parse(existingData);
     } catch (err) {
-      // Fajl ne postoji, kreiraj prazan niz
+      // File doesn't exist, create empty array
       history = [];
     }
 
     history.push(dataToSave);
     
-    // Zadrži samo zadnjih 500 zapisa (smanjeno s 1000 za dodatnu optimizaciju)
+    // Keep only last 500 records (reduced from 1000 for additional optimization)
     if (history.length > 500) {
       history = history.slice(-500);
     }
 
     await fs.writeFile(publicDataPath, JSON.stringify(history, null, 2));
 
-    // Emit Socket.IO event za real-time updates
+    // Emit Socket.IO event for real-time updates
     const io = req.app.get('io');
     if (io) {
-      // Za real-time, uvijek pošalji pune podatke (rekonstruiraj iz lastSignificantData)
+      // For real-time, always send full data (reconstruct from lastSignificantData)
       const realtimeData = deltaResult.type === 'delta' ? lastSignificantData : dataToSave;
       console.log('[SOCKET] Emitting solar data update to clients');
       io.emit('solarDataUpdate', realtimeData);
@@ -258,9 +279,10 @@ router.post('/backyard-management', async (req, res) => {
   }
 });
 
-router.get('/backyard-management', async (req, res) => {
+// Solar Dashboard API endpoints (protected)
+router.get('/backyard-management', requireAPIKey, async (req, res) => {
   try {
-    // Učitaj relay statuse iz solar_control.json
+    // Load relay statuses from solar_control.json
     const controlDataPath = path.join(__dirname, '../data/private/solar_control.json');
     
     try {
@@ -289,39 +311,92 @@ router.get('/backyard-management', async (req, res) => {
   }
 });
 
-// Chart data API endpoint for different time ranges
-router.get('/chart-data/:timeRange', async (req, res) => {
+// Cache for chart data optimization
+const chartDataCache = new Map();
+const CACHE_DURATION = 30000; // 30 seconds cache
+
+// File cache to avoid repeated file reading
+let fileCache = {
+  data: null,
+  timestamp: 0,
+  FILE_CACHE_DURATION: 60000 // 1 minute file cache
+};
+
+// Chart data API endpoint for different time ranges (protected)
+router.get('/chart-data/:timeRange', requireAPIKey, async (req, res) => {
   try {
     const timeRange = req.params.timeRange;
+    const cacheKey = `chart-data-${timeRange}`;
+    
+    // Check response cache first
+    const cachedData = chartDataCache.get(cacheKey);
+    if (cachedData && (Date.now() - cachedData.timestamp) < CACHE_DURATION) {
+      return res.json(cachedData.data);
+    }
+
     const publicDataPath = path.join(__dirname, '../data/public_data/solars_public.json');
-    const rawData = await fs.readFile(publicDataPath, 'utf8');
-    const solarData = JSON.parse(rawData);
+    
+    // Check if we need to read file from disk
+    let solarData;
+    if (!fileCache.data || (Date.now() - fileCache.timestamp) > fileCache.FILE_CACHE_DURATION) {
+      console.log('Reading file from disk...');
+      const startRead = Date.now();
+      const rawData = await fs.readFile(publicDataPath, 'utf8');
+      const readTime = Date.now() - startRead;
+      
+      const startParse = Date.now();
+      solarData = JSON.parse(rawData);
+      const parseTime = Date.now() - startParse;
+      
+      console.log(`   File read: ${readTime}ms, Parse: ${parseTime}ms, Records: ${solarData.length}`);
+      
+      // Update file cache
+      fileCache.data = solarData;
+      fileCache.timestamp = Date.now();
+    } else {
+      console.log('Using cached file data');
+      solarData = fileCache.data;
+    }
 
     const now = new Date();
     
-    // Determine time range and max points
-    let hoursBack, maxPoints;
+    // Determine time range, intervals and max points
+    let hoursBack, intervalMinutes, maxPoints;
     switch(timeRange) {
       case '1h':
         hoursBack = 1;
-        maxPoints = 60; // 1 point per minute
+        intervalMinutes = 1; // 1-minute intervals
+        maxPoints = 60; // 60 points for 1 hour
         break;
       case '12h':
         hoursBack = 12;
-        maxPoints = 150; // 1 point per ~5 minutes
+        intervalMinutes = 2; // 2-minute intervals
+        maxPoints = 360; // 360 points for 12 hours (12*60/2)
         break;
       case '24h':
       default:
         hoursBack = 24;
-        maxPoints = 300; // 1 point per ~5 minutes
+        intervalMinutes = 5; // 5-minute intervals
+        maxPoints = 288; // 288 points for 24 hours (24*60/5)
         break;
     }
     
     const timeRangeStart = new Date(now.getTime() - (hoursBack * 60 * 60 * 1000));
     const last7DaysStart = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
 
-    // Create time points evenly distributed over the selected range
-    const timeInterval = (hoursBack * 60 * 60 * 1000) / maxPoints;
+    // Pre-filter data to only what we need (major performance boost)
+    const startTotal = Date.now();
+    console.log(`Filtering data from ${solarData.length} records...`);
+    const startFilter = Date.now();
+    const relevantData = solarData.filter(record => {
+      const recordTime = new Date(record.timestamp);
+      return recordTime >= last7DaysStart; // Only last 7 days for all calculations
+    });
+    const filterTime = Date.now() - startFilter;
+    console.log(`   Filtered to ${relevantData.length} records in ${filterTime}ms`);
+
+    // Create time points with fixed intervals
+    const timeInterval = intervalMinutes * 60 * 1000; // Convert minutes to milliseconds
     
     const timePoints = [];
     const labels = [];
@@ -338,7 +413,7 @@ router.get('/chart-data/:timeRange', async (req, res) => {
       }
     }
 
-    // Helper function for linear interpolation
+    // Helper function for linear interpolation with pre-filtered data
     function interpolateValue(records, targetTime, valueField) {
       if (records.length === 0) return null;
       
@@ -381,9 +456,11 @@ router.get('/chart-data/:timeRange', async (req, res) => {
     const last7DaysData = [];
     
     // Process all data and reconstruct delta records
+    console.log(`Processing ${relevantData.length} filtered records...`);
+    const startProcessing = Date.now();
     let reconstructedData = {};
     
-    for (const record of solarData) {
+    for (const record of relevantData) {
       const recordTime = new Date(record.timestamp);
       
       // Reconstruct full data for delta records
@@ -401,8 +478,13 @@ router.get('/chart-data/:timeRange', async (req, res) => {
         last7DaysData.push({ ...reconstructedData, timestamp: record.timestamp });
       }
     }
+    const processingTime = Date.now() - startProcessing;
+    console.log(`   Processing completed in ${processingTime}ms`);
+    console.log(`   TimeRange data points: ${timeRangeData.length}, Last7Days: ${last7DaysData.length}`);
 
     // Calculate data for each time point
+    console.log(`Interpolating ${timePoints.length} time points...`);
+    const startInterpolation = Date.now();
     const liveData = {
       pvVoltage: [],
       accumPower: [],
@@ -433,6 +515,18 @@ router.get('/chart-data/:timeRange', async (req, res) => {
         weeklyTotals.radiatorTemp.reduce((a, b) => a + b, 0) / weeklyTotals.radiatorTemp.length : 0
     };
 
+    // Pre-group data by days for hourly history (MAJOR OPTIMIZATION)
+    const dataByDays = {};
+    for (const record of last7DaysData) {
+      const recordTime = new Date(record.timestamp);
+      const dayKey = `${recordTime.getFullYear()}-${recordTime.getMonth()}-${recordTime.getDate()}`;
+      if (!dataByDays[dayKey]) {
+        dataByDays[dayKey] = [];
+      }
+      dataByDays[dayKey].push(record);
+    }
+    console.log(`   Grouped into ${Object.keys(dataByDays).length} days`);
+
     // Process each time point
     for (const timePoint of timePoints) {
       // Live data (current time range)
@@ -441,17 +535,38 @@ router.get('/chart-data/:timeRange', async (req, res) => {
       liveData.radiatorTemp.push(interpolateValue(timeRangeData, timePoint, 'Radiator_temp_C'));
 
       // Hourly history data (average for this time point over last 7 days)
+      // OPTIMIZATION: Skip hourly history for short time ranges
+      if (timeRange === '1h') {
+        hourlyHistoryData.pvVoltage.push(null);
+        hourlyHistoryData.accumPower.push(null);
+        hourlyHistoryData.radiatorTemp.push(null);
+        continue; // Skip expensive calculation for 1h view
+      }
+      
+      // OPTIMIZATION: Calculate hourly history only every 5th point for 12h view
+      const timePointIndex = timePoints.indexOf(timePoint);
+      if (timeRange === '12h' && timePointIndex % 5 !== 0) {
+        hourlyHistoryData.pvVoltage.push(null);
+        hourlyHistoryData.accumPower.push(null);
+        hourlyHistoryData.radiatorTemp.push(null);
+        continue;
+      }
+      
+      // OPTIMIZATION: Calculate hourly history only every 3rd point for 24h view  
+      if (timeRange === '24h' && timePointIndex % 3 !== 0) {
+        hourlyHistoryData.pvVoltage.push(null);
+        hourlyHistoryData.accumPower.push(null);
+        hourlyHistoryData.radiatorTemp.push(null);
+        continue;
+      }
+      
       const dayAverages = { pvVoltage: [], accumPower: [], radiatorTemp: [] };
       
       // For each of the last 7 days, find value at this time point
       for (let dayOffset = 1; dayOffset <= 7; dayOffset++) {
         const historicalTime = new Date(timePoint.getTime() - (dayOffset * 24 * 60 * 60 * 1000));
-        const dayData = last7DaysData.filter(record => {
-          const recordTime = new Date(record.timestamp);
-          const dayStart = new Date(historicalTime.getFullYear(), historicalTime.getMonth(), historicalTime.getDate());
-          const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000);
-          return recordTime >= dayStart && recordTime < dayEnd;
-        });
+        const dayKey = `${historicalTime.getFullYear()}-${historicalTime.getMonth()}-${historicalTime.getDate()}`;
+        const dayData = dataByDays[dayKey] || [];
         
         const dayValue_pv = interpolateValue(dayData, historicalTime, 'PV_voltage_V');
         const dayValue_power = interpolateValue(dayData, historicalTime, 'Accum_power_Wh');
@@ -462,22 +577,62 @@ router.get('/chart-data/:timeRange', async (req, res) => {
         if (dayValue_temp !== null) dayAverages.radiatorTemp.push(dayValue_temp);
       }
       
-      // Calculate averages for this time point
-      hourlyHistoryData.pvVoltage.push(
-        dayAverages.pvVoltage.length > 0 ? 
-        dayAverages.pvVoltage.reduce((a, b) => a + b, 0) / dayAverages.pvVoltage.length : null
-      );
-      hourlyHistoryData.accumPower.push(
-        dayAverages.accumPower.length > 0 ? 
-        dayAverages.accumPower.reduce((a, b) => a + b, 0) / dayAverages.accumPower.length : null
-      );
-      hourlyHistoryData.radiatorTemp.push(
-        dayAverages.radiatorTemp.length > 0 ? 
-        dayAverages.radiatorTemp.reduce((a, b) => a + b, 0) / dayAverages.radiatorTemp.length : null
-      );
+      // Calculate averages for this time point (with fallback to nearby values)
+      const calculateAverage = (values) => {
+        if (values.length > 0) {
+          return values.reduce((a, b) => a + b, 0) / values.length;
+        }
+        return null;
+      };
+      
+      hourlyHistoryData.pvVoltage.push(calculateAverage(dayAverages.pvVoltage));
+      hourlyHistoryData.accumPower.push(calculateAverage(dayAverages.accumPower));
+      hourlyHistoryData.radiatorTemp.push(calculateAverage(dayAverages.radiatorTemp));
     }
 
-    res.json({
+    // Interpolate null values for better line continuity
+    const interpolateNullValues = (data) => {
+      for (let key in data) {
+        const values = data[key];
+        for (let i = 0; i < values.length; i++) {
+          if (values[i] === null) {
+            // Find previous non-null value
+            let prevValue = null;
+            let prevIndex = i - 1;
+            while (prevIndex >= 0 && values[prevIndex] === null) {
+              prevIndex--;
+            }
+            if (prevIndex >= 0) prevValue = values[prevIndex];
+            
+            // Find next non-null value
+            let nextValue = null;
+            let nextIndex = i + 1;
+            while (nextIndex < values.length && values[nextIndex] === null) {
+              nextIndex++;
+            }
+            if (nextIndex < values.length) nextValue = values[nextIndex];
+            
+            // Interpolate
+            if (prevValue !== null && nextValue !== null) {
+              const distance = nextIndex - prevIndex;
+              const position = i - prevIndex;
+              values[i] = prevValue + (nextValue - prevValue) * (position / distance);
+            } else if (prevValue !== null) {
+              values[i] = prevValue; // Use previous value
+            } else if (nextValue !== null) {
+              values[i] = nextValue; // Use next value
+            } else {
+              values[i] = 0; // Default fallback
+            }
+          }
+        }
+      }
+    };
+
+    // Apply interpolation to hourly history
+    interpolateNullValues(hourlyHistoryData);
+
+    const responseData = {
       success: true,
       labels,
       liveData,
@@ -485,7 +640,15 @@ router.get('/chart-data/:timeRange', async (req, res) => {
       weeklyAverages,
       timePoints: timePoints.map(tp => tp.toISOString()),
       dataTimestamp: now.toISOString()
+    };
+
+    // Cache the response
+    chartDataCache.set(cacheKey, {
+      data: responseData,
+      timestamp: Date.now()
     });
+
+    res.json(responseData);
 
   } catch (error) {
     console.error('Error fetching chart data:', error);
