@@ -17,7 +17,7 @@ const authenticateAPI = (req, res, next) => {
 
   // Za privatne API rute, provjeri secret key
   const providedKey = req.body.secret_key || req.query.secret_key || req.headers['x-api-key'];
-  const validKey = process.env.SECRET_API_KEY;
+  const validKey = process.env.API_SECRET;
 
   if (!providedKey || providedKey !== validKey) {
     return res.status(401).json({ 

@@ -34,7 +34,7 @@ class CalendarScheduler {
       return;
     }
 
-    console.log('Starting calendar auto-update scheduler (every 5 seconds)');
+    console.log('[SCHEDULER] Starting calendar auto-update scheduler (every 5 seconds)');
     this.isRunning = true;
     
     // Prvi update odmah

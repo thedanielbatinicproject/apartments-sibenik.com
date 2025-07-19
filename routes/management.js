@@ -165,7 +165,7 @@ router.get('/solar-dashboard', requireAuth, async (req, res) => {
       const data = await fs.readFile(solarDataPath, 'utf8');
       solarData = JSON.parse(data);
     } catch (err) {
-      console.log('No solar data found, using empty array');
+      console.log('[WARNING] No solar data found, using empty array');
       solarData = [];
     }
 
@@ -177,7 +177,7 @@ router.get('/solar-dashboard', requireAuth, async (req, res) => {
       const variables = await fs.readFile(variablesPath, 'utf8');
       variablesData = JSON.parse(variables);
     } catch (err) {
-      console.log('No solar variables data found, using empty object');
+      console.log('[WARNING] No solar variables data found, using empty object');
       variablesData = {};
     }
 

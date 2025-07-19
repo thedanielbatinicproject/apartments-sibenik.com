@@ -4,7 +4,7 @@ const axios = require('axios');
 class InternalAPIClient {
   constructor() {
     this.baseURL = process.env.BASE_URL || 'http://localhost:3000';
-    this.secretKey = process.env.SECRET_API_KEY;
+    this.secretKey = process.env.API_SECRET;
   }
 
   // Helper method to add secret key to request

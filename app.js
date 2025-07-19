@@ -33,6 +33,11 @@ app.use('/api', (req, res, next) => {
          req.get('User-Agent').includes('Firefox'))) {
       return next();
     }
+
+    // Skip API key requirement for backyard-management POST (has its own secret_key validation)
+    if (req.path.includes('/backyard-management') && req.method === 'POST') {
+      return next();
+    }
     
     // Check if this is an internal server-to-server request
     const userAgent = req.get('User-Agent') || '';
@@ -167,15 +172,15 @@ const localAddress = `http://${localIPAddress}:${PORT}`;
 
 // Socket.IO connection handling
 io.on('connection', (socket) => {
-  console.log('Client connected to socket');
+  // console.log('Client connected to socket'); // Too verbose
   
   socket.on('disconnect', () => {
-    console.log('Client disconnected from socket');
+    // console.log('Client disconnected from socket'); // Too verbose
   });
 });
 
 server.listen(PORT, () => {
-  console.log(`App started on port ${PORT} (${localAddress})`);
+  console.log(`[SERVER] App started on port ${PORT} (${localAddress})`);
   
   // Start calendar scheduler after server starts
   setTimeout(() => {

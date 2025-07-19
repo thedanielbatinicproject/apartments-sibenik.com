@@ -78,13 +78,13 @@ async function initializeLastSignificantData() {
       for (let i = history.length - 1; i >= 0; i--) {
         if (!history[i]._type || history[i]._type !== 'delta') {
           reconstructedData = { ...history[i] };
-          console.log('[INIT] Found base record from:', reconstructedData.local_time);
+          // console.log('[INIT] Found base record from:', reconstructedData.local_time); // Too verbose
           
           // Apply all delta changes after this record
           for (let j = i + 1; j < history.length; j++) {
             if (history[j]._type === 'delta') {
               Object.assign(reconstructedData, history[j]);
-              console.log('[INIT] Applied delta from:', history[j].local_time);
+              // console.log('[INIT] Applied delta from:', history[j].local_time); // Too verbose
             }
           }
           break;
@@ -93,7 +93,7 @@ async function initializeLastSignificantData() {
       
       if (reconstructedData) {
         lastSignificantData = reconstructedData;
-        console.log('[INIT] Reconstructed data initialized with:', Object.keys(lastSignificantData).length, 'fields');
+        console.log('[INIT] Data system initialized successfully');
       } else {
         // If no full record exists, take the last one (even if it's delta)
         lastSignificantData = history[history.length - 1];
@@ -199,13 +199,13 @@ async function reconstructDeltaDataWithHistory(dataArray, allHistoryData) {
 
 // Delta compression function
 function createDeltaRecord(newData, lastData) {
-  console.log('[DELTA] === DELTA COMPRESSION ANALIZA ===');
-  console.log('[DELTA] Error_code:', newData.Error_code);
-  console.log('[DELTA] Warning_code:', newData.Warning_code);
+  // console.log('[DELTA] === DELTA COMPRESSION ANALIZA ==='); // Too verbose
+  // console.log('[DELTA] Error_code:', newData.Error_code); // Too verbose
+  // console.log('[DELTA] Warning_code:', newData.Warning_code); // Too verbose
   
   // RULE 1: If Error_code > 0 or Warning_code > 0, save entire object
   if (newData.Error_code > 0 || newData.Warning_code > 0) {
-    console.log('[DELTA] FULL RECORD - Has errors/warnings');
+    // console.log('[DELTA] FULL RECORD - Has errors/warnings'); // Too verbose
     return { 
       type: 'full', 
       data: newData, 
@@ -215,7 +215,7 @@ function createDeltaRecord(newData, lastData) {
 
   // RULE 2: If no errors, create delta record
   if (!lastData) {
-    console.log('[DELTA] FULL RECORD - First record');
+    // console.log('[DELTA] FULL RECORD - First record'); // Too verbose
     return { 
       type: 'full', 
       data: newData, 
@@ -245,12 +245,12 @@ function createDeltaRecord(newData, lastData) {
     if (oldVal !== newVal) {
       delta[field] = newVal;
       changesFound++;
-      console.log(`[DELTA] CHANGE: ${field}: ${oldVal} → ${newVal}`);
+      // console.log(`[DELTA] CHANGE: ${field}: ${oldVal} → ${newVal}`); // Too verbose
     }
   }
 
   if (changesFound === 0) {
-    console.log('[DELTA] BLOCKED - No changes');
+    // console.log('[DELTA] BLOCKED - No changes'); // Too verbose
     return { 
       type: 'skip', 
       data: null, 
@@ -258,7 +258,7 @@ function createDeltaRecord(newData, lastData) {
     };
   }
 
-  console.log(`[DELTA] DELTA RECORD - ${changesFound} changes`);
+  // console.log(`[DELTA] DELTA RECORD - ${changesFound} changes`); // Too verbose
   delta._type = 'delta'; // Mark as delta record
   return { 
     type: 'delta', 
@@ -285,7 +285,7 @@ router.post('/backyard-management', async (req, res) => {
   try {
     // Validacija secret key-a
     const secretKey = req.body.secret_key;
-    if (!secretKey || secretKey !== process.env.SECRET_API_KEY) {
+    if (!secretKey || secretKey !== process.env.API_SECRET) {
       return res.status(401).json({ error: 'Invalid secret key' });
     }
 
@@ -310,7 +310,7 @@ router.post('/backyard-management', async (req, res) => {
     // Check if this data should be saved using delta compression
     const deltaResult = createDeltaRecord(incomingData, lastSignificantData);
     
-    console.log('[API] Delta result:', deltaResult.type, '-', deltaResult.reason);
+    // console.log('[API] Delta result:', deltaResult.type, '-', deltaResult.reason); // Too verbose
     
     if (deltaResult.type === 'skip') {
       // Data is identical, don't save to file but emit real-time update
@@ -322,8 +322,8 @@ router.post('/backyard-management', async (req, res) => {
           ...incomingData,         // Current incoming data (even if identical)
           source_ip: req.ip || req.connection.remoteAddress || req.socket.remoteAddress || 'Unknown'
         };
-        console.log('[SOCKET] Emitting identical data update to clients');
-        console.log('[SOCKET] Sample data being sent:', Object.keys(realtimeData).slice(0, 5));
+        // console.log('[SOCKET] Emitting identical data update to clients'); // Too verbose
+        // console.log('[SOCKET] Sample data being sent:', Object.keys(realtimeData).slice(0, 5)); // Too verbose
         io.emit('solarDataUpdate', realtimeData);
       }
       
@@ -390,8 +390,8 @@ router.post('/backyard-management', async (req, res) => {
         source_ip: req.ip || req.connection.remoteAddress || req.socket.remoteAddress || 'Unknown'
       };
       
-      console.log('[SOCKET] Emitting solar data update to clients');
-      console.log('[SOCKET] Sample data being sent:', Object.keys(completeRealtimeData).slice(0, 5));
+      // console.log('[SOCKET] Emitting solar data update to clients'); // Too verbose
+      // console.log('[SOCKET] Sample data being sent:', Object.keys(completeRealtimeData).slice(0, 5)); // Too verbose
       io.emit('solarDataUpdate', completeRealtimeData);
     }
 
@@ -468,7 +468,7 @@ router.get('/chart-data/:timeRange', requireAPIKey, async (req, res) => {
     // Check if we need to read file from disk
     let solarData;
     if (!fileCache.data || (Date.now() - fileCache.timestamp) > fileCache.FILE_CACHE_DURATION) {
-      console.log('Reading file from disk...');
+      // console.log('Reading file from disk...'); // Too verbose
       const startRead = Date.now();
       const rawData = await fs.readFile(publicDataPath, 'utf8');
       const readTime = Date.now() - startRead;
@@ -477,13 +477,13 @@ router.get('/chart-data/:timeRange', requireAPIKey, async (req, res) => {
       solarData = JSON.parse(rawData);
       const parseTime = Date.now() - startParse;
       
-      console.log(`   File read: ${readTime}ms, Parse: ${parseTime}ms, Records: ${solarData.length}`);
+      // console.log(`   File read: ${readTime}ms, Parse: ${parseTime}ms, Records: ${solarData.length}`); // Too verbose
       
       // Update file cache
       fileCache.data = solarData;
       fileCache.timestamp = Date.now();
     } else {
-      console.log('Using cached file data');
+      // console.log('Using cached file data'); // Too verbose
       solarData = fileCache.data;
     }
 
@@ -792,7 +792,7 @@ router.get('/chart-data/:timeRange', requireAPIKey, async (req, res) => {
 router.get('/solar/chart-data', requireAPIKey, async (req, res) => {
   try {
     const timeRange = req.query.range || '24h';
-    console.log('Solar chart data requested for range:', timeRange);
+    // console.log('Solar chart data requested for range:', timeRange); // Too verbose
     
     const publicDataPath = path.join(__dirname, '../data/public_data/solars_public.json');
     let solarData = [];
@@ -846,7 +846,7 @@ router.get('/solar/chart-data', requireAPIKey, async (req, res) => {
       return recordTime >= timeRangeStart && recordTime <= now;
     }).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 
-    console.log(`Found ${relevantData.length} records for ${timeRange}`);
+    // console.log(`Found ${relevantData.length} records for ${timeRange}`); // Too verbose
 
     if (relevantData.length === 0) {
       return res.json({
@@ -856,9 +856,9 @@ router.get('/solar/chart-data', requireAPIKey, async (req, res) => {
     }
 
     // Reconstruct delta records before processing chart data
-    console.log('Reconstructing delta records for chart...');
+    // console.log('Reconstructing delta records for chart...'); // Too verbose
     const reconstructedData = await reconstructDeltaDataWithHistory(relevantData, solarData);
-    console.log(`Reconstructed ${reconstructedData.length} records`);
+    // console.log(`Reconstructed ${reconstructedData.length} records`); // Too verbose
 
     // Create simplified time points and data arrays from reconstructed data
     const timePoints = [];
@@ -877,7 +877,7 @@ router.get('/solar/chart-data', requireAPIKey, async (req, res) => {
       chargerPower.push(parseFloat(record.Charger_power_W) || 0);
     }
 
-    console.log(`Returning ${timePoints.length} data points`);
+    // console.log(`Returning ${timePoints.length} data points`); // Too verbose
 
     // Calculate weekly averages (last 7 days)
     const weekAgo = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
@@ -886,7 +886,7 @@ router.get('/solar/chart-data', requireAPIKey, async (req, res) => {
       return recordTime >= weekAgo && recordTime <= now;
     });
 
-    console.log(`Found ${weeklyData.length} records for weekly average calculation`);
+    // console.log(`Found ${weeklyData.length} records for weekly average calculation`); // Too verbose
 
     // Reconstruct weekly data for accurate averages
     const reconstructedWeeklyData = await reconstructDeltaDataWithHistory(weeklyData, solarData);
@@ -903,7 +903,7 @@ router.get('/solar/chart-data', requireAPIKey, async (req, res) => {
       weeklyAvgPower = validPower.length > 0 ? validPower.reduce((sum, r) => sum + parseFloat(r.Charger_power_W), 0) / validPower.length : 0;
     }
 
-    console.log('Weekly averages - PV:', weeklyAvgPV.toFixed(2), 'V, Battery:', weeklyAvgBattery.toFixed(2), 'V, Power:', weeklyAvgPower.toFixed(2), 'W');
+    // console.log('Weekly averages - PV:', weeklyAvgPV.toFixed(2), 'V, Battery:', weeklyAvgBattery.toFixed(2), 'V, Power:', weeklyAvgPower.toFixed(2), 'W'); // Too verbose
 
     const responseData = {
       success: true,
