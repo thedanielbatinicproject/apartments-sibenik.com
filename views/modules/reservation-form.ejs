@@ -1,6 +1,7 @@
 <!-- Reservation Form Module -->
 <link rel="stylesheet" href="/stylesheets/index/reservation-form.css">
 
+
 <div class="reservation-form-container">
   <div class="reservation-form-backdrop">
     <div class="reservation-form-content">
@@ -19,8 +20,8 @@
 
         <!-- Email -->
         <div class="form-group">
-          <label for="email" class="form-label">Email</label>
-          <input type="email" id="email" name="email" class="form-input">
+          <label for="email" class="form-label">Email *</label>
+          <input type="email" id="email" name="email" class="form-input" required>
           <div class="error-message" id="email-error"></div>
         </div>
 
@@ -104,7 +105,7 @@
             <option value="">Select an apartment</option>
             <option value="2">Apartment with Garden</option>
             <option value="1">Studio Apartment</option>
-            <option value="3">Room Apartment</option>
+            <option value="3">Room</option>
           </select>
           <div class="error-message" id="apartment-error"></div>
         </div>

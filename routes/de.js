@@ -21,7 +21,7 @@ router.get('/mobile', async (req, res) => {
       { thumbnail: "/images/gallery/studio/studio-slike-8-thumb.jpg", fullsize: "/images/gallery/studio/studio-slike-8.jpg", alt: "Studio Bild 8" },
       { thumbnail: "/images/gallery/studio/studio-slike-9-thumb.jpg", fullsize: "/images/gallery/studio/studio-slike-9.jpg", alt: "Studio Bild 9" }
     ];
-    res.render('de/mobile', { language: 'de', device: 'mobile', calendar, galleryImages });
+    res.render('de/home', { language: 'de', device: 'mobile', calendar, galleryImages });
   } catch (err) {
     res.status(500).render('error', {
       error: {
@@ -48,7 +48,7 @@ router.get('/desktop', async (req, res) => {
       { thumbnail: "/images/gallery/studio/studio-slike-8-thumb.jpg", fullsize: "/images/gallery/studio/studio-slike-8.jpg", alt: "Studio Bild 8" },
       { thumbnail: "/images/gallery/studio/studio-slike-9-thumb.jpg", fullsize: "/images/gallery/studio/studio-slike-9.jpg", alt: "Studio Bild 9" }
     ];
-    res.render('de/desktop', { language: 'de', device: 'desktop', calendar, galleryImages });
+    res.render('de/home', { language: 'de', device: 'desktop', calendar, galleryImages });
   } catch (err) {
     res.status(500).render('error', {
       error: {

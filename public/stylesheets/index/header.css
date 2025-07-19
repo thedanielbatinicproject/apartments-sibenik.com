@@ -5,10 +5,10 @@
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(16, 42, 82, 0.85);
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 0 0 20px 20px;
   padding: 12px 0;
   transition: all 0.3s ease;
@@ -45,12 +45,17 @@
 
 .logo-text-link {
   text-decoration: none;
-  color: inherit;
+  color: white;
+}
+
+.logo-text {
+  font-weight: 600;
+  font-size: 1.2rem;
 }
 
 .logo-text-link:hover {
   text-decoration: none;
-  color: inherit;
+  color: #ffffff;
 }
 
 .logo-text {
@@ -81,7 +86,7 @@
   border-radius: 25px;
   transition: all 0.3s ease;
   font-weight: 500;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.15);
 }

@@ -23,6 +23,13 @@ class CalendarScheduler {
         console.error('Error updating calendar 2:', error.message);
       }
 
+      // Update calendar 3 (Apartmanija)
+      try {
+        await internalAPI.get('/api/update-calendar/3');
+      } catch (error) {
+        console.error('Error updating calendar 3:', error.message);
+      }
+
     } catch (error) {
       console.error('Error in calendar auto-update:', error);
     }

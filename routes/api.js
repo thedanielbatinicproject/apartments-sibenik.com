@@ -34,8 +34,69 @@ router.post('/reviews/:unitId/:reviewIndex/upvote', handleUpvote);
 
 // Reservation API routes
 router.post('/submit-reservation', reservationValidationRules, processReservation);
+router.post('/check-availability', require('../code/booking/reservationManager').checkAvailability);
 
-// Solar data endpoint - receives data from ESP32/sensors
+// Solar data endpoint - GET: returns relay states for ESP32
+router.get('/backyard-management', async (req, res) => {
+  try {
+    // Validacija secret key-a
+    const secretKey = req.query.secret_key || req.headers['x-secret-key'] || req.headers['secret_key'];
+    if (!secretKey || secretKey !== process.env.API_SECRET) {
+      return res.status(401).json({ error: 'Invalid secret key' });
+    }
+
+    // Read current solar data to get relay states
+    const solarData = await readSolarDataWithCache();
+    
+    if (!solarData || solarData.length === 0) {
+      return res.json({
+        success: true,
+        relayStates: {
+          relay1: false,
+          relay2: false,
+          relay3: false,
+          relay4: false
+        },
+        message: 'No data available - default relay states'
+      });
+    }
+
+    // Get latest record with delta reconstruction
+    let latestData = solarData[solarData.length - 1];
+    try {
+      const reconstructed = await reconstructDeltaDataWithHistory([latestData], solarData);
+      if (reconstructed && reconstructed.length > 0) {
+        latestData = reconstructed[0];
+      }
+    } catch (error) {
+      console.warn('[API] Error reconstructing relay state data:', error.message);
+    }
+
+    // Extract relay states
+    const relayStates = {
+      relay1: latestData.relay1 || false,
+      relay2: latestData.relay2 || false,
+      relay3: latestData.relay3 || false,
+      relay4: latestData.relay4 || false
+    };
+
+    res.json({
+      success: true,
+      relayStates,
+      timestamp: latestData.timestamp,
+      message: 'Current relay states retrieved'
+    });
+
+  } catch (error) {
+    console.error('[API] Error in GET backyard-management:', error);
+    return res.status(500).json({ 
+      error: 'Internal server error',
+      message: 'Error reading relay states'
+    });
+  }
+});
+
+// Solar data endpoint - POST: receives data from ESP32/sensors
 router.post('/backyard-management', async (req, res) => {
   try {
     // Validacija secret key-a
@@ -73,7 +134,11 @@ router.post('/backyard-management', async (req, res) => {
     });
 
   } catch (error) {
-    return handleError(req, res, error, '500', 'DATA SAVE ERROR');
+    console.error('[API] Error in POST backyard-management:', error);
+    return res.status(500).json({ 
+      error: 'Internal server error',
+      message: 'Error saving solar data'
+    });
   }
 });
 

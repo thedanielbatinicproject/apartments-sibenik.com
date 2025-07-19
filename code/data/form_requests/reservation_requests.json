@@ -1,0 +1,14 @@
+[
+  {
+    "id": "1752942563687",
+    "timestamp": "2025-07-19T16:29:23.687Z",
+    "fullName": "Daniel",
+    "email": "danielbatinic6@gmail.com",
+    "phone": "+38512345678",
+    "apartment": "Apartment with Garden",
+    "checkIn": "2025-07-20",
+    "checkOut": "2025-07-28",
+    "message": null,
+    "status": "pending"
+  }
+]

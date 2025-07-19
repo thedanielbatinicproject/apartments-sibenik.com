@@ -1,23 +1,43 @@
 /* Reservation Form Styles */
+
 .reservation-form-container {
-  margin: 1rem auto;
-  max-width: 550px;
-  padding: 0 1rem;
+  margin: 2rem auto;
+  max-width: 500px;
+  width: 100%;
+  padding: 0 1.5rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.reservation-form-wrapper .reservation-form-container {
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  max-width: 500px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .reservation-form-backdrop {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(30, 58, 92, 0.15);
   backdrop-filter: blur(10px);
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  padding: 1.2rem;
+  padding: 1.2rem 0.5rem;
   transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .reservation-form-backdrop:hover {
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
   transform: translateY(-2px);
+}
+
+.reservation-form-wrapper .reservation-form-backdrop {
+  width: 100%;
 }
 
 .reservation-form-title {
@@ -27,6 +47,10 @@
   text-align: center;
   margin-bottom: 1.2rem;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.reservation-form-wrapper .reservation-form-title {
+  display: none;
 }
 
 .reservation-form {
@@ -49,12 +73,24 @@
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
+.reservation-form-wrapper .form-label {
+  color: #1e3a5c;
+  font-weight: 600;
+  text-shadow: none;
+}
+
 .date-label {
   color: white;
   font-weight: 400;
   font-size: 0.75rem;
   margin-bottom: 0.1rem;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.reservation-form-wrapper .date-label {
+  color: #1e3a5c;
+  font-weight: 500;
+  text-shadow: none;
 }
 
 .date-input-container {
@@ -268,30 +304,32 @@
 }
 
 .btn-secondary {
-  background: rgba(149, 165, 166, 0.2);
-  color: rgba(149, 165, 166, 0.9);
-  border: 2px solid rgba(149, 165, 166, 0.6);
+  background: rgba(149, 165, 166, 0.3);
+  color: #1e3a5c;
+  border: 2px solid rgba(149, 165, 166, 0.8);
   flex: 1;
+  font-weight: 600;
 }
 
 .btn-secondary:hover {
-  background: rgba(149, 165, 166, 0.3);
-  color: rgba(149, 165, 166, 1);
+  background: rgba(149, 165, 166, 0.5);
+  color: #1e3a5c;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(149, 165, 166, 0.2);
+  box-shadow: 0 4px 12px rgba(149, 165, 166, 0.4);
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #3498db, #2980b9);
+  background: linear-gradient(135deg, #ff6f3c, #ff3c3c);
   color: white;
   border: 2px solid transparent;
   flex: 2;
+  font-weight: 600;
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #2980b9, #3498db);
+  background: linear-gradient(135deg, #ff3c3c, #ff6f3c);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+  box-shadow: 0 4px 12px rgba(255, 111, 60, 0.4);
 }
 
 .btn:disabled {
@@ -485,34 +523,17 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   .reservation-form-container {
     margin: 0.5rem auto;
+    max-width: 98vw;
+    padding: 0 0.5rem;
   }
-  
   .reservation-form-backdrop {
-    padding: 0.8rem;
+    padding: 0.8rem 0.2rem;
   }
-  
   .reservation-form-title {
-    font-size: 1.3rem;
-    margin-bottom: 1rem;
-  }
-  
-  .reservation-form {
-    gap: 0.6rem;
-  }
-  
-  .date-input-container {
-    gap: 0.5rem;
-  }
-  
-  .date-field {
-    min-width: 0; /* Allow flex items to shrink */
-  }
-  
-  .form-input[type="date"] {
-    font-size: 0.9rem;
-    padding: 0.5rem 0.6rem;
+    font-size: 1.1rem;
+    margin-bottom: 0.7rem;
   }
 }

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <%- include('../modules/head', { pageTitle: 'Soba', device: 'desktop' }) %>
+</head>
+<body>
+    <%- include('../modules/header', { lang: 'hr', base: '/hr/desktop' }) %>
+    <main>
+        <section class="hero-section">
+            <h1>Soba</h1>
+            <p class="lead-text">Udobna soba s modernim sadržajima, idealna za kraći boravak ili poslovne goste u centru Šibenika.</p>
+        </section>
+
+        <section class="gallery-section">
+            <h2>Galerija</h2>
+            <%- include('../modules/gallery', { images }) %>
+    </section>
+
+    <section class="description-section">
+        <h2>O sobi</h2>
+        <p>Naša udobna soba smještena je u samom centru Šibenika, udaljena samo 50 metara od lokalne tržnice i 100 metara od luke. Idealna je za kraći boravak ili poslovne putnike koji cijene blizinu svih gradskih sadržaja.</p>
+        <p>Soba je klimatizirana i ima dva kreveta, privatnu kupaonicu te uključen besplatan Wi-Fi.</p>
+        
+        <div class="features">
+            <div class="feature-item">
+                <h3>Detalji prostora</h3>
+                <ul>
+                    <li>Površina: 20m²</li>
+                    <li>Dva odvojena kreveta (po želji se mogu spojiti)</li>
+                    <li>Privatna kupaonica s tušem</li>
+                    <li>Mini kuhinja s osnovnim sadržajima</li>
+                    <li>Radni stol</li>
+                </ul>
+            </div>
+            
+            <div class="feature-item">
+                <h3>Sadržaji</h3>
+                <ul>
+                    <li>Besplatni Wi-Fi</li>
+                    <li>Klima uređaj</li>
+                    <li>Satelitska TV</li>
+                    <li>Mini hladnjak</li>
+                    <li>Kuhalo za vodu</li>
+                    <li>Fen za kosu</li>
+                    <li>Besplatan parking na ulici</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="calendar-section">
+        <h2>Dostupnost i rezervacije</h2>
+        <p>Provjerite dostupnost sobe i rezervirajte svoj boravak. Za direktne upite i rezervacije kontaktirajte nas putem e-maila ili telefona.</p>
+        <%- include('../modules/calendar', { calendarData: calendar3 }) %>
+    </section>
+</main>
+<%- include('../modules/footer') %>
+<script src="/javascripts/header.js"></script>
+<script>
+    // Dinamička promjena pozadine ovisno o dobu dana
+    function setDynamicBackground() {
+        const hour = new Date().getHours();
+        let bg;
+        if (hour >= 20 || hour < 6) {
+            bg = 'var(--night-bg)';
+        } else if (hour >= 6 && hour < 18) {
+            bg = 'var(--day-bg)';
+        } else {
+            bg = 'var(--evening-bg)';
+        }
+        document.body.style.background = bg;
+    }
+    setDynamicBackground();
+</script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<%# This is a reusable head template for all pages %>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= typeof pageTitle !== 'undefined' ? pageTitle + ' - ' : '' %>Apartmani Šibenik</title>
+<%# Dynamically load the correct stylesheet based on the device type %>
+<% if(typeof device !== 'undefined' && device === 'mobile') { %>
+    <link rel="stylesheet" href="/stylesheets/index/mobile/modern.css">
+    <% if (typeof pageTitle !== 'undefined' && pageTitle.toLowerCase().includes('kontakt')) { %>
+      <link rel="stylesheet" href="/stylesheets/index/mobile/contact.css">
+    <% } %>
+<% } else { %>
+    <link rel="stylesheet" href="/stylesheets/index/desktop/modern.css">
+    <% if (typeof pageTitle !== 'undefined' && pageTitle.toLowerCase().includes('kontakt')) { %>
+      <link rel="stylesheet" href="/stylesheets/index/desktop/contact.css">
+    <% } %>
+<% } %>
+<link rel="icon" href="/images/logo.png">

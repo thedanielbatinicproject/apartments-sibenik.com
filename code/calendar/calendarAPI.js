@@ -132,6 +132,7 @@ async function fetchCalendars(id) {
   // Return all calendars
   const calendar1 = readCalendar("calendar1.json");
   const calendar2 = readCalendar("calendar2.json");
+  const calendar3 = readCalendar("calendar3.json");
   
   // Add UUID to calendar1 events
   const calendar1WithUUID = calendar1.map(event => {
@@ -149,6 +150,14 @@ async function fetchCalendars(id) {
     return event;
   });
   
+  // Add UUID to calendar3 events
+  const calendar3WithUUID = calendar3.map(event => {
+    if (!event.event_uuid) {
+      event.event_uuid = uuidv4();
+    }
+    return event;
+  });
+  
   // Save back to files if UUIDs were added
   if (calendar1WithUUID.some(event => !calendar1.find(e => e.event_uuid === event.event_uuid))) {
     writeCalendar("calendar1.json", calendar1WithUUID);
@@ -156,10 +165,14 @@ async function fetchCalendars(id) {
   if (calendar2WithUUID.some(event => !calendar2.find(e => e.event_uuid === event.event_uuid))) {
     writeCalendar("calendar2.json", calendar2WithUUID);
   }
+  if (calendar3WithUUID.some(event => !calendar3.find(e => e.event_uuid === event.event_uuid))) {
+    writeCalendar("calendar3.json", calendar3WithUUID);
+  }
   
   return {
     calendar1: calendar1WithUUID,
     calendar2: calendar2WithUUID,
+    calendar3: calendar3WithUUID,
   };
 }
 

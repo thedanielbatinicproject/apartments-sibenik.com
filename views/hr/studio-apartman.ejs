@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <%- include('../modules/head', { pageTitle: 'Studio apartman', device: 'desktop' }) %>
+</head>
+<body>
+    <%- include('../modules/header', { lang: 'hr', base: '/hr/desktop' }) %>
+    <main>
+        <section class="hero-section">
+            <h1>Studio apartman</h1>
+            <p class="lead-text">Moderan studio apartman s pogledom na more, savršen za parove ili solo putnike koji traže udoban smještaj u srcu Šibenika.</p>
+        </section>
+
+        <section class="gallery-section">
+            <h2>Galerija</h2>
+            <%- include('../modules/gallery', { images }) %>
+    </section>
+
+    <section class="description-section">
+        <h2>O apartmanu</h2>
+        <p>Naš studio apartman pruža savršen spoj modernog dizajna i udobnosti. Smješten je u centru Šibenika, na idealnoj lokaciji za istraživanje svih znamenitosti grada i okolice.</p>
+        <p>Apartman je nedavno renoviran i nudi sve potrebne sadržaje za ugodan boravak, bez obzira ostajete li na kratko ili planirate duži odmor.</p>
+        
+        <div class="features">
+            <div class="feature-item">
+                <h3>Detalji prostora</h3>
+                <ul>
+                    <li>Površina: 35m²</li>
+                    <li>Open space koncept s bračnim krevetom</li>
+                    <li>Kuhinjska niša s blagovaonicom</li>
+                    <li>Moderno uređena kupaonica</li>
+                    <li>Balkon s pogledom na more</li>
+                </ul>
+            </div>
+            
+            <div class="feature-item">
+                <h3>Sadržaji</h3>
+                <ul>
+                    <li>Brzi Wi-Fi</li>
+                    <li>Klima uređaj</li>
+                    <li>Smart TV</li>
+                    <li>Potpuno opremljena kuhinja</li>
+                    <li>Fen za kosu</li>
+                    <li>Pegla i daska za peglanje</li>
+                    <li>Besplatan parking u blizini</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="calendar-section">
+        <h2>Dostupnost i rezervacije</h2>
+        <p>Provjerite dostupnost apartmana i rezervirajte svoj boravak. Za direktne upite i rezervacije kontaktirajte nas putem e-maila ili telefona.</p>
+        <%- include('../modules/calendar', { calendarData: calendar2 }) %>
+    </section>
+</main>
+<%- include('../modules/footer') %>
+<script src="/javascripts/header.js"></script>
+<script>
+    // Dinamička promjena pozadine ovisno o dobu dana
+    function setDynamicBackground() {
+        const hour = new Date().getHours();
+        let bg;
+        if (hour >= 20 || hour < 6) {
+            bg = 'var(--night-bg)';
+        } else if (hour >= 6 && hour < 18) {
+            bg = 'var(--day-bg)';
+        } else {
+            bg = 'var(--evening-bg)';
+        }
+        document.body.style.background = bg;
+    }
+    setDynamicBackground();
+</script>
+</body>
+</html>

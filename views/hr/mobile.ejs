@@ -1,1 +1,69 @@
-hr mobile
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <%- include('../modules/head', { pageTitle: 'Dobrodošli', device: 'mobile' }) %>
+</head>
+<body>
+    <%- include('../modules/header', { lang: 'hr', base: '/hr/mobile' }) %>
+    <main>
+        <section class="hero-section">
+            <h1>Dobrodošli u Apartmane Šibenik</h1>
+            <p class="lead-text">Uživajte u modernom smještaju uz more, s predivnim pogledom i autentičnim doživljajem Dalmacije.</p>
+        </section>
+        <section class="gallery-section">
+            <h2>Galerija</h2>
+            <%- include('../modules/gallery', { images: [
+                { fullsize: '/images/gallery/apartment/veliki-slike-01.jpg', thumbnail: '/images/gallery/apartment/veliki-slike-01.jpg', alt: 'Apartman s vrtom' },
+                { fullsize: '/images/gallery/studio/veliki-slike-01.jpg', thumbnail: '/images/gallery/studio/veliki-slike-01.jpg', alt: 'Studio apartman' },
+                { fullsize: '/images/gallery/room/veliki-slike-01.jpg', thumbnail: '/images/gallery/room/veliki-slike-01.jpg', alt: 'Soba' },
+                { fullsize: '/images/gallery/sibenik/veliki-slike-01.jpg', thumbnail: '/images/gallery/sibenik/veliki-slike-01.jpg', alt: 'Šibenik' }
+            ] }) %>
+        </section>
+        <section class="description-section">
+            <h2>Naša ponuda</h2>
+            <div class="features">
+                <div class="feature-item">
+                    <h3>Apartman s vrtom</h3>
+                    <p>Prostrani apartman s privatnim vrtom, idealan za obitelji.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Studio apartman</h3>
+                    <p>Moderan studio apartman s pogledom na more, savršen za parove.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Soba</h3>
+                    <p>Udobna soba s privatnom kupaonicom, odlična za solo putnike.</p>
+                </div>
+            </div>
+        </section>
+        <section class="about-section">
+            <h2>Zašto odabrati nas?</h2>
+            <ul>
+                <li>Lokacija uz more i blizina centra Šibenika</li>
+                <li>Moderno uređeni apartmani i sobe</li>
+                <li>Privatni vrt i terasa</li>
+                <li>Besplatan Wi-Fi i parking</li>
+                <li>Ljubazni domaćini i autentično dalmatinsko iskustvo</li>
+            </ul>
+        </section>
+    </main>
+    <%- include('../modules/footer') %>
+    <script src="/javascripts/header.js"></script>
+    <script>
+        // Dinamička promjena pozadine ovisno o dobu dana
+        function setDynamicBackground() {
+            const hour = new Date().getHours();
+            let bg;
+            if (hour >= 20 || hour < 6) {
+                bg = 'var(--night-bg)';
+            } else if (hour >= 6 && hour < 18) {
+                bg = 'var(--day-bg)';
+            } else {
+                bg = 'var(--evening-bg)';
+            }
+            document.body.style.background = bg;
+        }
+        setDynamicBackground();
+    </script>
+</body>
+</html>

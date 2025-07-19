@@ -34,8 +34,8 @@ app.use('/api', (req, res, next) => {
       return next();
     }
 
-    // Skip API key requirement for backyard-management POST (has its own secret_key validation)
-    if (req.path.includes('/backyard-management') && req.method === 'POST') {
+    // Skip API key requirement for backyard-management (has its own secret_key validation)
+    if (req.path.includes('/backyard-management') && (req.method === 'POST' || req.method === 'GET')) {
       return next();
     }
 
@@ -47,7 +47,25 @@ app.use('/api', (req, res, next) => {
          req.get('User-Agent').includes('Firefox'))) {
       return next();
     }
-    
+
+    // Skip API key requirement for check-availability endpoint from browser
+    if (req.path.includes('/check-availability') && req.get('User-Agent') &&
+        (req.get('User-Agent').includes('Mozilla') || 
+         req.get('User-Agent').includes('Chrome') || 
+         req.get('User-Agent').includes('Safari') || 
+         req.get('User-Agent').includes('Firefox'))) {
+      return next();
+    }
+
+    // Skip API key requirement for submit-reservation endpoint from browser
+    if (req.path.includes('/submit-reservation') && req.get('User-Agent') &&
+        (req.get('User-Agent').includes('Mozilla') || 
+         req.get('User-Agent').includes('Chrome') || 
+         req.get('User-Agent').includes('Safari') || 
+         req.get('User-Agent').includes('Firefox'))) {
+      return next();
+    }
+
     // Check if this is an internal server-to-server request
     const userAgent = req.get('User-Agent') || '';
     const isInternalServerRequest = (
@@ -58,16 +76,16 @@ app.use('/api', (req, res, next) => {
       !userAgent.includes('Firefox') &&
       req.get('host') && req.get('host').includes('localhost')
     );
-    
+
     // Add API key for internal server requests
     if (isInternalServerRequest) {
       req.headers['x-api-key'] = process.env.API_SECRET || 'your-secret-api-key-here';
     }
-    
+
     // NOW CHECK: All API requests must have valid API key
     const providedApiKey = req.headers['x-api-key'] || req.query.api_key || (req.body && req.body.api_key);
     const validApiKey = process.env.API_SECRET || 'your-secret-api-key-here';
-    
+
     if (!providedApiKey || providedApiKey !== validApiKey) {
       return res.status(401).render('error', {
         error: {
@@ -78,7 +96,7 @@ app.use('/api', (req, res, next) => {
         validBackPage: '/'
       });
     }
-    
+
     next();
   } catch (error) {
     console.error('API Security Middleware Error:', error);

@@ -1,0 +1,32 @@
+/* Kontakt stranica - desktop stilovi (index/desktop/contact.css) */
+
+@media (min-width: 901px) {
+  .contact-page .reservation-form-container {
+    max-width: 520px;
+    margin: 2.5rem auto;
+    padding: 0 2rem;
+  }
+  .contact-page .reservation-form-backdrop {
+    padding: 1.5rem 1rem;
+    border-radius: 18px;
+  }
+  .contact-page .reservation-form-title {
+    font-size: 1.7rem;
+    margin-bottom: 1.3rem;
+  }
+  .contact-page .form-label, .contact-page .date-label {
+    font-size: 1.05rem;
+  }
+  .contact-page .form-input,
+  .contact-page .form-select,
+  .contact-page .form-textarea,
+  .contact-page .country-code-select {
+    font-size: 1.08rem;
+    padding: 0.7rem 1rem;
+  }
+  .contact-page .btn-secondary,
+  .contact-page .btn-primary {
+    font-size: 1.08rem;
+    padding: 1rem 0;
+  }
+}

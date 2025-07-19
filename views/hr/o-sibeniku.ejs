@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <%- include('../modules/head', { pageTitle: 'O Šibeniku', device: 'desktop' }) %>
+</head>
+<body>
+    <%- include('../modules/header', { lang: 'hr', base: '/hr/desktop' }) %>
+    <main>
+        <section class="hero-section">
+            <h1>O Šibeniku</h1>
+            <p class="lead-text">Šibenik, smješten na obali Jadranskog mora, grad je bogate povijesti i kulture. Osnovan u 9. stoljeću, očarava posjetitelje svojim kamenim ulicama i monumentalnim građevinama.</p>
+        </section>
+
+        <section class="gallery-section">
+            <h2>Galerija</h2>
+            <%- include('../modules/gallery', { images }) %>
+    </section>
+
+    <section class="description-section">
+        <h2>Povijest i znamenitosti</h2>
+        <p>Šibenik je ponosan na svoje bogato kulturno i povijesno nasljeđe. Grad je smješten u zaštićenoj prirodnoj luci, na ušću rijeke Krke, s pogledom na brojne otoke šibenskog arhipelaga.</p>
+        
+        <div class="city-facts">
+            <div class="fact-item">
+                <h3>Katedrala sv. Jakova</h3>
+                <p>UNESCO-ov spomenik svjetske baštine i jedan od najljepših primjera gotičko-renesansne arhitekture u Hrvatskoj. Jedinstvena je jer je izgrađena isključivo od kamena, bez korištenja vezivnog materijala. Katedrala je građena više od stotinu godina (1431-1536).</p>
+            </div>
+            
+            <div class="fact-item">
+                <h3>Srednjovjekovne tvrđave</h3>
+                <p>Šibenik okružuju četiri impresivne tvrđave: sv. Mihovil, sv. Ivan, sv. Nikola (također UNESCO lokalitet) i tvrđava Barone. Svaka nudi spektakularan pogled na grad i okolicu, a danas služe kao mjesta za kulturne manifestacije.</p>
+            </div>
+            
+            <div class="fact-item">
+                <h3>Zanimljive činjenice</h3>
+                <ul>
+                    <li><strong>Prvi grad s električnom javnom rasvjetom:</strong> Šibenik je 28. kolovoza 1895. dobio javnu rasvjetu na izmjeničnu struju, što ga čini prvim gradom na svijetu s ovakvim tipom električne javne rasvjete.</li>
+                    <li><strong>Rodni grad Nikole Tesle:</strong> Iako rođen u Smiljanu, Tesla je značajan dio svog života proveo u Šibeniku, gdje je pohađao gimnaziju.</li>
+                    <li><strong>Prvi hrvatski grad:</strong> Šibenik je prvi izvorni hrvatski grad na Jadranskoj obali, koji nije naslijeđen od antičkih civilizacija poput Grka ili Rimljana.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="attractions-section">
+        <h2>Što posjetiti u okolici</h2>
+        <ul>
+            <li><strong>Nacionalni park Krka</strong> - samo 15 km od grada, s prekrasnim slapovima i kupalištem</li>
+            <li><strong>Nacionalni park Kornati</strong> - arhipelag od 89 otoka idealan za jedrenje i ronjenje</li>
+            <li><strong>Plaža Banj</strong> - gradska plaža s pogledom na staru gradsku jezgru</li>
+            <li><strong>Sokolarski centar</strong> - jedinstveno mjesto za upoznavanje ptica grabljivica</li>
+            <li><strong>Vinski podrumi</strong> - kušanje lokalnih vina u okolnim selima</li>
+        </ul>
+    </section>
+</main>
+<%- include('../modules/footer') %>
+<script src="/javascripts/header.js"></script>
+<script>
+    // Dinamička promjena pozadine ovisno o dobu dana
+    function setDynamicBackground() {
+        const hour = new Date().getHours();
+        let bg;
+        if (hour >= 20 || hour < 6) {
+            bg = 'var(--night-bg)';
+        } else if (hour >= 6 && hour < 18) {
+            bg = 'var(--day-bg)';
+        } else {
+            bg = 'var(--evening-bg)';
+        }
+        document.body.style.background = bg;
+    }
+    setDynamicBackground();
+</script>
+</body>
+</html>

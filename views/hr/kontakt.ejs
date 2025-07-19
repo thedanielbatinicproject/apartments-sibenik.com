@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <%- include('../modules/head', { pageTitle: 'Kontakt', device: 'desktop' }) %>
+</head>
+<body>
+    <%- include('../modules/header', { lang: 'hr', base: '/hr/desktop' }) %>
+    <main>
+    <section class="hero-section">
+        <h1>Kontakt</h1>
+        <p class="lead-text">Imate pitanje ili želite rezervirati smještaj? Kontaktirajte nas i odgovorit ćemo vam u najkraćem mogućem roku.</p>
+    </section>
+
+    <section class="contact-section contact-page">
+        <div class="contact-info">
+            <h2>Kontakt informacije</h2>
+            <div class="contact-details">
+                <div class="contact-item">
+                    <h3>E-mail</h3>
+                    <p><a href="mailto:info@apartments-sibenik.com">info@apartments-sibenik.com</a></p>
+                    <p><a href="mailto:brigita.batinic@gmail.com">brigita.batinic@gmail.com</a></p>
+                </div>
+                
+                <div class="contact-item">
+                    <h3>Telefon</h3>
+                    <p>+385 98 910 5640</p>
+                    <p>+385 99 810 5640</p>
+                </div>
+                
+                <div class="contact-item">
+                    <h3>Korisne poveznice</h3>
+                    <div class="social-icons">
+                        <a href="https://www.airbnb.com/users/show/16254751" target="_blank" rel="noopener noreferrer" class="footer-button airbnb-button">
+                            <img src="/images/icons/airbnb.png" alt="Airbnb" class="button-icon">
+                            <span>Brigita on AirBnB</span>
+                        </a>
+                        <a href="https://wa.me/+385989105640" target="_blank" rel="noopener noreferrer" class="footer-button whatsapp-button">
+                            <img src="/images/icons/whatsapp.png" alt="WhatsApp" class="button-icon">
+                            <span>Message us on Whatsapp</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="reservation-form-wrapper">
+            <h2>Pošaljite upit</h2>
+            <%- include('../modules/reservation-form') %>
+        </div>
+    </section>
+
+    <section class="map-section">
+        <h2>Lokacija</h2>
+        <div class="map-container">
+            <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d23056.008767149478!2d15.885662033744988!3d43.733499326392835!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x13352615d088d09d%3A0x400ad50862bcc20!2sApartments%20Sibenik!5e0!3m2!1sen!2shr!4v1690064411576!5m2!1sen!2shr" 
+                width="100%" 
+                height="450" 
+                style="border:0;" 
+                allowfullscreen="" 
+                loading="lazy" 
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+    </div>
+</section>
+</main>
+<%- include('../modules/footer') %>
+<script src="/javascripts/header.js"></script>
+<script>
+    // Dinamička promjena pozadine ovisno o dobu dana
+    function setDynamicBackground() {
+        const hour = new Date().getHours();
+        let bg;
+        if (hour >= 20 || hour < 6) {
+            bg = 'var(--night-bg)';
+        } else if (hour >= 6 && hour < 18) {
+            bg = 'var(--day-bg)';
+        } else {
+            bg = 'var(--evening-bg)';
+        }
+        document.body.style.background = bg;
+    }
+    setDynamicBackground();
+</script>
+</body>
+</html>
