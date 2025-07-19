@@ -70,5 +70,11 @@
     "naziv": "Reserved",
     "pocetak": "2025-07-18T22:00:00.000Z",
     "kraj": "2025-07-19T22:00:00.000Z"
+  },
+  {
+    "event_uuid": "8586c066-e945-4662-8e1c-2f583c47f002",
+    "naziv": "Airbnb (Not available)",
+    "pocetak": "2026-07-18T22:00:00.000Z",
+    "kraj": "2026-07-19T22:00:00.000Z"
   }
 ]

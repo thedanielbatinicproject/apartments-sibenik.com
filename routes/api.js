@@ -7,6 +7,38 @@ const { displayCalendar, updateCalendar, cleanCalendar } = require('../code/cale
 const { getReviews, handleUpvote } = require('../code/reviews/reviewRoutes');
 const router = express.Router();
 
+// Helper function to handle errors for frontend vs API calls
+function handleError(req, res, error, code = '500', title = 'SERVER ERROR') {
+  console.error('API Error:', error);
+  
+  // Check if request comes from browser (frontend) or API client
+  const userAgent = req.get('User-Agent') || '';
+  const isFromBrowser = (
+    userAgent.includes('Mozilla') || 
+    userAgent.includes('Chrome') || 
+    userAgent.includes('Safari') || 
+    userAgent.includes('Firefox')
+  );
+  
+  if (isFromBrowser) {
+    // Render error page for browser requests
+    return res.status(parseInt(code)).render('error', {
+      error: {
+        'error-code': code,
+        'error-title': title,
+        'error-message': error.message || 'An unexpected error occurred. Please try again later.'
+      },
+      validBackPage: req.session?.validBackPage || '/'
+    });
+  } else {
+    // Return JSON for API clients
+    return res.status(parseInt(code)).json({ 
+      error: error.message || 'Internal server error',
+      code: code
+    });
+  }
+}
+
 // API Security Configuration
 const API_SECRET = process.env.API_SECRET || 'your-secret-api-key-here';
 
@@ -373,8 +405,7 @@ router.post('/backyard-management', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error in backyard-management POST:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    return handleError(req, res, error, '500', 'BACKYARD MANAGEMENT ERROR');
   }
 });
 
@@ -405,8 +436,7 @@ router.get('/backyard-management', requireAPIKey, async (req, res) => {
     }
 
   } catch (error) {
-    console.error('Error in backyard-management GET:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    return handleError(req, res, error, '500', 'BACKYARD MANAGEMENT ERROR');
   }
 });
 

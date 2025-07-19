@@ -3,18 +3,156 @@ const path = require('path');
 const fs = require('fs').promises;
 const { calendarScheduler } = require('../code/calendar/calendarScheduler');
 const { reconstructDeltaData, reconstructDeltaDataWithHistory } = require('./api');
+const authManager = require('../code/auth/authManager');
 const router = express.Router();
 
-// Middleware for basic authentication (can be extended later)
+// Authentication middleware
 const requireAuth = (req, res, next) => {
-  // Simple check for now - add proper authentication later
-  const isAuthenticated = req.session.isAdmin || false;
-  if (!isAuthenticated) {
-    // Temporarily skip authentication for development
-    // return res.redirect('/management/login');
+  const authCookie = req.cookies.management_auth;
+  const session = authManager.validateSession(authCookie);
+  
+  if (!session) {
+    // For API endpoints, render error page instead of JSON
+    if (req.path.startsWith('/api/')) {
+      return res.status(401).render('error', {
+        error: {
+          'error-code': '401',
+          'error-title': 'NOT AUTHENTICATED',
+          'error-message': 'You must be logged in to access this resource. Please log in first.'
+        },
+        validBackPage: '/management/login'
+      });
+    }
+    
+    // For regular pages, redirect to login
+    return res.redirect('/management/login');
+  }
+  
+  // Attach user info to request
+  req.user = session;
+  next();
+};
+
+// Admin-only middleware
+const requireAdmin = (req, res, next) => {
+  if (!req.user || req.user.role !== 'admin') {
+    // For API endpoints, render error page instead of JSON
+    if (req.path.startsWith('/api/')) {
+      return res.status(403).render('error', {
+        error: {
+          'error-code': '403',
+          'error-title': 'NOT AUTHORIZED',
+          'error-message': 'Admin access required for this resource. You do not have sufficient permissions.'
+        },
+        validBackPage: '/management'
+      });
+    }
+    
+    // For regular pages, render error page
+    return res.status(403).render('error', {
+      error: {
+        'error-code': '403',
+        'error-title': 'ACCESS DENIED',
+        'error-message': 'Admin access required for this resource.'
+      },
+      validBackPage: '/management'
+    });
   }
   next();
 };
+
+// Login page
+router.get('/login', (req, res) => {
+  // If already logged in, redirect to dashboard
+  const authCookie = req.cookies.management_auth;
+  const session = authManager.validateSession(authCookie);
+  
+  if (session) {
+    return res.redirect('/management');
+  }
+  
+  res.render('management/login-page', {
+    error: null,
+    username: ''
+  });
+});
+
+// Login POST handler
+router.post('/login', async (req, res) => {
+  const { username, password, rememberMe } = req.body;
+  
+  try {
+    const authResult = authManager.authenticate(username, password);
+    
+    if (authResult.success) {
+      const sessionId = authManager.createSession(authResult.user, !!rememberMe);
+      
+      // Set cookie - temporary session cookie that expires when browser closes
+      const cookieOptions = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict'
+        // No maxAge = session cookie (expires when browser closes)
+      };
+      
+      // If rememberMe is checked, make it a longer-lasting cookie
+      if (rememberMe) {
+        cookieOptions.maxAge = 30 * 24 * 60 * 60 * 1000; // 30 days for "remember me"
+      }
+      // If not checked, no maxAge = session cookie (browser close)
+      
+      res.cookie('management_auth', sessionId, cookieOptions);
+      return res.redirect('/management');
+    } else {
+      return res.render('management/login-page', {
+        error: authResult.message || 'Invalid credentials',
+        username: username
+      });
+    }
+  } catch (error) {
+    console.error('Login error:', error);
+    return res.render('management/login-page', {
+      error: 'Server error. Please try again.',
+      username: username
+    });
+  }
+});
+
+// Logout handler
+router.post('/logout', (req, res) => {
+  const authCookie = req.cookies.management_auth;
+  if (authCookie) {
+    authManager.logout(authCookie);
+  }
+  res.clearCookie('management_auth');
+  res.redirect('/management/login');
+});
+
+// API Routes for user management (admin only)
+router.post('/api/users', requireAuth, requireAdmin, async (req, res) => {
+  const { name, username, password } = req.body;
+  
+  if (!name || !username || !password) {
+    return res.status(400).json({
+      success: false,
+      message: 'Name, username, and password are required'
+    });
+  }
+  
+  const result = authManager.addUser(name, username, password, req.cookies.management_auth);
+  res.json(result);
+});
+
+router.delete('/api/users/:userUuid', requireAuth, requireAdmin, async (req, res) => {
+  const { userUuid } = req.params;
+  const result = authManager.removeUser(userUuid, req.cookies.management_auth);
+  res.json(result);
+});
+
+router.get('/api/users', requireAuth, requireAdmin, async (req, res) => {
+  const result = authManager.getAllUsers(req.cookies.management_auth);
+  res.json(result);
+});
 
 // Solar Dashboard route
 router.get('/solar-dashboard', requireAuth, async (req, res) => {
@@ -104,7 +242,8 @@ router.get('/solar-dashboard', requireAuth, async (req, res) => {
 router.get('/', requireAuth, (req, res) => {
   res.render('management/index', {
     title: 'Management Dashboard',
-    schedulerStatus: calendarScheduler.getStatus()
+    schedulerStatus: calendarScheduler.getStatus(),
+    user: req.user
   });
 });
 

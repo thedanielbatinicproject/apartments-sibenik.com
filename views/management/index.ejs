@@ -9,8 +9,19 @@
 <body>
     <div class="management-container">
         <div class="dashboard-header">
-            <h1 class="dashboard-title">Management Dashboard</h1>
-            <p class="dashboard-subtitle">Apartments Šibenik - Administrative Panel</p>
+            <div class="header-main">
+                <h1 class="dashboard-title">Management Dashboard</h1>
+                <p class="dashboard-subtitle">Apartments Šibenik - Administrative Panel</p>
+            </div>
+            <div class="user-info">
+                <span class="welcome-text">Welcome, <%= user.username %>!</span>
+                <% if (user.role === 'admin') { %>
+                    <span class="admin-badge">Admin</span>
+                <% } %>
+                <form action="/management/logout" method="POST" style="display: inline;">
+                    <button type="submit" class="logout-btn">Logout</button>
+                </form>
+            </div>
         </div>
 
         <div class="dashboard-grid">
@@ -51,6 +62,29 @@
                 <div class="card-status status-offline">Coming Soon</div>
             </div>
 
+            <% if (user.role === 'admin') { %>
+            <div class="dashboard-card">
+                <h3 class="card-title">👥 User Management</h3>
+                <p style="color: rgba(255,255,255,0.8); margin-bottom: 1rem;">
+                    Add, remove, and manage system users and their permissions.
+                </p>
+                <button onclick="openUserManagement()" style="
+                    display: inline-block;
+                    padding: 0.8rem 1.5rem;
+                    background: rgba(139, 92, 246, 0.2);
+                    color: #8b5cf6;
+                    border: 1px solid rgba(139, 92, 246, 0.3);
+                    border-radius: 12px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                " onmouseover="this.style.background='rgba(139, 92, 246, 0.3)'" 
+                   onmouseout="this.style.background='rgba(139, 92, 246, 0.2)'">
+                    Manage Users
+                </button>
+            </div>
+            <% } %>
+
             <div class="dashboard-card">
                 <h3 class="card-title">⚙️ Settings</h3>
                 <p style="color: rgba(255,255,255,0.8); margin-bottom: 1rem;">
@@ -59,6 +93,146 @@
                 <div class="card-status status-offline">Coming Soon</div>
             </div>
         </div>
+
+        <!-- User Management Modal (Admin Only) -->
+        <% if (user.role === 'admin') { %>
+        <div id="userManagementModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>User Management</h2>
+                    <span class="close" onclick="closeUserManagement()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="user-actions">
+                        <button onclick="showAddUserForm()" class="btn-primary">Add New User</button>
+                        <button onclick="loadUsers()" class="btn-secondary">Refresh List</button>
+                    </div>
+                    
+                    <div id="addUserForm" style="display: none;">
+                        <h3>Add New User</h3>
+                        <form id="newUserForm">
+                            <input type="text" id="newUserName" placeholder="Full Name" required>
+                            <input type="text" id="newUserUsername" placeholder="Username" required>
+                            <input type="password" id="newUserPassword" placeholder="Password" required>
+                            <button type="submit" class="btn-primary">Create User</button>
+                            <button type="button" onclick="hideAddUserForm()" class="btn-secondary">Cancel</button>
+                        </form>
+                    </div>
+                    
+                    <div id="usersList"></div>
+                </div>
+            </div>
+        </div>
+        <% } %>
+
+        <script>
+            <% if (user.role === 'admin') { %>
+            function openUserManagement() {
+                document.getElementById('userManagementModal').style.display = 'block';
+                loadUsers();
+            }
+
+            function closeUserManagement() {
+                document.getElementById('userManagementModal').style.display = 'none';
+            }
+
+            function showAddUserForm() {
+                document.getElementById('addUserForm').style.display = 'block';
+            }
+
+            function hideAddUserForm() {
+                document.getElementById('addUserForm').style.display = 'none';
+                document.getElementById('newUserForm').reset();
+            }
+
+            async function loadUsers() {
+                try {
+                    const response = await fetch('/management/api/users');
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        displayUsers(result.users);
+                    } else {
+                        alert('Error loading users: ' + result.message);
+                    }
+                } catch (error) {
+                    alert('Error loading users: ' + error.message);
+                }
+            }
+
+            function displayUsers(users) {
+                const usersList = document.getElementById('usersList');
+                usersList.innerHTML = '<h3>Current Users</h3>';
+                
+                users.forEach(user => {
+                    const userDiv = document.createElement('div');
+                    userDiv.className = 'user-item';
+                    userDiv.innerHTML = `
+                        <div class="user-info">
+                            <strong>${user.name}</strong> (${user.username})
+                            <span class="user-role">${user.role}</span>
+                        </div>
+                        ${user.username !== 'admin' ? 
+                            `<button onclick="removeUser('${user.uuid}')" class="btn-danger">Remove</button>` : 
+                            '<span class="protected-user">Protected</span>'
+                        }
+                    `;
+                    usersList.appendChild(userDiv);
+                });
+            }
+
+            document.getElementById('newUserForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('newUserName').value;
+                const username = document.getElementById('newUserUsername').value;
+                const password = document.getElementById('newUserPassword').value;
+                
+                try {
+                    const response = await fetch('/management/api/users', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ name, username, password })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        alert('User created successfully!');
+                        hideAddUserForm();
+                        loadUsers();
+                    } else {
+                        alert('Error: ' + result.message);
+                    }
+                } catch (error) {
+                    alert('Error creating user: ' + error.message);
+                }
+            });
+
+            async function removeUser(userUuid) {
+                if (confirm('Are you sure you want to remove this user?')) {
+                    try {
+                        const response = await fetch(`/management/api/users/${userUuid}`, {
+                            method: 'DELETE'
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (result.success) {
+                            alert('User removed successfully!');
+                            loadUsers();
+                        } else {
+                            alert('Error: ' + result.message);
+                        }
+                    } catch (error) {
+                        alert('Error removing user: ' + error.message);
+                    }
+                }
+            }
+            <% } %>
+        </script>
     </div>
 </body>
 </html>

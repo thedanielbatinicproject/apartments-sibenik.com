@@ -9,6 +9,7 @@ require('dotenv').config();
 
 const { getLocalIPAddress, handle404Error } = require("./code/utils/utils");
 const { calendarScheduler } = require("./code/calendar/calendarScheduler");
+const authManager = require("./code/auth/authManager");
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
@@ -16,42 +17,67 @@ const io = socketIo(server);
 // Make io accessible to routes
 app.set('io', io);
 
-// Internal API middleware - automatically adds API key for internal server requests only
-app.use('/api', (req, res, next) => {
-  // Skip API key requirement for upvote endpoint from browser
-  if (req.path.includes('/upvote') && req.get('User-Agent') && 
-      (req.get('User-Agent').includes('Mozilla') || 
-       req.get('User-Agent').includes('Chrome') || 
-       req.get('User-Agent').includes('Safari') || 
-       req.get('User-Agent').includes('Firefox'))) {
-    return next();
-  }
-  
-  // Add API key ONLY for internal server-to-server requests (not browser requests)
-  // Check if this is an internal request by looking for specific headers or user agent
-  const userAgent = req.get('User-Agent') || '';
-  const xForwardedFor = req.get('x-forwarded-for');
-  const remoteAddress = req.connection.remoteAddress || req.socket.remoteAddress;
-  
-  // Only add API key for actual server-to-server requests (Node.js/axios, not browsers)
-  const isInternalServerRequest = (
-    (userAgent.includes('node') || userAgent.includes('axios')) &&
-    !userAgent.includes('Mozilla') && // Exclude browsers
-    !userAgent.includes('Chrome') &&
-    !userAgent.includes('Safari') &&
-    !userAgent.includes('Firefox') &&
-    req.get('host') && req.get('host').includes('localhost')
-  );
-  
-  if (isInternalServerRequest) {
-    req.headers['x-api-key'] = process.env.API_SECRET || 'your-secret-api-key-here';
-  }
-  next();
-});
-
 app.use(useragent.express());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // Add form data parser
 app.use(cookieParser()); // Add cookie parser middleware
+
+// API Security middleware - require valid API key for all API endpoints
+app.use('/api', (req, res, next) => {
+  try {
+    // Skip API key requirement for upvote endpoint from browser
+    if (req.path.includes('/upvote') && req.get('User-Agent') && 
+        (req.get('User-Agent').includes('Mozilla') || 
+         req.get('User-Agent').includes('Chrome') || 
+         req.get('User-Agent').includes('Safari') || 
+         req.get('User-Agent').includes('Firefox'))) {
+      return next();
+    }
+    
+    // Check if this is an internal server-to-server request
+    const userAgent = req.get('User-Agent') || '';
+    const isInternalServerRequest = (
+      (userAgent.includes('node') || userAgent.includes('axios')) &&
+      !userAgent.includes('Mozilla') && // Exclude browsers
+      !userAgent.includes('Chrome') &&
+      !userAgent.includes('Safari') &&
+      !userAgent.includes('Firefox') &&
+      req.get('host') && req.get('host').includes('localhost')
+    );
+    
+    // Add API key for internal server requests
+    if (isInternalServerRequest) {
+      req.headers['x-api-key'] = process.env.API_SECRET || 'your-secret-api-key-here';
+    }
+    
+    // NOW CHECK: All API requests must have valid API key
+    const providedApiKey = req.headers['x-api-key'] || req.query.api_key || (req.body && req.body.api_key);
+    const validApiKey = process.env.API_SECRET || 'your-secret-api-key-here';
+    
+    if (!providedApiKey || providedApiKey !== validApiKey) {
+      return res.status(401).render('error', {
+        error: {
+          'error-code': '401',
+          'error-title': 'API ACCESS DENIED',
+          'error-message': 'Valid API key required to access this endpoint. Unauthorized API access is not permitted.'
+        },
+        validBackPage: '/'
+      });
+    }
+    
+    next();
+  } catch (error) {
+    console.error('API Security Middleware Error:', error);
+    return res.status(500).render('error', {
+      error: {
+        'error-code': '500',
+        'error-title': 'API SECURITY ERROR',
+        'error-message': 'An error occurred while validating API access. Please try again later.'
+      },
+      validBackPage: '/'
+    });
+  }
+});
 
 // Session configuration
 app.use(
@@ -155,4 +181,9 @@ server.listen(PORT, () => {
   setTimeout(() => {
     calendarScheduler.start();
   }, 2000); // Wait 2 seconds for server to fully start
+  
+  // Clean expired sessions every hour
+  setInterval(() => {
+    authManager.cleanExpiredSessions();
+  }, 60 * 60 * 1000); // 1 hour
 });

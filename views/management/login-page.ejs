@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Management Login - Apartments Šibenik</title>
+    <link rel="stylesheet" href="/stylesheets/management/login.css">
+    <link rel="icon" type="image/png" href="/images/logo.png">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <img src="/images/logo.png" alt="Apartments Šibenik" class="logo">
+                <h1>Management Portal</h1>
+                <p>Please sign in to access the management dashboard</p>
+            </div>
+
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="error-message">
+                    <span class="error-icon">⚠️</span>
+                    <%= error %>
+                </div>
+            <% } %>
+
+            <form class="login-form" action="/management/login" method="POST" id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username" 
+                        placeholder="Enter your username"
+                        required
+                        autocomplete="username"
+                        value="<%= typeof username !== 'undefined' ? username : '' %>"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        placeholder="Enter your password"
+                        required
+                        autocomplete="current-password"
+                    >
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="rememberMe" name="rememberMe" value="true">
+                        <span class="checkmark"></span>
+                        Remember me (keep me logged in permanently)
+                    </label>
+                </div>
+
+                <button type="submit" class="login-btn" id="loginBtn">
+                    <span class="btn-text">Sign In</span>
+                    <span class="btn-loading" style="display: none;">
+                        <span class="spinner"></span>
+                        Signing in...
+                    </span>
+                </button>
+            </form>
+
+            <div class="login-footer">
+                <p>© 2025 Apartments Šibenik. All rights reserved.</p>
+                <p class="security-note">
+                    <span class="lock-icon">🔒</span>
+                    This is a secure area. Your session will expire after 48 hours unless "Remember me" is selected.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            const btn = document.getElementById('loginBtn');
+            const btnText = btn.querySelector('.btn-text');
+            const btnLoading = btn.querySelector('.btn-loading');
+            
+            btn.disabled = true;
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'flex';
+        });
+
+        // Focus on username field when page loads
+        window.addEventListener('load', function() {
+            document.getElementById('username').focus();
+        });
+
+        // Handle Enter key in form
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('loginForm').submit();
+            }
+        });
+
+        // Simplified checkbox - just background change for now
+        document.getElementById('rememberMe').addEventListener('change', function() {
+            console.log('Checkbox changed:', this.checked);
+            const checkmark = this.nextElementSibling;
+            if (this.checked) {
+                checkmark.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+                checkmark.style.borderColor = '#667eea';
+                // Try SVG checkmark
+                checkmark.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" style="position: absolute; top: 5px; left: 5px;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="white"/></svg>';
+                console.log('Checkbox is now checked - background should be purple with SVG checkmark');
+            } else {
+                checkmark.style.background = 'white';
+                checkmark.style.borderColor = '#ddd';
+                checkmark.innerHTML = '';
+                console.log('Checkbox is now unchecked - background should be white');
+            }
+        });
+    </script>
+</body>
+</html>
