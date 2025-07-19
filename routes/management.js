@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs').promises;
 const { calendarScheduler } = require('../code/calendar/calendarScheduler');
-const { reconstructDeltaData, reconstructDeltaDataWithHistory } = require('./api');
+const { reconstructDeltaData, reconstructDeltaDataWithHistory } = require('../code/solar/solarDataManager');
 const authManager = require('../code/auth/authManager');
 const router = express.Router();
 

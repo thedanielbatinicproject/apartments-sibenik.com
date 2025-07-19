@@ -1149,10 +1149,33 @@
             })
             .catch(error => {
                 console.error('Error exporting data:', error);
-                alert('Export failed. Please try again.');
+                showCustomAlert('Export failed. Please try again.');
                 button.disabled = false;
                 button.textContent = 'EXPORT JSON DATA';
             });
+        }
+
+        // Custom Alert Functions
+        function showCustomAlert(message) {
+            const alertModal = document.createElement('div');
+            alertModal.className = 'modal';
+            alertModal.style.display = 'block';
+            alertModal.innerHTML = `
+                <div class="modal-content" style="max-width: 400px; text-align: center;">
+                    <div class="modal-body" style="padding: 2rem;">
+                        <div style="color: #fff; font-size: 1.1rem; margin-bottom: 1.5rem; line-height: 1.4;">${message}</div>
+                        <button onclick="this.closest('.modal').remove()" class="btn-primary" style="min-width: 100px;">OK</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(alertModal);
+            
+            // Close when clicking outside
+            alertModal.onclick = function(event) {
+                if (event.target === alertModal) {
+                    alertModal.remove();
+                }
+            }
         }
 
         function showTooltip(event, title, description) {

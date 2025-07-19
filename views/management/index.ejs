@@ -125,7 +125,74 @@
         </div>
         <% } %>
 
+        <!-- Custom Alert Modal -->
+        <div id="customAlert" class="modal" style="display: none;">
+            <div class="modal-content" style="max-width: 400px; text-align: center;">
+                <div class="modal-body" style="padding: 2rem;">
+                    <div id="alertMessage" style="color: #fff; font-size: 1.1rem; margin-bottom: 1.5rem; line-height: 1.4;"></div>
+                    <button onclick="closeCustomAlert()" class="btn-primary" style="min-width: 100px;">OK</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Custom Confirm Modal -->
+        <div id="customConfirm" class="modal" style="display: none;">
+            <div class="modal-content" style="max-width: 450px; text-align: center;">
+                <div class="modal-body" style="padding: 2rem;">
+                    <div id="confirmMessage" style="color: #fff; font-size: 1.1rem; margin-bottom: 1.5rem; line-height: 1.4;"></div>
+                    <div style="display: flex; justify-content: center; gap: 1rem;">
+                        <button onclick="confirmAction()" class="btn-danger" style="min-width: 100px;">Yes</button>
+                        <button onclick="closeCustomConfirm()" class="btn-secondary" style="min-width: 100px;">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script>
+            // Custom Alert Functions
+            function showCustomAlert(message) {
+                document.getElementById('alertMessage').textContent = message;
+                document.getElementById('customAlert').style.display = 'block';
+            }
+
+            function closeCustomAlert() {
+                document.getElementById('customAlert').style.display = 'none';
+            }
+
+            // Custom Confirm Functions
+            let confirmCallback = null;
+
+            function showCustomConfirm(message, callback) {
+                document.getElementById('confirmMessage').textContent = message;
+                document.getElementById('customConfirm').style.display = 'block';
+                confirmCallback = callback;
+            }
+
+            function confirmAction() {
+                document.getElementById('customConfirm').style.display = 'none';
+                if (confirmCallback) {
+                    confirmCallback();
+                    confirmCallback = null;
+                }
+            }
+
+            function closeCustomConfirm() {
+                document.getElementById('customConfirm').style.display = 'none';
+                confirmCallback = null;
+            }
+
+            // Close modal when clicking outside
+            window.onclick = function(event) {
+                const alertModal = document.getElementById('customAlert');
+                const confirmModal = document.getElementById('customConfirm');
+                if (event.target === alertModal) {
+                    closeCustomAlert();
+                }
+                if (event.target === confirmModal) {
+                    closeCustomConfirm();
+                }
+            }
+
             <% if (user.role === 'admin') { %>
             function openUserManagement() {
                 document.getElementById('userManagementModal').style.display = 'block';
@@ -153,10 +220,10 @@
                     if (result.success) {
                         displayUsers(result.users);
                     } else {
-                        alert('Error loading users: ' + result.message);
+                        showCustomAlert('Error loading users: ' + result.message);
                     }
                 } catch (error) {
-                    alert('Error loading users: ' + error.message);
+                    showCustomAlert('Error loading users: ' + error.message);
                 }
             }
 
@@ -200,19 +267,19 @@
                     const result = await response.json();
                     
                     if (result.success) {
-                        alert('User created successfully!');
+                        showCustomAlert('User created successfully!');
                         hideAddUserForm();
                         loadUsers();
                     } else {
-                        alert('Error: ' + result.message);
+                        showCustomAlert('Error: ' + result.message);
                     }
                 } catch (error) {
-                    alert('Error creating user: ' + error.message);
+                    showCustomAlert('Error creating user: ' + error.message);
                 }
             });
 
             async function removeUser(userUuid) {
-                if (confirm('Are you sure you want to remove this user?')) {
+                showCustomConfirm('Are you sure you want to remove this user?', async function() {
                     try {
                         const response = await fetch(`/management/api/users/${userUuid}`, {
                             method: 'DELETE'
@@ -221,15 +288,15 @@
                         const result = await response.json();
                         
                         if (result.success) {
-                            alert('User removed successfully!');
+                            showCustomAlert('User removed successfully!');
                             loadUsers();
                         } else {
-                            alert('Error: ' + result.message);
+                            showCustomAlert('Error: ' + result.message);
                         }
                     } catch (error) {
-                        alert('Error removing user: ' + error.message);
+                        showCustomAlert('Error removing user: ' + error.message);
                     }
-                }
+                });
             }
             <% } %>
         </script>
