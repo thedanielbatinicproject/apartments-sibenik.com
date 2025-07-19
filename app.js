@@ -38,6 +38,15 @@ app.use('/api', (req, res, next) => {
     if (req.path.includes('/backyard-management') && req.method === 'POST') {
       return next();
     }
+
+    // Skip API key requirement for export-solar-data when called from browser (authenticated users)
+    if (req.path.includes('/export-solar-data') && req.get('User-Agent') &&
+        (req.get('User-Agent').includes('Mozilla') || 
+         req.get('User-Agent').includes('Chrome') || 
+         req.get('User-Agent').includes('Safari') || 
+         req.get('User-Agent').includes('Firefox'))) {
+      return next();
+    }
     
     // Check if this is an internal server-to-server request
     const userAgent = req.get('User-Agent') || '';

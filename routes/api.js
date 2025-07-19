@@ -997,7 +997,7 @@ router.post('/solar/history', requireAPIKey, async (req, res) => {
 });
 
 // Export solar data endpoint
-router.get('/export-solar-data', requireAPIKey, async (req, res) => {
+router.get('/export-solar-data', async (req, res) => {
   try {
     const publicDataPath = path.join(__dirname, '../data/public_data/solars_public.json');
     
