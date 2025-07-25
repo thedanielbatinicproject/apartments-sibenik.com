@@ -33,7 +33,8 @@ function createDeltaRecord(newData, lastData) {
   const significantFields = [
     'PV_voltage_V', 'Battery_voltage_V', 'Charger_current_A', 'Charger_power_W',
     'Radiator_temp_C', 'External_temp_C', 'AC_freq_Hz', 'Humidity_percent',
-    'Error_code', 'Warning_code', 'Status'
+    'Error_code', 'Warning_code', 'Status',
+    'relay1', 'relay2', 'relay3', 'relay4'
   ];
 
   let changesFound = 0;
