@@ -10,5 +10,29 @@
     "checkOut": "2025-07-28",
     "message": null,
     "status": "pending"
+  },
+  {
+    "id": "1754426383831",
+    "timestamp": "2025-08-05T20:39:43.831Z",
+    "fullName": "Daniel",
+    "email": "danielbatinic6@gmail.com",
+    "phone": "+385958135969",
+    "apartment": "Apartment with Garden",
+    "checkIn": "2025-08-06",
+    "checkOut": "2025-08-08",
+    "message": null,
+    "status": "pending"
+  },
+  {
+    "id": "1754429621404",
+    "timestamp": "2025-08-05T21:33:41.404Z",
+    "fullName": "DANIEL BATINIĆ",
+    "email": "danielbatinic1@gmail.com",
+    "phone": "+385958135969",
+    "apartment": "Apartment with Garden",
+    "checkIn": "2025-08-12",
+    "checkOut": "2025-08-28",
+    "message": "Ok",
+    "status": "pending"
   }
 ]

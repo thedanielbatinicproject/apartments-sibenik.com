@@ -15,19 +15,66 @@ function readCalendar(fileName) {
 
 function writeCalendar(fileName, data) {
   const filePath = path.join(__dirname, "../../data/calendars", fileName);
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf8");
+  
+  // Ensure directory exists
+  const dir = path.dirname(filePath);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+  
+  try {
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf8");
+    console.log(`[CALENDAR API] Successfully wrote ${data.length} events to ${fileName}`);
+  } catch (error) {
+    console.error(`[CALENDAR API] Error writing calendar ${fileName}:`, error);
+    throw error;
+  }
 }
 
 async function fetchIcalReservations(url) {
-  const data = await ical.async.fromURL(url);
-  return Object.values(data)
-    .filter((event) => event.type === "VEVENT")
-    .map((event) => ({
-      event_uuid: uuidv4(),
-      naziv: event.summary,
-      pocetak: event.start,
-      kraj: event.end,
-    }));
+  try {
+    console.log(`[CALENDAR API] Fetching iCal data from: ${url}`);
+    
+    // Options for node-ical with better error handling
+    const options = {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+      },
+      timeout: 10000 // 10 seconds timeout
+    };
+    
+    const data = await ical.async.fromURL(url, options);
+    
+    if (!data) {
+      throw new Error('No data received from iCal URL');
+    }
+    
+    const events = Object.values(data)
+      .filter((event) => event.type === "VEVENT")
+      .map((event) => ({
+        event_uuid: uuidv4(),
+        naziv: event.summary || 'Unnamed Event',
+        pocetak: event.start,
+        kraj: event.end,
+      }));
+    
+    console.log(`[CALENDAR API] Successfully parsed ${events.length} events from iCal`);
+    return events;
+  } catch (error) {
+    console.error(`[CALENDAR API] Error fetching iCal from ${url}:`, error);
+    console.error(`[CALENDAR API] Error details:`, error.message);
+    
+    // Provide more specific error messages
+    if (error.code === 'ENOTFOUND') {
+      throw new Error(`DNS lookup failed for ${url}`);
+    } else if (error.code === 'ECONNREFUSED') {
+      throw new Error(`Connection refused to ${url}`);
+    } else if (error.code === 'ETIMEDOUT') {
+      throw new Error(`Timeout while fetching ${url}`);
+    } else {
+      throw new Error(`Failed to fetch iCal from ${url}: ${error.message}`);
+    }
+  }
 }
 
 function removeDuplicates(events) {
@@ -52,51 +99,63 @@ function removeDuplicates(events) {
   });
 }
 
-// Dodaj evente iz Airbnb-a u lokalni kalendar, bez duplikata
+// Dodaj evente iz iCal-a u lokalni kalendar, bez duplikata
 async function updateCalendarFromIcal(url, fileName) {
-  const noviEventi = await fetchIcalReservations(url);
-  const postojećiEventi = readCalendar(fileName);
+  try {
+    console.log(`[CALENDAR API] Fetching iCal from: ${url}`);
+    const noviEventi = await fetchIcalReservations(url);
+    console.log(`[CALENDAR API] Fetched ${noviEventi.length} events from iCal`);
+    
+    const postojećiEventi = readCalendar(fileName);
+    console.log(`[CALENDAR API] Existing events in ${fileName}: ${postojećiEventi.length}`);
 
-  // Add UUID to existing events that don't have it
-  postojećiEventi.forEach(event => {
-    if (!event.event_uuid) {
-      event.event_uuid = uuidv4();
+    // Add UUID to existing events that don't have it
+    postojećiEventi.forEach(event => {
+      if (!event.event_uuid) {
+        event.event_uuid = uuidv4();
+      }
+    });
+
+    function jeIdentican(e1, e2) {
+      const e1Pocetak =
+        e1.pocetak instanceof Date
+          ? e1.pocetak.toISOString()
+          : String(e1.pocetak);
+      const e1Kraj =
+        e1.kraj instanceof Date ? e1.kraj.toISOString() : String(e1.kraj);
+      const e2Pocetak =
+        e2.pocetak instanceof Date
+          ? e2.pocetak.toISOString()
+          : String(e2.pocetak);
+      const e2Kraj =
+        e2.kraj instanceof Date ? e2.kraj.toISOString() : String(e2.kraj);
+
+      const result =
+        String(e1.naziv) === String(e2.naziv) &&
+        e1Pocetak === e2Pocetak &&
+        e1Kraj === e2Kraj;
+      return result;
     }
-  });
 
-  function jeIdentican(e1, e2) {
-    const e1Pocetak =
-      e1.pocetak instanceof Date
-        ? e1.pocetak.toISOString()
-        : String(e1.pocetak);
-    const e1Kraj =
-      e1.kraj instanceof Date ? e1.kraj.toISOString() : String(e1.kraj);
-    const e2Pocetak =
-      e2.pocetak instanceof Date
-        ? e2.pocetak.toISOString()
-        : String(e2.pocetak);
-    const e2Kraj =
-      e2.kraj instanceof Date ? e2.kraj.toISOString() : String(e2.kraj);
+    const zaDodati = noviEventi.filter(
+      (novi) => !postojećiEventi.some((postojeci) => jeIdentican(novi, postojeci))
+    );
 
-    const result =
-      String(e1.naziv) === String(e2.naziv) &&
-      e1Pocetak === e2Pocetak &&
-      e1Kraj === e2Kraj;
-    return result;
+    console.log(`[CALENDAR API] New events to add: ${zaDodati.length}`);
+
+    const sviEventi = [...postojećiEventi, ...zaDodati];
+    
+    // Ukloni duplikate iz svih evenata
+    const eventiBeznaDuplikata = removeDuplicates(sviEventi);
+    
+    writeCalendar(fileName, eventiBeznaDuplikata);
+    console.log(`[CALENDAR API] Calendar ${fileName} updated successfully`);
+
+    return zaDodati; // returns only added events
+  } catch (error) {
+    console.error(`[CALENDAR API] Error updating calendar from iCal:`, error);
+    throw error;
   }
-
-  const zaDodati = noviEventi.filter(
-    (novi) => !postojećiEventi.some((postojeci) => jeIdentican(novi, postojeci))
-  );
-
-  const sviEventi = [...postojećiEventi, ...zaDodati];
-  
-  // Ukloni duplikate iz svih evenata
-  const eventiBeznaDuplikata = removeDuplicates(sviEventi);
-  
-  writeCalendar(fileName, eventiBeznaDuplikata);
-
-  return zaDodati; // returns only added events
 }
 
 async function cleanDuplicatesFromCalendar(calendarId) {

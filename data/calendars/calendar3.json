@@ -1,0 +1,32 @@
+[
+  {
+    "event_uuid": "f645da5f-6fa8-4d5d-871a-830aae15c835",
+    "naziv": "Airbnb (Not available)",
+    "pocetak": "2025-08-02T22:00:00.000Z",
+    "kraj": "2025-08-09T22:00:00.000Z"
+  },
+  {
+    "event_uuid": "1b888b7b-0b3e-4cd8-9f6c-9c79ab35ac48",
+    "naziv": "Airbnb (Not available)",
+    "pocetak": "2025-08-10T22:00:00.000Z",
+    "kraj": "2025-08-19T22:00:00.000Z"
+  },
+  {
+    "event_uuid": "c258954d-69b4-4b47-b050-f0b9dedc3c45",
+    "naziv": "Airbnb (Not available)",
+    "pocetak": "2025-08-23T22:00:00.000Z",
+    "kraj": "2025-08-30T22:00:00.000Z"
+  },
+  {
+    "event_uuid": "9a64a6c7-79d6-4701-972a-3c087b9741b4",
+    "naziv": "Airbnb (Not available)",
+    "pocetak": "2025-09-07T22:00:00.000Z",
+    "kraj": "2025-09-21T22:00:00.000Z"
+  },
+  {
+    "event_uuid": "317c8e5f-cc0e-4467-a9ac-b3a12c8c5565",
+    "naziv": "Airbnb (Not available)",
+    "pocetak": "2026-08-04T22:00:00.000Z",
+    "kraj": "2026-08-05T22:00:00.000Z"
+  }
+]

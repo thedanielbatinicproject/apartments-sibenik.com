@@ -1,52 +1,248 @@
 <!DOCTYPE html>
 <html lang="hr">
 <head>
-    <%- include('../modules/head', { pageTitle: 'Dobrodošli', device: device }) %>
+    <%- include('../modules/head', { pageTitle: 'Dobrodošli u Apartmane Šibenik', device: device }) %>
+    <link rel="stylesheet" href="/stylesheets/hr/home.css">
 </head>
 <body>
     <%- include('../modules/header', { lang: 'hr', base: '/hr/desktop' }) %>
+    
     <main>
-        <section class="hero glassy">
-            <h1>Dobrodošli u Apartmane Šibenik</h1>
-            <p>Uživajte u modernom smještaju uz more, s predivnim pogledom, vrhunskom udobnošću i autentičnim doživljajem Dalmacije. Naša ponuda uključuje apartman s vrtom, studio apartman i sobu, idealno za obitelji, parove i solo putnike.</p>
+        <!-- Hero sekcija -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <img src="/images/icons/glowingstar.png" alt="Preporučeno" class="badge-icon">
+                    <span>Preporučeno od 500+ gostiju</span>
+                </div>
+                <h1 class="hero-title">Autentični doživljaj Šibenika u <img src="/images/icons/hearth.png" alt="srcu" class="hearth-icon"> <span class="highlight">Dalmacije</span></h1>
+                <p class="hero-description">Smjestite se u našim luksuznimn apartmanima samo 2 minute hoda od UNESCO katedrale sv. Jakova. Uživajte u privatnom dvorištu, modernim sadržajima i nezaboravnom pogledu na Jadransko more.</p>
+                
+                <div class="hero-features">
+                    <div class="feature-item">
+                        <img src="/images/icons/unesco.png" alt="UNESCO" class="feature-icon">
+                        <span>5 min do UNESCO spomenika</span>
+                    </div>
+                    <div class="feature-item">
+                        <img src="/images/icons/beach.png" alt="Plaža" class="feature-icon">
+                        <span>25 min do plaže</span>
+                    </div>
+                    <div class="feature-item">
+                        <img src="/images/icons/parking.png" alt="Parking" class="feature-icon">
+                        <span>Besplatan parking</span>
+                    </div>
+                </div>
+
+                <div class="hero-actions">
+                    <button class="explore-btn primary" onclick="smoothScrollToSection('.reservation-section')">
+                        <span>Pošalji upit</span>
+                    </button>
+                    <button class="explore-btn secondary" onclick="smoothScrollToSection('.about-sibenik')">
+                        <span>Saznaj više</span>
+                    </button>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="floating-cards">
+                    <div class="floating-card main-card">
+                        <div class="card-header">
+                            <span class="card-rating" id="reviews-stars">★★★★★</span>
+                            <span class="card-reviews" id="reviews-count">4.9 (127 recenzija)</span>
+                        </div>
+                        <h3>3 Jedinstvena Smještaja</h3>
+                        <p>Od intimnih soba do luksuznih apartmana s dvorištem</p>
+                        <div class="card-stats">
+                            <div class="stat">
+                                <span class="stat-number">4+1</span>
+                                <span class="stat-label">max osoba</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-number">24/7</span>
+                                <span class="stat-label">podrška</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mini-cards-row">
+                        <div class="floating-card mini-card">
+                            <div class="mini-card-icon">
+                                <img src="/images/icons/bbq.png" alt="Roštilj">
+                            </div>
+                            <span>Roštilj</span>
+                        </div>
+                        <div class="floating-card mini-card">
+                            <div class="mini-card-icon">
+                                <img src="/images/icons/garden.png" alt="Privatno dvorište">
+                            </div>
+                            <span>Privatno dvorište</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
-        <section class="gallery-preview glassy">
-            <h2>Galerija</h2>
-            <%- include('../modules/gallery', { images: [
-                { fullsize: '/images/gallery/apartment/veliki-slike-01.jpg', thumbnail: '/images/gallery/apartment/veliki-slike-01.jpg', alt: 'Apartman s vrtom' },
-                { fullsize: '/images/gallery/studio/veliki-slike-01.jpg', thumbnail: '/images/gallery/studio/veliki-slike-01.jpg', alt: 'Studio apartman' },
-                { fullsize: '/images/gallery/room/veliki-slike-01.jpg', thumbnail: '/images/gallery/room/veliki-slike-01.jpg', alt: 'Soba' },
-                { fullsize: '/images/gallery/sibenik/veliki-slike-01.jpg', thumbnail: '/images/gallery/sibenik/veliki-slike-01.jpg', alt: 'Šibenik' }
-            ] }) %>
+
+        <!-- Theme Slider sekcija -->
+        <section class="theme-section">
+            <div class="container">
+                <div class="theme-controller">
+                    <h3 class="theme-title">Tema stranice</h3>
+                    <div class="theme-slider-container">
+                        <div class="theme-icon moon">
+                            <img src="/images/icons/moon.png" alt="Mjesec">
+                        </div>
+                        <div class="slider-wrapper">
+                            <input type="range" id="themeSlider" class="theme-slider" min="0" max="100" value="50">
+                            <div class="slider-track"></div>
+                            <div class="slider-thumb"></div>
+                        </div>
+                        <div class="theme-icon sun">
+                            <img src="/images/icons/sun.png" alt="Sunce">
+                        </div>
+                    </div>
+                    <p class="theme-description">Prilagodi svjetlinu stranice prema svojoj preferenciji</p>
+                </div>
+            </div>
         </section>
-        <section class="about glassy">
-            <h2>Zašto odabrati nas?</h2>
-            <ul>
-                <li>Lokacija uz more i blizina centra Šibenika</li>
-                <li>Moderno uređeni apartmani i sobe</li>
-                <li>Privatni vrt i terasa</li>
-                <li>Besplatan Wi-Fi i parking</li>
-                <li>Ljubazni domaćini i autentično dalmatinsko iskustvo</li>
-            </ul>
+
+        <!-- O Šibeniku sekcija -->
+        <section class="about-sibenik section-spacing">
+            <div class="container">
+                <div class="content-grid">
+                    <div class="text-content">
+                        <h2 class="section-title">O Šibeniku</h2>
+                        <div class="text-block">
+                            <p>Šibenik je jedinstven hrvatski grad, jedini na Jadranu potpuno osnovan od Hrvata. Prva se pisana vijest o njemu javlja 1066. godine u donacijskim poveljama hrvatskog kralja Petra Krešimira IV., po kojemu se i zove najljepši most u gradu.</p>
+                            
+                            <p>Grad je poznat po svojoj bogatoj kulturno-povijesnoj baštini, a posebno po katedrali sv. Jakova iz 15. i 16. stoljeća, koja je upisana na UNESCO-ov popis svjetske baštine. Ova remek-djela renesansne arhitekture, djelo Jurja Dalmatinca i Nikole Firentinca, građena je potpuno od kamena bez uporabe vezivnih sredstava.</p>
+                            
+                            <p>Današnji Šibenik je moderni turistički centar koji uspješno spaja bogatu povijest s modernim sadržajima. Grad je poznat i po svojim festivalima, posebno Međunarodnom dječjem festivalu, te kao ulazna vrata u prekrasne nacionalne parkove Kornati i Krka.</p>
+                        </div>
+                    </div>
+                    <div class="gallery-content">
+                        <div class="sibenik-gallery">
+                            <%- include('../modules/gallery', { 
+                                images: [
+                                    { fullsize: '/galleries/sibenik/sibenik1.jpg', thumbnail: '/galleries/sibenik/sibenik1.jpg', alt: 'Šibenik - Katedrala sv. Jakova' },
+                                    { fullsize: '/galleries/sibenik/sibenik2.jpg', thumbnail: '/galleries/sibenik/sibenik2.jpg', alt: 'Šibenik - Stari grad' },
+                                    { fullsize: '/galleries/sibenik/sibenik3.jpg', thumbnail: '/galleries/sibenik/sibenik3.jpg', alt: 'Šibenik - Panorama grada' },
+                                    { fullsize: '/galleries/sibenik/sibenik4.jpg', thumbnail: '/galleries/sibenik/sibenik4.jpg', alt: 'Šibenik - Tvrđava sv. Mihovila' },
+                                    { fullsize: '/galleries/sibenik/sibenik5.jpg', thumbnail: '/galleries/sibenik/sibenik5.jpg', alt: 'Šibenik - Gradska luka' },
+                                    { fullsize: '/galleries/sibenik/sibenik6.jpg', thumbnail: '/galleries/sibenik/sibenik6.jpg', alt: 'Šibenik - Ulice starog grada' },
+                                    { fullsize: '/galleries/sibenik/sibenik7.jpg', thumbnail: '/galleries/sibenik/sibenik7.jpg', alt: 'Šibenik - Tvrđava Barone' },
+                                    { fullsize: '/galleries/sibenik/sibenik8.jpg', thumbnail: '/galleries/sibenik/sibenik8.jpg', alt: 'Šibenik - Kanali' },
+                                    { fullsize: '/galleries/sibenik/sibenik9.jpg', thumbnail: '/galleries/sibenik/sibenik9.jpg', alt: 'Šibenik - Pogled s mora' },
+                                    { fullsize: '/galleries/sibenik/sibenik10.jpg', thumbnail: '/galleries/sibenik/sibenik10.jpg', alt: 'Šibenik - Zalazak sunca' },
+                                    { fullsize: '/galleries/sibenik/sibenik11.jpg', thumbnail: '/galleries/sibenik/sibenik11.jpg', alt: 'Šibenik - Trgovi' },
+                                    { fullsize: '/galleries/sibenik/sibenik12.jpg', thumbnail: '/galleries/sibenik/sibenik12.jpg', alt: 'Šibenik - Arhitektura' }
+                                ] 
+                            }) %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Naši apartmani sekcija -->
+        <section class="apartments-section section-spacing">
+            <div class="container">
+                <h2 class="section-title centered">Naši Apartmani</h2>
+                <p class="section-subtitle">Odaberite smještaj koji najbolje odgovara vašim potrebama</p>
+                
+                <div class="apartments-grid">
+                    <!-- Apartman s vrtom -->
+                    <div class="apartment-card">
+                        <div class="card-image">
+                            <img src="/images/apartments/apartman-vrt/main.jpg" alt="Apartman s vrtom" loading="lazy">
+                            <div class="card-badge">Najpopularniji</div>
+                        </div>
+                        <div class="card-content">
+                            <h3>Apartman s vrtom</h3>
+                            <p>Prostrani apartman s privatnim dvorištem, idealan za obitelji i grupe do 4+1 osoba. Uključuje potpuno opremljenu kuhinju, dnevni boravak i dvorište s roštiljem.</p>
+                            <ul class="amenities">
+                                <li><img src="/images/icons/garden.png" alt="Privatno dvorište" class="icon"> Privatno dvorište</li>
+                                <li><img src="/images/icons/family.png" alt="Do 4+1 osoba" class="icon"> Do 4+1 osoba</li>
+                                <li><img src="/images/icons/kitchen.png" alt="Potpuna kuhinja" class="icon"> Potpuna kuhinja</li>
+                                <li><img src="/images/icons/bbq.png" alt="Roštilj" class="icon"> Roštilj</li>
+                            </ul>
+                            <a href="/hr/apartman-s-vrtom" class="card-link modern-btn">
+                                <span>Saznaj više</span>
+                                <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M5 12h14m-7-7 7 7-7 7"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Studio apartman -->
+                    <div class="apartment-card">
+                        <div class="card-image">
+                            <img src="/images/apartments/studio/main.jpg" alt="Studio apartman" loading="lazy">
+                        </div>
+                        <div class="card-content">
+                            <h3>Studio apartman</h3>
+                            <p>Moderni studio apartman savršen za parove ili manje obitelji. Kombinirani dnevni boravak i spavaća soba s mini kuhinjom za do 2+1 osoba.</p>
+                            <ul class="amenities">
+                                <li><img src="/images/icons/couple.png" alt="Do 2+1 osoba" class="icon"> Do 2+1 osoba</li>
+                                <li><img src="/images/icons/studio.png" alt="Studio layout" class="icon"> Studio layout</li>
+                                <li><img src="/images/icons/kitchen_mini.png" alt="Mini kuhinja" class="icon"> Mini kuhinja</li>
+                                <li><img src="/images/icons/bathroom.png" alt="Privatna kupaona" class="icon"> Privatna kupaona</li>
+                            </ul>
+                            <a href="/hr/studio-apartman" class="card-link modern-btn">
+                                <span>Saznaj više</span>
+                                <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M5 12h14m-7-7 7 7-7 7"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Soba -->
+                    <div class="apartment-card">
+                        <div class="card-image">
+                            <img src="/images/apartments/soba/main.jpg" alt="Soba" loading="lazy">
+                        </div>
+                        <div class="card-content">
+                            <h3>Soba</h3>
+                            <p>Udobna soba s privatnom kupaonom, idealna za parove ili solo putnike. Jednostavno, ali komfortno uređena za maksimalno 2 osobe.</p>
+                            <ul class="amenities">
+                                <li><img src="/images/icons/room.png" alt="Privatna soba" class="icon"> Privatna soba</li>
+                                <li><img src="/images/icons/couple.png" alt="Maksimalno 2 osobe" class="icon"> Maksimalno 2 osobe</li>
+                                <li><img src="/images/icons/bathroom.png" alt="Privatna kupaona" class="icon"> Privatna kupaona</li>
+                                <li><img src="/images/icons/economic.png" alt="Ekonomična opcija" class="icon"> Ekonomična opcija</li>
+                            </ul>
+                            <a href="/hr/soba" class="card-link modern-btn">
+                                <span>Saznaj više</span>
+                                <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M5 12h14m-7-7 7 7-7 7"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rezervacija sekcija -->
+        <section class="reservation-section section-spacing">
+            <div class="container">
+                <div class="reservation-wrapper">
+                    <div class="reservation-header">
+                        <h2 class="section-title">Rezervirajte svoj boravak</h2>
+                        <p>Provjerite dostupnost i rezervirajte svoj idealan smještaj u Šibeniku</p>
+                    </div>
+                    <div class="reservation-content">
+                        <%- include('../modules/reservation-form') %>
+                    </div>
+                </div>
+            </div>
         </section>
     </main>
+
     <%- include('../modules/footer') %>
-    <script src="/javascripts/header.js"></script>
+    
     <script>
-        // Dinamička promjena pozadine ovisno o dobu dana
-        function setDynamicBackground() {
-            const hour = new Date().getHours();
-            let bg;
-            if (hour >= 20 || hour < 6) {
-                bg = 'var(--night-bg)';
-            } else if (hour >= 6 && hour < 18) {
-                bg = 'var(--day-bg)';
-            } else {
-                bg = 'var(--evening-bg)';
-            }
-            document.body.style.background = bg;
-        }
-        setDynamicBackground();
+        // Server-side podatci o recenzijama
+        window.serverReviewsData = <%- JSON.stringify(reviewsData || {}) %>;
     </script>
+    <script src="/javascripts/hr/home.js"></script>
 </body>
 </html>

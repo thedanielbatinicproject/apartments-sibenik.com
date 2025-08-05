@@ -561,4 +561,12 @@ body.fullscreen-active {
     width: 98%;
     height: 98%;
   }
+
+  /* Mobile gallery full width */
+  .gallery-slider {
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    padding: 15px;
+  }
 }

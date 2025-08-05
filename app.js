@@ -69,12 +69,12 @@ app.use('/api', (req, res, next) => {
     // Check if this is an internal server-to-server request
     const userAgent = req.get('User-Agent') || '';
     const isInternalServerRequest = (
-      (userAgent.includes('node') || userAgent.includes('axios')) &&
-      !userAgent.includes('Mozilla') && // Exclude browsers
-      !userAgent.includes('Chrome') &&
-      !userAgent.includes('Safari') &&
-      !userAgent.includes('Firefox') &&
-      req.get('host') && req.get('host').includes('localhost')
+      userAgent.includes('node-internal-api-client') ||
+      ((userAgent.includes('node') || userAgent.includes('axios')) &&
+       !userAgent.includes('Mozilla') && // Exclude browsers
+       !userAgent.includes('Chrome') &&
+       !userAgent.includes('Safari') &&
+       !userAgent.includes('Firefox'))
     );
 
     // Add API key for internal server requests

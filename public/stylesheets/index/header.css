@@ -34,6 +34,17 @@
   text-decoration: none;
   display: flex;
   align-items: center;
+  outline: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.logo-link:focus {
+  outline: none;
 }
 
 .logo-image {
@@ -46,6 +57,17 @@
 .logo-text-link {
   text-decoration: none;
   color: white;
+  outline: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.logo-text-link:focus {
+  outline: none;
 }
 
 .logo-text {
@@ -126,6 +148,17 @@
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  outline: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-menu-toggle:focus {
+  outline: none;
 }
 
 .mobile-menu-toggle:hover {

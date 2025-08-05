@@ -55,8 +55,8 @@
 - **Smooth Animations** - Fluid transitions and hover effects
 
 ### **Smart Calendar Integration**
-- **Airbnb Sync** - Real-time availability updates from Airbnb iCal feeds
-- **Dual Calendar Support** - Manage multiple properties simultaneously
+- **iCal Sync** - Real-time availability updates from iCal feeds (Airbnb, Booking.com, etc.)
+- **Multi-Calendar Support** - Manage multiple properties simultaneously
 - **Reservation Management** - Automatic booking status updates
 - **API Endpoints** - RESTful calendar data access
 - **Automated Scheduler** - Background sync with configurable intervals
@@ -243,9 +243,10 @@ npm install
 ### 3. Environment Configuration
 Create a `.env` file in the root directory:
 ```env
-# Airbnb iCal URLs for calendar synchronization
-AIRBNB_ICAL_URL_1=your_airbnb_ical_url_1
-AIRBNB_ICAL_URL_2=your_airbnb_ical_url_2
+# Calendar iCal URLs for calendar synchronization
+ICAL_URL_1=your_ical_url_1
+ICAL_URL_2=your_ical_url_2
+ICAL_URL_3=your_ical_url_3
 
 # Server Configuration
 PORT=3000
@@ -303,7 +304,7 @@ The integrated solar monitoring system provides comprehensive energy tracking:
 Comprehensive guest feedback management:
 
 #### **Multi-platform Integration**
-- **Airbnb Reviews**: Automatic synchronization with Airbnb API
+- **iCal Reviews**: Automatic synchronization with various booking platforms
 - **Booking.com Reviews**: Integration with Booking.com platform
 - **Manual Reviews**: Direct guest feedback submission
 - **Review Aggregation**: Combined scoring and display
@@ -377,8 +378,8 @@ Comprehensive administrative interface:
 |----------|--------|-------------|
 | `/` | GET | Root redirect with geolocation |
 | `/gallery` | GET | Standalone gallery view |
-| `/calendar/:id` | GET | Calendar display (1 or 2) |
-| `/kalendar/:id` | GET | Calendar sync from Airbnb |
+| `/calendar/:id` | GET | Calendar display (1, 2, or 3) |
+| `/kalendar/:id` | GET | Calendar sync from iCal sources |
 | `/:lang/:device` | GET | Localized views |
 
 ### **Calendar API**
@@ -422,7 +423,7 @@ Comprehensive administrative interface:
 - ✅ Multi-language support (HR/DE/EN)
 - ✅ Responsive design implementation
 - ✅ Advanced gallery system
-- ✅ Calendar integration with Airbnb
+- ✅ Calendar integration with iCal sources
 - ✅ Geolocation-based routing
 
 ### **Phase 2: Solar Monitoring Integration**

@@ -2,7 +2,7 @@ const { internalAPI } = require('../utils/internalAPIClient');
 
 class CalendarScheduler {
   constructor() {
-    this.updateInterval = 5000; // 5 sekundi
+    this.updateInterval = 300000; // 5 minuta (300000ms)
     this.isRunning = false;
     this.intervalId = null;
   }
@@ -41,13 +41,13 @@ class CalendarScheduler {
       return;
     }
 
-    console.log('[SCHEDULER] Starting calendar auto-update scheduler (every 5 seconds)');
+    console.log('[SCHEDULER] Starting calendar auto-update scheduler (every 5 minutes)');
     this.isRunning = true;
     
     // Prvi update odmah
     this.updateCalendars();
     
-    // Zatim svakih 5 sekundi
+    // Zatim svakih 5 minuta
     this.intervalId = setInterval(() => {
       this.updateCalendars();
     }, this.updateInterval);

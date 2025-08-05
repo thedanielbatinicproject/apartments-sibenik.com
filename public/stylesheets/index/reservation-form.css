@@ -486,8 +486,10 @@
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .reservation-form-container {
-    margin: 0.8rem auto;
-    padding: 0 0.5rem;
+    margin: 0;
+    padding: 0;
+    max-width: none;
+    width: 100%;
   }
   
   .reservation-form-backdrop {
@@ -508,7 +510,7 @@
   }
   
   .date-input-container {
-    flex-direction: row;
+    flex-direction: column;
     gap: 0.6rem;
   }
   
@@ -525,12 +527,13 @@
 
 @media (max-width: 600px) {
   .reservation-form-container {
-    margin: 0.5rem auto;
-    max-width: 98vw;
-    padding: 0 0.5rem;
+    margin: 0;
+    max-width: none;
+    width: 100%;
+    padding: 0;
   }
   .reservation-form-backdrop {
-    padding: 0.8rem 0.2rem;
+    padding: 0.8rem;
   }
   .reservation-form-title {
     font-size: 1.1rem;

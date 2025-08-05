@@ -32,7 +32,7 @@ async function displayCalendar(req, res) {
   }
 }
 
-// Update calendar from iCal (Airbnb 1, 2, Apartmanija 3)
+// Update calendar from iCal (Calendar 1, 2, 3)
 async function updateCalendar(req, res) {
   try {
     const calendarId = req.params.id;
@@ -47,17 +47,26 @@ async function updateCalendar(req, res) {
       });
     }
     let url;
-    if (calendarId === "1") url = process.env.AIRBNB_ICAL_URL_1;
-    else if (calendarId === "2") url = process.env.AIRBNB_ICAL_URL_2;
+    if (calendarId === "1") url = process.env.ICAL_URL_1;
+    else if (calendarId === "2") url = process.env.ICAL_URL_2;
     else if (calendarId === "3") url = process.env.ICAL_URL_3;
+    
+    console.log(`[CALENDAR] Updating calendar ${calendarId} from URL: ${url}`);
+    
+    if (!url) {
+      throw new Error(`ICAL_URL_${calendarId} environment variable not set`);
+    }
+    
     const fileName = "calendar" + calendarId + ".json";
     const addedEvents = await updateCalendarFromIcal(url, fileName);
     res.json(addedEvents);
   } catch (err) {
-    console.error(`Error updating calendar ${req.params.id}:`, err);
+    console.error(`[CALENDAR] Error updating calendar ${req.params.id}:`, err);
+    console.error(`[CALENDAR] Error stack:`, err.stack);
     res.status(500).json({
       error: err.message || `Failed to fetch iCal calendar ${req.params.id}.`,
-      success: false
+      success: false,
+      details: err.stack
     });
   }
 }

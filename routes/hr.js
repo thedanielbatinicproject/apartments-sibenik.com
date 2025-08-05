@@ -92,6 +92,19 @@ router.get('/', (req, res) => {
 router.get('/mobile', async (req, res) => {
   try {
     const calendar = await fetchCalendars();
+    
+    // Dohvati reviews podatke
+    const { getCombinedReviews } = require('../code/reviews/reviewsAPI');
+    let reviewsData = {};
+    try {
+      for (let unitId of ['1', '2']) {
+        reviewsData[unitId] = await getCombinedReviews(unitId);
+      }
+    } catch (error) {
+      console.error('Error fetching reviews for mobile:', error);
+      reviewsData = { '1': { reviews: [], rating: 0 }, '2': { reviews: [], rating: 0 } };
+    }
+    
     const galleryImages = [
       { thumbnail: "/images/gallery/studio/studio-slike-1-thumb.jpg", fullsize: "/images/gallery/studio/studio-slike-1.jpg", alt: "Studio slika 1" },
       { thumbnail: "/images/gallery/studio/studio-slike-2-thumb.jpg", fullsize: "/images/gallery/studio/studio-slike-2.jpg", alt: "Studio slika 2" },
@@ -103,7 +116,7 @@ router.get('/mobile', async (req, res) => {
       { thumbnail: "/images/gallery/studio/studio-slike-8-thumb.jpg", fullsize: "/images/gallery/studio/studio-slike-8.jpg", alt: "Studio slika 8" },
       { thumbnail: "/images/gallery/studio/studio-slike-9-thumb.jpg", fullsize: "/images/gallery/studio/studio-slike-9.jpg", alt: "Studio slika 9" }
     ];
-    res.render('hr/home', { language: 'hr', device: 'mobile', calendar, galleryImages });
+    res.render('hr/home', { language: 'hr', device: 'mobile', calendar, galleryImages, reviewsData });
   } catch (err) {
     res.status(500).render('error', {
       error: {
@@ -198,6 +211,19 @@ router.get('/mobile/kontakt', (req, res) => {
 router.get('/desktop', async (req, res) => {
   try {
     const calendar = await fetchCalendars();
+    
+    // Dohvati reviews podatke
+    const { getCombinedReviews } = require('../code/reviews/reviewsAPI');
+    let reviewsData = {};
+    try {
+      for (let unitId of ['1', '2']) {
+        reviewsData[unitId] = await getCombinedReviews(unitId);
+      }
+    } catch (error) {
+      console.error('Error fetching reviews for desktop:', error);
+      reviewsData = { '1': { reviews: [], rating: 0 }, '2': { reviews: [], rating: 0 } };
+    }
+    
     const galleryImages = [
       { thumbnail: "/images/gallery/studio/studio-slike-1-thumb.jpg", fullsize: "/images/gallery/studio/studio-slike-1.jpg", alt: "Studio slika 1" },
       { thumbnail: "/images/gallery/studio/studio-slike-2-thumb.jpg", fullsize: "/images/gallery/studio/studio-slike-2.jpg", alt: "Studio slika 2" },
@@ -209,7 +235,7 @@ router.get('/desktop', async (req, res) => {
       { thumbnail: "/images/gallery/studio/studio-slike-8-thumb.jpg", fullsize: "/images/gallery/studio/studio-slike-8.jpg", alt: "Studio slika 8" },
       { thumbnail: "/images/gallery/studio/studio-slike-9-thumb.jpg", fullsize: "/images/gallery/studio/studio-slike-9.jpg", alt: "Studio slika 9" }
     ];
-    res.render('hr/home', { language: 'hr', device: 'desktop', calendar, galleryImages });
+    res.render('hr/home', { language: 'hr', device: 'desktop', calendar, galleryImages, reviewsData });
   } catch (err) {
     res.status(500).render('error', {
       error: {
