@@ -1,6 +1,10 @@
 /node_modules
 /bin
+/data/private
 /public/images
-/data
 .env.example
 .env
+
+# Test files
+test_*.js
+*.test.js

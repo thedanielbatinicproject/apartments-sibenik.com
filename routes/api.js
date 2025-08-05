@@ -12,6 +12,13 @@ const {
   readSolarDataWithCache 
 } = require('../code/solar/solarDataManager');
 const { saveSolarData, exportSolarData } = require('../code/solar/solarFileManager');
+const { 
+  initializeRelayStates, 
+  getRelayStates, 
+  updateRelayStates, 
+  setRelayState, 
+  toggleRelayState 
+} = require('../code/solar/relayStateManager');
 const { calculateWeeklyAverages, filterDataByTimeRange, sampleDataPoints, extractChartData } = require('../code/data/dataAnalysis');
 const { handleError, createAPIKeyMiddleware, parseTimeRangeParams, createAPIResponse } = require('../code/api/apiHelpers');
 
@@ -19,6 +26,11 @@ const router = express.Router();
 
 // Initialize solar data on startup
 initializeLastSignificantData();
+
+// Initialize relay states on startup
+initializeRelayStates().catch(error => {
+  console.error('[INIT] Failed to initialize relay states:', error);
+});
 
 // Create API key middleware
 const requireAPIKey = createAPIKeyMiddleware();
@@ -45,45 +57,18 @@ router.get('/backyard-management', async (req, res) => {
       return res.status(401).json({ error: 'Invalid secret key' });
     }
 
-    // Read current solar data to get relay states
-    const solarData = await readSolarDataWithCache();
+    // Get current relay states from dedicated file
+    const relayStatesData = getRelayStates();
     
-    if (!solarData || solarData.length === 0) {
-      return res.json({
-        success: true,
-        relayStates: {
-          relay1: false,
-          relay2: false,
-          relay3: false,
-          relay4: false
-        },
-        message: 'No data available - default relay states'
-      });
-    }
-
-    // Get latest record with delta reconstruction
-    let latestData = solarData[solarData.length - 1];
-    try {
-      const reconstructed = await reconstructDeltaDataWithHistory([latestData], solarData);
-      if (reconstructed && reconstructed.length > 0) {
-        latestData = reconstructed[0];
-      }
-    } catch (error) {
-      console.warn('[API] Error reconstructing relay state data:', error.message);
-    }
-
-    // Extract relay states
-    const relayStates = {
-      relay1: latestData.relay1 || false,
-      relay2: latestData.relay2 || false,
-      relay3: latestData.relay3 || false,
-      relay4: latestData.relay4 || false
-    };
-
     res.json({
       success: true,
-      relayStates,
-      timestamp: latestData.timestamp,
+      relayStates: {
+        relay1: relayStatesData.relay1,
+        relay2: relayStatesData.relay2,
+        relay3: relayStatesData.relay3,
+        relay4: relayStatesData.relay4
+      },
+      timestamp: relayStatesData.lastUpdate,
       message: 'Current relay states retrieved'
     });
 
@@ -109,14 +94,61 @@ router.post('/backyard-management', async (req, res) => {
     const incomingData = { ...req.body };
     delete incomingData.secret_key;
 
-    // Save data using solar file manager
-    const saveResult = await saveSolarData(incomingData);
+    // Extract relay states if present and update them separately
+    const relayStates = {};
+    let hasRelayData = false;
+    
+    if (typeof incomingData.relay1 !== 'undefined') {
+      relayStates.relay1 = incomingData.relay1;
+      hasRelayData = true;
+    }
+    if (typeof incomingData.relay2 !== 'undefined') {
+      relayStates.relay2 = incomingData.relay2;
+      hasRelayData = true;
+    }
+    if (typeof incomingData.relay3 !== 'undefined') {
+      relayStates.relay3 = incomingData.relay3;
+      hasRelayData = true;
+    }
+    if (typeof incomingData.relay4 !== 'undefined') {
+      relayStates.relay4 = incomingData.relay4;
+      hasRelayData = true;
+    }
+
+    // Update relay states in separate file if relay data is present
+    if (hasRelayData) {
+      try {
+        await updateRelayStates(relayStates);
+        console.log('[API] Relay states updated:', relayStates);
+      } catch (relayError) {
+        console.error('[API] Error updating relay states:', relayError);
+        return res.status(500).json({ 
+          error: 'Internal server error',
+          message: 'Error updating relay states',
+          details: relayError.message
+        });
+      }
+    }
+
+    // Save solar data (without relay states for monitoring purposes)
+    let saveResult;
+    try {
+      saveResult = await saveSolarData(incomingData);
+    } catch (saveError) {
+      console.error('[API] Error saving solar data:', saveError);
+      return res.status(500).json({ 
+        error: 'Internal server error',
+        message: 'Error saving solar data',
+        details: saveError.message
+      });
+    }
     
     if (saveResult.skipped) {
       return res.json({ 
         success: true, 
         message: 'Data unchanged - not saved',
-        reason: saveResult.reason
+        reason: saveResult.reason,
+        relayStatesUpdated: hasRelayData
       });
     }
 
@@ -124,13 +156,19 @@ router.post('/backyard-management', async (req, res) => {
     const io = req.app.get('io');
     if (io && saveResult.completeData) {
       io.emit('solarDataUpdate', saveResult.completeData);
+      
+      // Also emit relay states if updated
+      if (hasRelayData) {
+        io.emit('relayStatesUpdate', getRelayStates());
+      }
     }
 
     res.json({ 
       success: true, 
       message: 'Data saved successfully',
       type: saveResult.type,
-      records: saveResult.recordsCount
+      records: saveResult.recordsCount,
+      relayStatesUpdated: hasRelayData
     });
 
   } catch (error) {
@@ -265,6 +303,125 @@ router.get('/solar/load-more', requireAPIKey, async (req, res) => {
 
   } catch (error) {
     return handleError(req, res, error, '500', 'LOAD MORE ERROR');
+  }
+});
+
+// Relay control endpoints
+// GET relay states only
+router.get('/relay-states', async (req, res) => {
+  try {
+    // Validacija secret key-a
+    const secretKey = req.query.secret_key || req.headers['x-secret-key'] || req.headers['secret_key'];
+    if (!secretKey || secretKey !== process.env.API_SECRET) {
+      return res.status(401).json({ error: 'Invalid secret key' });
+    }
+
+    const relayStates = getRelayStates();
+    res.json({
+      success: true,
+      relayStates: {
+        relay1: relayStates.relay1,
+        relay2: relayStates.relay2,
+        relay3: relayStates.relay3,
+        relay4: relayStates.relay4
+      },
+      lastUpdate: relayStates.lastUpdate
+    });
+  } catch (error) {
+    console.error('[API] Error getting relay states:', error);
+    return res.status(500).json({ 
+      error: 'Internal server error',
+      message: 'Error reading relay states'
+    });
+  }
+});
+
+// PUT relay states - update specific relays
+router.put('/relay-states', async (req, res) => {
+  try {
+    // Validacija secret key-a
+    const secretKey = req.body.secret_key || req.headers['x-secret-key'] || req.headers['secret_key'];
+    if (!secretKey || secretKey !== process.env.API_SECRET) {
+      return res.status(401).json({ error: 'Invalid secret key' });
+    }
+
+    const newStates = {};
+    if (typeof req.body.relay1 !== 'undefined') newStates.relay1 = req.body.relay1;
+    if (typeof req.body.relay2 !== 'undefined') newStates.relay2 = req.body.relay2;
+    if (typeof req.body.relay3 !== 'undefined') newStates.relay3 = req.body.relay3;
+    if (typeof req.body.relay4 !== 'undefined') newStates.relay4 = req.body.relay4;
+
+    if (Object.keys(newStates).length === 0) {
+      return res.status(400).json({ error: 'No relay states provided' });
+    }
+
+    const updatedStates = await updateRelayStates(newStates);
+    
+    // Emit real-time update
+    const io = req.app.get('io');
+    if (io) {
+      io.emit('relayStatesUpdate', updatedStates);
+    }
+
+    res.json({
+      success: true,
+      message: 'Relay states updated',
+      relayStates: {
+        relay1: updatedStates.relay1,
+        relay2: updatedStates.relay2,
+        relay3: updatedStates.relay3,
+        relay4: updatedStates.relay4
+      },
+      lastUpdate: updatedStates.lastUpdate
+    });
+  } catch (error) {
+    console.error('[API] Error updating relay states:', error);
+    return res.status(500).json({ 
+      error: 'Internal server error',
+      message: 'Error updating relay states'
+    });
+  }
+});
+
+// POST toggle specific relay
+router.post('/relay-states/:relayNumber/toggle', async (req, res) => {
+  try {
+    // Validacija secret key-a
+    const secretKey = req.body.secret_key || req.headers['x-secret-key'] || req.headers['secret_key'];
+    if (!secretKey || secretKey !== process.env.API_SECRET) {
+      return res.status(401).json({ error: 'Invalid secret key' });
+    }
+
+    const relayNumber = parseInt(req.params.relayNumber);
+    if (relayNumber < 1 || relayNumber > 4) {
+      return res.status(400).json({ error: 'Invalid relay number. Must be 1-4.' });
+    }
+
+    const updatedStates = await toggleRelayState(relayNumber);
+    
+    // Emit real-time update
+    const io = req.app.get('io');
+    if (io) {
+      io.emit('relayStatesUpdate', updatedStates);
+    }
+
+    res.json({
+      success: true,
+      message: `Relay ${relayNumber} toggled`,
+      relayStates: {
+        relay1: updatedStates.relay1,
+        relay2: updatedStates.relay2,
+        relay3: updatedStates.relay3,
+        relay4: updatedStates.relay4
+      },
+      lastUpdate: updatedStates.lastUpdate
+    });
+  } catch (error) {
+    console.error('[API] Error toggling relay state:', error);
+    return res.status(500).json({ 
+      error: 'Internal server error',
+      message: error.message
+    });
   }
 });
 

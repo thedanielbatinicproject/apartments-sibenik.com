@@ -1,0 +1,10 @@
+[
+  {
+    "test_field": "test_value",
+    "Error_code": 0,
+    "Warning_code": 0,
+    "PV_voltage_V": 12.5,
+    "timestamp": "2025-08-05T12:54:55.871Z",
+    "local_time": "05. 08. 2025. 14:54:55"
+  }
+]
