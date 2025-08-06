@@ -4,7 +4,6 @@
 /public/images
 .env.example
 .env
-
 # Test files
 test_*.js
 *.test.js

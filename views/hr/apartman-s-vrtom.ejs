@@ -273,6 +273,13 @@
         // Initialize reviews module for apartman-s-vrtom
         document.addEventListener('DOMContentLoaded', function() {
             setHeroBackground();
+            
+            // Auto-select "Apartment with Garden" on this page
+            const apartmentSelect = document.getElementById('apartment');
+            if (apartmentSelect) {
+                apartmentSelect.value = '1'; // Apartment with Garden
+            }
+            
             console.log('Reviews module initialized for apartman-s-vrtom');
         });
     </script>

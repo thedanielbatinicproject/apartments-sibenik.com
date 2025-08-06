@@ -30,6 +30,7 @@
     
     function parseEvents(events, year, month) {
       const map = {};
+      // Danas bez timezone konverzije - ista logika kao backend
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       
@@ -41,6 +42,7 @@
           const eventStart = new Date(ev.pocetak);
           const eventEnd = new Date(ev.kraj);
           
+          // Jednostavna usporedba bez timezone konverzije - kao backend
           if (eventEnd < today) {
             // Prošli eventi - svetlo plava
             ev._color = 'rgba(100, 180, 255, 0.55)';
@@ -55,12 +57,17 @@
         const start = new Date(ev.pocetak);
         const end = new Date(ev.kraj);
         
+        // Koristi UTC datume - potpuno ista logika kao backend
         const localStart = new Date(
-          start.getFullYear(),
-          start.getMonth(),
-          start.getDate()
+          start.getUTCFullYear(),
+          start.getUTCMonth(),
+          start.getUTCDate()
         );
-        const localEnd = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+        const localEnd = new Date(
+          end.getUTCFullYear(), 
+          end.getUTCMonth(), 
+          end.getUTCDate()
+        );
         
         let firstDay = null, lastDay = null;
         for (
@@ -187,7 +194,7 @@
         const el = document.createElement("div");
         el.className = "calendar-cell";
         
-        // Označava današnji dan
+        // Označava današnji dan - bez timezone konverzije za konzistentnost
         const now = new Date();
         if (now.getFullYear() === year && now.getMonth() === month && now.getDate() === day) {
           el.className += " today";
@@ -253,16 +260,18 @@
       });
     }
     
-    // Inicijalizacija kalendara
+    // Inicijalizacija kalendara - bez timezone konverzije za konzistentnost s backend-om
     const now = new Date();
     let year = now.getFullYear();
     let month = now.getMonth();
     let events = parseEvents(calendarData, year, month);
     
     function update() {
-      document.getElementById(calendarId + '-monthYear').textContent = `${now.toLocaleString("default", {
-        month: "long",
-      })} - ${year}`;
+      // Kreiraj datum za trenutni mjesec i godinu - engleski nazivi s velikim slovom
+      const currentDate = new Date(year, month, 1);
+      document.getElementById(calendarId + '-monthYear').textContent = `${currentDate.toLocaleString("en-US", {
+        month: "long"
+      })} ${year}`;
       events = parseEvents(calendarData, year, month);
       renderCalendar(year, month, events);
     }
@@ -273,8 +282,6 @@
         month = 11;
         year--;
       }
-      now.setFullYear(year);
-      now.setMonth(month);
       update();
     };
     
@@ -284,8 +291,6 @@
         month = 0;
         year++;
       }
-      now.setFullYear(year);
-      now.setMonth(month);
       update();
     };
     

@@ -54,7 +54,20 @@ async function processReservation(req, res) {
     // Check for calendar conflicts (for apartments 1 and 2)
     if (apartment === '1' || apartment === '2') {
       const calendars = await fetchCalendars();
-      const calendarKey = apartment === '2' ? 'calendar2' : 'calendar1';
+      // Map apartment to calendar
+      let calendarKey;
+      if (apartment === '1') {
+        calendarKey = 'calendar2'; // Apartman s vrtom
+      } else if (apartment === '2') {
+        calendarKey = 'calendar1'; // Studio apartman
+      } else if (apartment === '3') {
+        calendarKey = 'calendar3'; // Room
+      } else {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid apartment selection'
+        });
+      }
       const calendarEvents = calendars[calendarKey] || [];
       
       console.log(`Checking conflicts for apartment ${apartment}:`, {
@@ -66,7 +79,17 @@ async function processReservation(req, res) {
       const conflictingEvent = calendarEvents.find(event => {
         const eventStart = new Date(event.pocetak);
         const eventEnd = new Date(event.kraj);
-        const overlap = (checkInDate < eventEnd && checkOutDate > eventStart);
+        
+        // Overlap logic: allow check-in on same day as previous checkout and vice versa
+        // Compare only dates, not times - guest can check in any time on checkout day
+        const checkInDateOnly = new Date(checkInDate.getFullYear(), checkInDate.getMonth(), checkInDate.getDate());
+        const checkOutDateOnly = new Date(checkOutDate.getFullYear(), checkOutDate.getMonth(), checkOutDate.getDate());
+        const eventStartDateOnly = new Date(eventStart.getFullYear(), eventStart.getMonth(), eventStart.getDate());
+        const eventEndDateOnly = new Date(eventEnd.getFullYear(), eventEnd.getMonth(), eventEnd.getDate());
+        
+        // Conflict only if there's actual overlap, not just touching dates
+        // Allow check-in on same date as event end, and check-out on same date as event start
+        const overlap = (checkInDateOnly < eventEndDateOnly && checkOutDateOnly > eventStartDateOnly);
         
         if (overlap) {
           console.log('Conflict found with event:', {
@@ -157,8 +180,8 @@ async function testAvailabilityCheck(checkIn, checkOut, apartment) {
       return { available: true, message: 'Missing required parameters' };
     }
     
-    // Only check for apartments 1 and 2
-    if (apartment !== '1' && apartment !== '2') {
+    // Only check for apartments 1, 2, and 3
+    if (apartment !== '1' && apartment !== '2' && apartment !== '3') {
       return { available: true, message: 'Invalid apartment number' };
     }
     
@@ -167,23 +190,34 @@ async function testAvailabilityCheck(checkIn, checkOut, apartment) {
     
     // Fetch calendar data
     const calendars = await fetchCalendars();
-    const calendarKey = apartment === '2' ? 'calendar2' : 'calendar1';
+    // Map apartment to calendar in testAvailabilityCheck
+    let calendarKey;
+    if (apartment === '1') {
+      calendarKey = 'calendar2'; // Apartman s vrtom
+    } else if (apartment === '2') {
+      calendarKey = 'calendar1'; // Studio apartman
+    } else if (apartment === '3') {
+      calendarKey = 'calendar3'; // Room
+    }
     const calendarEvents = calendars[calendarKey] || [];
     
-    // Check for conflicts
+    // Check for conflicts in testAvailabilityCheck
     const hasConflict = calendarEvents.some(event => {
       const eventStart = new Date(event.pocetak);
       const eventEnd = new Date(event.kraj);
       
-      // Convert to Croatian timezone properly
-      const eventStartCroatian = new Date(eventStart.toLocaleString('en-US', {timeZone: 'Europe/Zagreb'}));
-      const eventEndCroatian = new Date(eventEnd.toLocaleString('en-US', {timeZone: 'Europe/Zagreb'}));
+      // Updated overlap logic: allow check-in on same day as previous checkout and vice versa
+      // Compare only dates, not times - guest can check in any time on checkout day
+      const checkInDateOnly = new Date(checkInDate.getUTCFullYear(), checkInDate.getUTCMonth(), checkInDate.getUTCDate());
+      const checkOutDateOnly = new Date(checkOutDate.getUTCFullYear(), checkOutDate.getUTCMonth(), checkOutDate.getUTCDate());
+      const eventStartDateOnly = new Date(eventStart.getUTCFullYear(), eventStart.getUTCMonth(), eventStart.getUTCDate());
+      const eventEndDateOnly = new Date(eventEnd.getUTCFullYear(), eventEnd.getUTCMonth(), eventEnd.getUTCDate());
       
-      // Extract just date parts for comparison  
-      const eventStartDate = new Date(Date.UTC(eventStartCroatian.getFullYear(), eventStartCroatian.getMonth(), eventStartCroatian.getDate()));
-      const eventEndDate = new Date(Date.UTC(eventEndCroatian.getFullYear(), eventEndCroatian.getMonth(), eventEndCroatian.getDate()));
+      // Conflict only if there's actual overlap, not just touching dates
+      // Allow check-in on same date as event end, and check-out on same date as event start
+      const overlap = (checkInDateOnly < eventEndDateOnly && checkOutDateOnly > eventStartDateOnly);
       
-      return (checkInDate < eventEndDate && checkOutDate > eventStartDate);
+      return overlap;
     });
     
     return { 
@@ -205,8 +239,8 @@ async function checkAvailability(req, res) {
       return res.json({ hasConflict: false });
     }
     
-    // Only check for apartments 1 and 2
-    if (apartment !== '1' && apartment !== '2') {
+    // Only check for apartments 1, 2, and 3
+    if (apartment !== '1' && apartment !== '2' && apartment !== '3') {
       return res.json({ hasConflict: false });
     }
     
@@ -215,23 +249,33 @@ async function checkAvailability(req, res) {
     
     // Fetch calendar data
     const calendars = await fetchCalendars();
-    const calendarKey = apartment === '2' ? 'calendar2' : 'calendar1';
+    // Map apartment to calendar in checkAvailability
+    let calendarKey;
+    if (apartment === '1') {
+      calendarKey = 'calendar2'; // Apartman s vrtom
+    } else if (apartment === '2') {
+      calendarKey = 'calendar1'; // Studio apartman
+    } else if (apartment === '3') {
+      calendarKey = 'calendar3'; // Room
+    }
     const calendarEvents = calendars[calendarKey] || [];
     
-    // Check for conflicts
+    // Check for conflicts in API checkAvailability
     const hasConflict = calendarEvents.some(event => {
       const eventStart = new Date(event.pocetak);
       const eventEnd = new Date(event.kraj);
       
-      // Convert to Croatian timezone properly
-      const eventStartCroatian = new Date(eventStart.toLocaleString('en-US', {timeZone: 'Europe/Zagreb'}));
-      const eventEndCroatian = new Date(eventEnd.toLocaleString('en-US', {timeZone: 'Europe/Zagreb'}));
+      // Compare only dates, not times - guest can check in any time on checkout day
+      const checkInDateOnly = new Date(checkInDate.getUTCFullYear(), checkInDate.getUTCMonth(), checkInDate.getUTCDate());
+      const checkOutDateOnly = new Date(checkOutDate.getUTCFullYear(), checkOutDate.getUTCMonth(), checkOutDate.getUTCDate());
+      const eventStartDateOnly = new Date(eventStart.getUTCFullYear(), eventStart.getUTCMonth(), eventStart.getUTCDate());
+      const eventEndDateOnly = new Date(eventEnd.getUTCFullYear(), eventEnd.getUTCMonth(), eventEnd.getUTCDate());
       
-      // Extract just date parts for comparison  
-      const eventStartDate = new Date(Date.UTC(eventStartCroatian.getFullYear(), eventStartCroatian.getMonth(), eventStartCroatian.getDate()));
-      const eventEndDate = new Date(Date.UTC(eventEndCroatian.getFullYear(), eventEndCroatian.getMonth(), eventEndCroatian.getDate()));
+      // Conflict only if there's actual overlap, not just touching dates
+      // Allow check-in on same date as event end, and check-out on same date as event start
+      const overlap = (checkInDateOnly < eventEndDateOnly && checkOutDateOnly > eventStartDateOnly);
       
-      return (checkInDate < eventEndDate && checkOutDate > eventStartDate);
+      return overlap;
     });
     
     res.json({ hasConflict });
