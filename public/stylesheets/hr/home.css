@@ -548,9 +548,43 @@ main {
 .card-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 16px;
-  flex-wrap: nowrap; /* spriječi prelom u novi red */
+  flex-wrap: nowrap;
+}
+
+.card-rating {
+  color: var(--accent-color);
+  font-size: 1.1rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.star-icon {
+  width: 16px;
+  height: 16px;
+  filter: drop-shadow(0 1px 2px rgba(255, 215, 0, 0.3));
+}
+
+.card-reviews-section {
+  text-align: right;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.rating-line {
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.reviews-line {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  display: block;
 }
 
 .card-rating {
@@ -559,10 +593,7 @@ main {
   white-space: nowrap; /* drži zvjezdice u jednom redu */
 }
 
-.card-reviews {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-}
+/* Uklonili stari .card-reviews CSS */
 
 .main-card h3 {
   font-size: 1.5rem;
@@ -749,6 +780,16 @@ main {
   box-shadow: var(--box-shadow);
 }
 
+/* O apartmanu sekcija - koristi iste stilove kao about-sibenik */
+.about-apartment {
+  background: var(--card-bg);
+  backdrop-filter: var(--blur-effect);
+  -webkit-backdrop-filter: var(--blur-effect);
+  border-radius: var(--border-radius);
+  margin: 0 8%;
+  box-shadow: var(--box-shadow);
+}
+
 .content-grid {
   display: grid;
   grid-template-columns: 1fr 1.2fr;
@@ -768,11 +809,19 @@ main {
   text-align: center;
 }
 
+.section-title.left-aligned {
+  text-align: left;
+}
+
 .section-subtitle {
   text-align: center;
   font-size: 1.2rem;
   color: var(--text-muted);
   margin-bottom: 60px;
+}
+
+.section-subtitle.left-aligned {
+  text-align: left;
 }
 
 .text-block p {
@@ -786,11 +835,19 @@ main {
   width: 100%;
 }
 
+.apartment-gallery {
+  width: 100%;
+}
+
 .gallery-content {
   width: 100%;
 }
 
 .gallery-content .sibenik-gallery {
+  width: 100%;
+}
+
+.gallery-content .apartment-gallery {
   width: 100%;
 }
 
@@ -1003,7 +1060,22 @@ main {
   width: 100%;
 }
 
+.apartment-gallery .gallery-container {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
 .sibenik-gallery .gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  border-radius: 16px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.apartment-gallery .gallery-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 12px;
@@ -1020,7 +1092,19 @@ main {
   transition: var(--transition);
 }
 
+.apartment-gallery .gallery-item {
+  aspect-ratio: 4/3;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
 .sibenik-gallery .gallery-item:hover {
+  transform: scale(1.02);
+}
+
+.apartment-gallery .gallery-item:hover {
   transform: scale(1.02);
 }
 
@@ -1038,6 +1122,90 @@ main {
   border-radius: var(--border-radius);
   margin: 0 8%; /* Smanjeno s 15% na 8% za širi layout */
   box-shadow: var(--box-shadow);
+}
+
+/* Kalendar sekcija */
+.calendar-reservation-section {
+  margin: 60px 8% 60px 8%; /* Dodani vertikalni razmaci */
+  padding: 40px;
+}
+
+.calendar-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.calendar-header h2 {
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--text-color);
+}
+
+.calendar-header p {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.calendar-legend {
+  background: rgba(14, 165, 233, 0.05);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.legend-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.legend-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.legend-color.available {
+  background-color: #22c55e;
+}
+
+.legend-color.occupied {
+  background-color: #ef4444;
+}
+
+.legend-color.pending {
+  background-color: #f59e0b;
+}
+
+.legend-text {
+  font-size: 0.95rem;
+  color: var(--text-color);
+}
+
+.calendar-wrapper {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 30px;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .reservation-wrapper {
@@ -1207,6 +1375,13 @@ main {
   }
 }
 
+/* DESKTOP - veći padding za reservation-wrapper na velikim ekranima */
+@media (min-width: 1200px) {
+  .reservation-wrapper {
+    padding: 60px 120px; /* Povećan horizontalni padding */
+  }
+}
+
 @media (max-width: 768px) {
   :root {
     --section-spacing: 60px;
@@ -1304,20 +1479,29 @@ main {
   }
   
   .card-header {
-    flex-wrap: nowrap; /* osiguraj da zvjezdice ne idu u novi red na mobilnom */
-    gap: 8px; /* dodaj mali razmak između elemenata */
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    gap: 8px;
   }
   
   .card-rating {
-    white-space: nowrap; /* sprječava prelom zvjezdica u novi red */
-    flex-shrink: 0; /* ne dozvoljavaj smanjivanje */
+    white-space: nowrap;
+    flex-shrink: 0;
   }
   
-  .card-reviews {
-    white-space: nowrap; /* sprječava prelom broja recenzija u novi red */
-    overflow: hidden;
-    text-overflow: ellipsis;
-    min-width: 0; /* omogućava text-overflow da radi */
+  .card-reviews-section {
+    text-align: right;
+    flex-shrink: 0;
+  }
+  
+  .rating-line {
+    font-size: 0.85rem;
+    margin-bottom: 3px;
+  }
+  
+  .reviews-line {
+    font-size: 0.8rem;
   }
 
   .mini-cards-row {
@@ -1360,7 +1544,8 @@ main {
   }
 
   /* MOBILNI - širina blokova */
-  .about-sibenik {
+  .about-sibenik,
+  .about-apartment {
     margin: 0; /* Puna širina - uklonjen margin */
     margin-bottom: 40px;
     background: none; /* Uklonjena pozadina */
@@ -1370,11 +1555,13 @@ main {
     border-radius: 0; /* Uklonjen border-radius */
   }
 
-  .about-sibenik .text-block {
+  .about-sibenik .text-block,
+  .about-apartment .text-block {
     padding: 40px 20px; /* Značajan padding za tekst */
   }
 
-  .about-sibenik .sibenik-gallery {
+  .about-sibenik .sibenik-gallery,
+  .about-apartment .apartment-gallery {
     padding: 0; /* Galerija bez paddinga - puna širina */
     margin: 0 calc(-50vw + 50%); /* Full screen širina */
     width: 100vw;
@@ -1410,6 +1597,23 @@ main {
   .theme-icon {
     font-size: 1.5rem;
     padding: 10px;
+  }
+
+  /* MOBILNI - kalendar puna širina */
+  .calendar-reservation-section {
+    margin: 60px 0; /* Puna širina s vertikalnim razmakom */
+    padding: 40px 0; /* Padding samo gore/dolje */
+  }
+  
+  .calendar-wrapper {
+    margin: 0 3%; /* Padding lijevo/desno 3% */
+    padding: 30px 4%; /* Unutarnji padding */
+    width: auto; /* Automatska širina */
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 }
 

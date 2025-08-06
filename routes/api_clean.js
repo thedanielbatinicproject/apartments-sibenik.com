@@ -30,7 +30,7 @@ router.get('/clean-calendar/:id', cleanCalendar);
 
 // Reviews API routes
 router.get('/reviews/:id', getReviews);
-router.post('/reviews/:unitId/:reviewIndex/upvote', handleUpvote);
+router.post('/reviews/:reviewId/upvote', handleUpvote);
 
 // Reservation API routes
 router.post('/submit-reservation', reservationValidationRules, processReservation);

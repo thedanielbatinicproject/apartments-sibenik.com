@@ -1,13 +1,11 @@
-/**
+﻿/**
  * Dinamičko tematiranje i funkcionalnost za HR home page
  */
-
 class HomePageManager {
     constructor() {
         this.themeSlider = null;
         this.currentTheme = 'auto';
     }
-
     init() {
         this.initRandomFloatingCards();
         this.initThemeSlider();
@@ -20,7 +18,6 @@ class HomePageManager {
         this.loadReviewsData();
         this.initTimeDisplay();
     }
-
     /**
      * Postavlja random pozicije za floating kartice na desktop verziji
      */
@@ -39,25 +36,18 @@ class HomePageManager {
                 });
                 return;
             }
-
             const floatingCards = document.querySelectorAll('.extra-floating-card');
             const heroVisual = document.querySelector('.hero-visual');
             const mainCard = document.querySelector('.main-card');
             
-            console.log(`🔍 DEBUG: Pronađeno ${floatingCards.length} floating kartica`);
-            console.log(`🔍 DEBUG: heroVisual element:`, heroVisual);
-            console.log(`🔍 DEBUG: mainCard element:`, mainCard);
             
             if (!floatingCards.length || !heroVisual || !mainCard) {
-                console.log(`❌ DEBUG: Nedostaju elementi - kartice: ${floatingCards.length}, heroVisual: ${!!heroVisual}, mainCard: ${!!mainCard}`);
                 return;
             }
-
             // Izmjeri dimenzije kontajnera
             const containerRect = heroVisual.getBoundingClientRect();
             const containerWidth = containerRect.width;
             const containerHeight = containerRect.height;
-
             // Definiraj glavnu karticu kao no-go zonu (centar)
             const mainCardZone = {
                 x: containerWidth * 0.35, // 35% - 65% horizontalno
@@ -65,7 +55,6 @@ class HomePageManager {
                 width: containerWidth * 0.3,
                 height: containerHeight * 0.3
             };
-
             // Definiraj 13x13 grid pozicije (u pikselima relativno na kontajner)
             const gridSize = 13;
             const cellWidth = containerWidth / gridSize;
@@ -165,15 +154,12 @@ class HomePageManager {
             
             console.log(`Dostupno ${shuffledPositions.length} pozicija za ${floatingCards.length} kartica (isSmallScreen: ${isSmallScreen})`);
             console.log(`Forbidden radius: ${forbiddenRadius}, Container: ${containerWidth}x${containerHeight}`);
-            console.log(`🔍 DEBUG: Prva 10 shuffled pozicija:`, shuffledPositions.slice(0, 10).map(p => `(${p.col},${p.row})`));
-
             // Funkcija za provjeru kolizije između dvije kartice
             const checkCollision = (pos1, pos2, cardWidth = 180, cardHeight = 60) => {
                 const buffer = 40; // POVEĆAN BUFFER za sprečavanje preklapanja
                 return Math.abs(pos1.x - pos2.x) < (cardWidth/2 + buffer) && 
                        Math.abs(pos1.y - pos2.y) < (cardHeight/2 + buffer);
             };
-
             // Funkcija za provjeru da kartice nisu previše blizu
             const checkAdjacentGridBoxes = (pos1, pos2) => {
                 const rowDiff = Math.abs(pos1.row - pos2.row);
@@ -187,7 +173,6 @@ class HomePageManager {
                 
                 return false; // inače dozvoljeno
             };
-
             // Funkcija za provjeru kolizije s glavnom karticom
             const checkMainCardCollision = (pos, cardWidth = 180, cardHeight = 60) => {
                 // OPTIMIZIRANI BUFFER za cirkularno raspoređivanje
@@ -205,7 +190,6 @@ class HomePageManager {
                         pos.y + cardWidth/2 + buffer > mainCardZone.y && 
                         pos.y - cardWidth/2 - buffer < mainCardZone.y + mainCardZone.height);
             };
-
             // Pametno pozicioniranje bez preklapanja
             const placedPositions = [];
             const animations = [
@@ -214,28 +198,20 @@ class HomePageManager {
                 'float-extra-7', 'float-extra-8', 'float-extra-9',
                 'float-extra-3', 'float-extra-1' // različite animacije za 10. i 11. karticu
             ];
-
             // Ograniči broj kartica na temelju veličine ekrana
             let maxCards = floatingCards.length;
             if (isSmallScreen) {
                 maxCards = Math.min(7, floatingCards.length); // povećaj na 7 kartica za manje ekrane (dodane 2 nove)
             }
-
             // VRAĆAM RANDOM ALGORITAM - dodaju se random pozicije ali s kvalitetnim prioritetom
-            console.log(`🎯 Počinje pozicioniranje ${maxCards} kartica od ukupno ${floatingCards.length}`);
-            console.log(`🔍 DEBUG: positionsPool.length = ${shuffledPositions.length}`);
             
             // Koristi shuffled pozicije umjesto original array
             const positionsPool = [...shuffledPositions];
-            console.log(`🔍 DEBUG: Kreiran positionsPool s ${positionsPool.length} pozicija`);
             
             // KONVERTIRAJ NodeList u Array da možemo koristiti .slice()
             const floatingCardsArray = Array.from(floatingCards);
             
             floatingCardsArray.slice(0, maxCards).forEach((card, index) => {
-                console.log(`\n📍 Pozicioniram karticu ${index}: "${card.textContent?.slice(0, 20)}..."`);
-                console.log(`🔍 DEBUG: positionsPool ima ${positionsPool.length} pozicija prije ovog pozicioniranja`);
-                console.log(`🔍 DEBUG: placedPositions ima ${placedPositions.length} već postavljenih pozicija`);
                 // Procjeni veličinu kartice
                 const cardText = card.textContent || '';
                 const baseWidth = Math.min(Math.max(cardText.length * 6 + 30, 120), 180);
@@ -247,18 +223,14 @@ class HomePageManager {
                 const maxAttempts = Math.min(50, positionsPool.length); // ograniči pokušaje da bude brže
                 
                 // Pokušaj pronaći validnu poziciju - RANDOM pristup
-                console.log(`🔍 DEBUG: Početak while petlje - attempts: ${attempts}, maxAttempts: ${maxAttempts}, positionsPool.length: ${positionsPool.length}`);
                 while (attempts < maxAttempts && !validPosition && positionsPool.length > 0) {
                     // UZMI RANDOM POZICIJU iz pool-a umjesto sekvencijalne
                     const randomIndex = Math.floor(Math.random() * positionsPool.length);
                     const testPosition = positionsPool.splice(randomIndex, 1)[0]; // ukloni random poziciju
                     
-                    console.log(`  🔍 Testiram poziciju (${testPosition.col},${testPosition.row}): ${((testPosition.x / containerWidth) * 100).toFixed(1)}%, ${((testPosition.y / containerHeight) * 100).toFixed(1)}%`);
-                    console.log(`  🔍 DEBUG: positionsPool sada ima ${positionsPool.length} pozicija`);
                     
                     // Provjeri koliziju s glavnom karticom
                     if (checkMainCardCollision(testPosition, estimatedWidth, estimatedHeight)) {
-                        console.log(`  ❌ Kolizija s glavnom karticom`);
                         attempts++;
                         continue;
                     }
@@ -270,14 +242,12 @@ class HomePageManager {
                         
                         // VRATAMO adjacent grid boxes provjeru - VAŽNO za spacing!
                         if (checkAdjacentGridBoxes(testPosition, placedPos)) {
-                            console.log(`  ❌ Susjedni grid box s karticom ${i} na (${placedPos.col},${placedPos.row})`);
                             hasCollision = true;
                             break;
                         }
                         
                         // Provjeri pixel koliziju
                         if (checkCollision(testPosition, placedPos, estimatedWidth, estimatedHeight)) {
-                            console.log(`  ❌ Pixel kolizija s karticom ${i} na (${placedPos.col},${placedPos.row})`);
                             hasCollision = true;
                             break;
                         }
@@ -285,15 +255,11 @@ class HomePageManager {
                     
                     if (!hasCollision) {
                         validPosition = testPosition;
-                        console.log(`  ✅ Pozicija validna!`);
-                    } else {
-                        console.log(`  ❌ Pozicija odbačena zbog kolizije`);
                     }
                     
                     attempts++;
                 }
                 
-                console.log(`🔍 DEBUG: Kraj while petlje - attempts: ${attempts}, validPosition: ${!!validPosition}, positionsPool.length: ${positionsPool.length}`);
                 
                 // Aplicirај poziciju
                 if (validPosition) {
@@ -344,7 +310,6 @@ class HomePageManager {
                         card.style.transform = 'translate(-50%, -50%)';
                     });
                 } else {
-                    console.log(`❌ Kartica ${index}: NEMA VALIDNU POZICIJU nakon ${attempts} pokušaja`);
                     // POBOLJŠANI Fallback pozicioniranje - raspoređuj kartice po gridu
                     const fallbackCol = (index % 4) + 1; // kolone 1-4
                     const fallbackRow = Math.floor(index / 4) + 1; // redovi 1, 2, 3...
@@ -355,7 +320,6 @@ class HomePageManager {
                     const fallbackLeftPercent = (fallbackX / containerWidth) * 100;
                     const fallbackTopPercent = (fallbackY / containerHeight) * 100;
                     
-                    console.log(`🔧 Fallback pozicija za karticu ${index}: (${fallbackCol},${fallbackRow}) = ${fallbackLeftPercent.toFixed(1)}%, ${fallbackTopPercent.toFixed(1)}%`);
                     
                     card.style.position = 'absolute';
                     card.style.setProperty('left', `${fallbackLeftPercent}%`, 'important');
@@ -378,10 +342,8 @@ class HomePageManager {
                 });
             }
         };
-
         // Aplikacija pozicija na učitavanje - povećaj delay
         setTimeout(applyRandomPositions, 500); // Povećana pauza da se elementi učitaju
-
         // Ponovno apliciraj pozicije na resize (za responsivnost)
         let resizeTimeout;
         window.addEventListener('resize', () => {
@@ -392,13 +354,8 @@ class HomePageManager {
         // DODAJ DEBUG EVENT za provjeru kad se pozicioniranje završi
         setTimeout(() => {
             const floatingCards = document.querySelectorAll('.extra-floating-card');
-            console.log(`\n🔍 FINAL CHECK - ${floatingCards.length} floating kartica:`);
-            floatingCards.forEach((card, i) => {
-                console.log(`  Kartica ${i}: left=${card.style.left}, top=${card.style.top}, transform=${card.style.transform}`);
-            });
         }, 1000);
     }
-
     /**
      * Shuffle array funkcija
      */
@@ -410,14 +367,12 @@ class HomePageManager {
         }
         return shuffled;
     }
-
     /**
      * Inicijalizuje theme slider s cookie funkcionalnost
      */
     initThemeSlider() {
         this.themeSlider = document.getElementById('themeSlider');
         if (!this.themeSlider) return;
-
         // Učitaj spremljenu vrijednost iz cookie-ja
         const savedTheme = this.getCookie('themePreference');
         if (savedTheme !== null) {
@@ -429,7 +384,6 @@ class HomePageManager {
             const autoValue = this.getAutoThemeValue();
             this.themeSlider.value = autoValue;
         }
-
         // Event listener za promjene slidera
         this.themeSlider.addEventListener('input', (e) => {
             const value = e.target.value;
@@ -440,17 +394,14 @@ class HomePageManager {
             // Dodaj mali animacijski efekt
             this.animateSliderThumb();
         });
-
         // Animacija na hover
         this.themeSlider.addEventListener('mouseenter', () => {
             this.themeSlider.style.transform = 'scale(1.02)';
         });
-
         this.themeSlider.addEventListener('mouseleave', () => {
             this.themeSlider.style.transform = 'scale(1)';
         });
     }
-
     /**
      * Animira slider thumb s mini animacijom
      */
@@ -467,7 +418,6 @@ class HomePageManager {
             slider.style.transition = oldTransition;
         }, 200);
     }
-
     /**
      * Dobiva auto tema vrijednost ovisno o vremenu dana
      */
@@ -484,7 +434,6 @@ class HomePageManager {
             return 95; // Najsvijetlija dnevna tema
         }
     }
-
     /**
      * Primjenjuje temu ovisno o slider vrijednosti (0-100)
      */
@@ -511,14 +460,12 @@ class HomePageManager {
             this.adjustBrightness(0.9 + (intensity - 75) * 0.004);
         }
     }
-
     /**
      * Prilagođava svjetlinu stranice
      */
     adjustBrightness(factor) {
         document.documentElement.style.filter = `brightness(${factor})`;
     }
-
     /**
      * Cookie helper funkcije
      */
@@ -527,7 +474,6 @@ class HomePageManager {
         expires.setTime(expires.getTime() + (hours * 60 * 60 * 1000));
         document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
     }
-
     getCookie(name) {
         const nameEQ = name + "=";
         const ca = document.cookie.split(';');
@@ -540,20 +486,17 @@ class HomePageManager {
         }
         return null;
     }
-
     /**
      * Postavlja dinamičku temu ovisno o lokalnom vremenu korisnika (samo ako nije manual)
      */
     setDynamicTheme() {
         if (this.currentTheme === 'manual') return;
-
         const autoValue = this.getAutoThemeValue();
         if (this.themeSlider) {
             this.themeSlider.value = autoValue;
         }
         this.applyThemeFromSlider(autoValue);
     }
-
     /**
      * Ažurira CSS varijable ovisno o temi
      */
@@ -592,7 +535,6 @@ class HomePageManager {
                 root.style.setProperty('--text-muted', 'var(--day-text-muted)');
         }
     }
-
     /**
      * Pokreće interval za provjeru i ažuriranje teme svakih 10 minuta (samo ako nije manual)
      */
@@ -603,7 +545,6 @@ class HomePageManager {
             }
         }, 600000); // 10 minuta
     }
-
     /**
      * Postavlja animacije na scroll
      */
@@ -612,7 +553,6 @@ class HomePageManager {
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
         };
-
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -620,13 +560,11 @@ class HomePageManager {
                 }
             });
         }, observerOptions);
-
         // Animiraj sekcije
         const animatedElements = document.querySelectorAll('.about-sibenik, .apartments-section, .reservation-section');
         animatedElements.forEach(el => {
             observer.observe(el);
         });
-
         // Animiraj apartment kartice s kašnjenjem
         const apartmentCards = document.querySelectorAll('.apartment-card');
         apartmentCards.forEach((card, index) => {
@@ -635,7 +573,6 @@ class HomePageManager {
             }, index * 100);
         });
     }
-
     /**
      * Postavlja smooth scrolling za interne linkove
      */
@@ -651,7 +588,6 @@ class HomePageManager {
             });
         });
     }
-
     /**
      * Smooth scroll do određene sekcije
      */
@@ -661,7 +597,6 @@ class HomePageManager {
             this.smoothScrollToElement(element);
         }
     }
-
     /**
      * Smooth scroll do elementa s offset-om za header
      */
@@ -674,7 +609,6 @@ class HomePageManager {
             behavior: 'smooth'
         });
     }
-
     /**
      * Postavlja lazy loading za slike
      */
@@ -691,13 +625,11 @@ class HomePageManager {
                     }
                 });
             });
-
             images.forEach(img => {
                 imageObserver.observe(img);
             });
         }
     }
-
     /**
      * Postavlja interakcije za galeriju
      */
@@ -711,18 +643,15 @@ class HomePageManager {
                     this.openImageModal(img.src, img.alt);
                 }
             });
-
             // Hover efekt za overlay
             item.addEventListener('mouseenter', () => {
                 item.style.transform = 'scale(1.02)';
             });
-
             item.addEventListener('mouseleave', () => {
                 item.style.transform = 'scale(1)';
             });
         });
     }
-
     /**
      * Otvara modal s uvećanom slikom
      */
@@ -732,21 +661,17 @@ class HomePageManager {
         if (!modal) {
             modal = this.createImageModal();
         }
-
         const modalImg = modal.querySelector('.modal-image');
         const modalCaption = modal.querySelector('.modal-caption');
-
         modalImg.src = src;
         modalCaption.textContent = alt;
         modal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
-
         // Animacija otvaranja
         setTimeout(() => {
             modal.classList.add('open');
         }, 10);
     }
-
     /**
      * Stvara modal za prikaz slika
      */
@@ -761,7 +686,6 @@ class HomePageManager {
                 <p class="modal-caption"></p>
             </div>
         `;
-
         // Dodaj stilove
         const style = document.createElement('style');
         style.textContent = `
@@ -816,28 +740,23 @@ class HomePageManager {
             }
         `;
         document.head.appendChild(style);
-
         // Event listeneri za zatvaranje
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
                 this.closeImageModal();
             }
         });
-
         modal.querySelector('.modal-close').addEventListener('click', () => {
             this.closeImageModal();
         });
-
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && modal.classList.contains('open')) {
                 this.closeImageModal();
             }
         });
-
         document.body.appendChild(modal);
         return modal;
     }
-
     /**
      * Zatvara modal s slikom
      */
@@ -851,7 +770,6 @@ class HomePageManager {
             }, 300);
         }
     }
-
     /**
      * Dohvaća stvarne podatke o recenzijama - koristi server-side podatke
      */
@@ -865,7 +783,6 @@ class HomePageManager {
             console.error('❌ Greška pri učitavanju recenzija:', error);
         }
     }
-
     /**
      * Ažurira prikaz recenzija na stranici
      */
@@ -874,11 +791,9 @@ class HomePageManager {
         const cardReviews = document.querySelector('.card-reviews');
         
         if (!cardRating || !cardReviews || !reviewsData) return;
-
         // Izračunaj prosječnu ocjenu
         let totalRating = 0;
         let totalReviews = 0;
-
         Object.keys(reviewsData).forEach(apartmentId => {
             const apartment = reviewsData[apartmentId];
             if (apartment.reviews && apartment.reviews.length > 0) {
@@ -888,7 +803,6 @@ class HomePageManager {
                 });
             }
         });
-
         if (totalReviews > 0) {
             const averageRating = totalRating / totalReviews;
             const roundedRating = Math.round(averageRating * 10) / 10; // Zaokruži na 1 decimalu
@@ -901,7 +815,6 @@ class HomePageManager {
             cardReviews.textContent = `Prosječna ocjena: ${roundedRating} (${totalReviews} ${this.getReviewsText(totalReviews)})`;
         }
     }
-
     /**
      * Generira prikaz zvjezdica na osnovu prosječne ocjene
      */
@@ -922,7 +835,6 @@ class HomePageManager {
         
         return stars;
     }
-
     /**
      * Vraća ispravnu hrvatsku riječ za broj recenzija
      */
@@ -931,7 +843,6 @@ class HomePageManager {
         if (count >= 2 && count <= 4) return 'recenzije';
         return 'recenzija';
     }
-
     /**
      * Inicijalizuje i ažurira prikaz lokalnog vremena
      */
@@ -942,14 +853,12 @@ class HomePageManager {
             this.updateTimeDisplay();
         }, 1000);
     }
-
     /**
      * Ažurira prikaz lokalnog vremena u formatu hh:mm:ss AM/PM
      */
     updateTimeDisplay() {
         const timeElement = document.getElementById('current-time');
         if (!timeElement) return;
-
         const now = new Date();
         const hours = now.getHours();
         const minutes = now.getMinutes();
@@ -965,20 +874,17 @@ class HomePageManager {
         timeElement.textContent = formattedTime;
     }
 }
-
 // Globalna funkcija za smooth scroll (koristi se u HTML-u)
 function smoothScrollToSection(selector) {
     if (window.homePageManager) {
         window.homePageManager.smoothScrollToSection(selector);
     }
 }
-
 // Pokreni manager kada se stranica učita
 document.addEventListener('DOMContentLoaded', () => {
     window.homePageManager = new HomePageManager();
     window.homePageManager.init(); // POZOVI INIT EKSPLICITNO NAKON ŠTO JE DOM SPREMAN
 });
-
 // Dodatna optimizacija performansi
 window.addEventListener('load', () => {
     // Prefetch linkova za apartmane
@@ -990,7 +896,6 @@ window.addEventListener('load', () => {
         document.head.appendChild(linkEl);
     });
 });
-
 // Service Worker registracija za cache-iranje (ako dostupan)
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {

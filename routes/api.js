@@ -2,7 +2,7 @@ const express = require('express');
 const { reservationValidationRules } = require('../code/booking/validatorManager');
 const { processReservation } = require('../code/booking/reservationManager');
 const { displayCalendar, updateCalendar, cleanCalendar } = require('../code/calendar/calendarRoutes');
-const { getReviews, handleUpvote } = require('../code/reviews/reviewRoutes');
+const { getReviews, handleUpvote, getInternalReviews, addInternalReview, verifyInternalAPI } = require('../code/reviews/reviewRoutes');
 
 // Solar data modules
 const { 
@@ -42,7 +42,11 @@ router.get('/clean-calendar/:id', cleanCalendar);
 
 // Reviews API routes
 router.get('/reviews/:id', getReviews);
-router.post('/reviews/:unitId/:reviewIndex/upvote', handleUpvote);
+router.post('/reviews/:reviewId/upvote', handleUpvote);
+
+// Internal Reviews API routes (require secret key)
+router.get('/internal/reviews', verifyInternalAPI, getInternalReviews);
+router.post('/internal/reviews', verifyInternalAPI, addInternalReview);
 
 // Reservation API routes
 router.post('/submit-reservation', reservationValidationRules, processReservation);

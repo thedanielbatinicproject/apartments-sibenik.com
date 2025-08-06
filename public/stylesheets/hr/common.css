@@ -1,0 +1,183 @@
+/* Zajedničke CSS varijable i osnovni stilovi za sve HR stranice */
+
+/* Dinamičke CSS varijable ovisno o dobu dana */
+:root {
+  /* Dnevne boje (6-18h) */
+  --day-primary: #0ea5e9;
+  --day-secondary: #06b6d4;
+  --day-accent: #f59e0b;
+  --day-bg-start: #f0f9ff;
+  --day-bg-end: #e0f2fe;
+  --day-card-bg: rgba(255, 255, 255, 0.85);
+  --day-text: #0f172a;
+  --day-text-muted: #475569;
+  
+  /* Večernje boje (18-20h) */
+  --evening-primary: #f59e0b;
+  --evening-secondary: #f97316;
+  --evening-accent: #ef4444;
+  --evening-bg-start: #fef3c7;
+  --evening-bg-end: #fed7aa;
+  --evening-card-bg: rgba(255, 255, 255, 0.9);
+  --evening-text: #1c1917;
+  --evening-text-muted: #57534e;
+  
+  /* Noćne boje (20-6h) */
+  --night-primary: #6366f1;
+  --night-secondary: #8b5cf6;
+  --night-accent: #06b6d4;
+  --night-bg-start: #0f172a;
+  --night-bg-end: #1e293b;
+  --night-card-bg: rgba(30, 41, 59, 0.8);
+  --night-text: #f8fafc;
+  --night-text-muted: #cbd5e1;
+  
+  /* Aktivne varijable (postavljene dinamički) */
+  --primary-color: var(--day-primary);
+  --secondary-color: var(--day-secondary);
+  --accent-color: var(--day-accent);
+  --bg-start: var(--day-bg-start);
+  --bg-end: var(--day-bg-end);
+  --card-bg: var(--day-card-bg);
+  --text-color: var(--day-text);
+  --text-muted: var(--day-text-muted);
+  
+  /* Ostale varijable */
+  --border-radius: 20px;
+  --box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --blur-effect: blur(10px);
+  --container-max-width: 1200px;
+  --section-spacing: 80px;
+}
+
+/* Osnovni reset i body stilovi */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  color: var(--text-color);
+  background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-end) 100%);
+  min-height: 100vh;
+  transition: var(--transition);
+}
+
+.container {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.section-spacing {
+  margin: var(--section-spacing) 0;
+}
+
+/* Tipografija */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+.section-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  margin-bottom: 32px;
+  color: var(--text-color);
+}
+
+.section-title.centered {
+  text-align: center;
+}
+
+.section-subtitle {
+  text-align: center;
+  font-size: 1.2rem;
+  color: var(--text-muted);
+  margin-bottom: 60px;
+}
+
+/* Osnovni grid layout */
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 20px;
+  align-items: center;
+  padding: 25px;
+}
+
+/* Text block styling */
+.text-block p {
+  margin-bottom: 20px;
+  line-height: 1.8;
+  color: var(--text-color);
+  font-size: 1rem;
+}
+
+.text-block p strong {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+/* Gallery osnovni stilovi */
+.gallery-content {
+  width: 100%;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 16px;
+  height: 400px;
+}
+
+.gallery-item {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: var(--transition);
+  background: var(--card-bg);
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--transition);
+}
+
+.gallery-item:hover {
+  transform: scale(1.02);
+}
+
+.gallery-item:hover img {
+  transform: scale(1.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding: 20px;
+  }
+  
+  .container {
+    padding: 0 15px;
+  }
+  
+  .section-spacing {
+    margin: 40px 0;
+  }
+}

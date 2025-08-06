@@ -1,22 +1,123 @@
 <!DOCTYPE html>
 <html lang="hr">
 <head>
-    <%- include('../modules/head', { pageTitle: 'Dobrodošli u Apartmane Šibenik', device: device }) %>
+    <%- include('../modules/head', { pageTitle: 'Apartman s vrtom - Apartmani Šibenik', device: device }) %>
     <link rel="stylesheet" href="/stylesheets/hr/home.css">
+    <link rel="stylesheet" href="/stylesheets/index/reviews.css">
+    <style>
+        /* Poboljšanje kontrasta za apartman s vrtom stranicu */
+        .hero-section .hero-title {
+            color: #ffffff;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 0, 0, 0.5);
+            font-weight: 900;
+        }
+        
+        .hero-section .hero-description {
+            color: #f8f9fa;
+            text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.4);
+            font-weight: 500;
+        }
+        
+        .hero-section .feature-item span {
+            color: #ffffff;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
+            font-weight: 600;
+        }
+        
+        .hero-section .explore-btn.primary {
+            background: rgba(14, 165, 233, 0.95);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .hero-section .explore-btn.secondary {
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            color: #ffffff;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .hero-section .explore-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* Optimizacija reviews modula u hero sekciji */
+        .hero-visual .reviews-module {
+            width: 90%;
+            height: 70%;
+        }
+        
+        /* SPECIFIČAN OVERRIDE ZA REVIEW KARTICE - SAMO ZA OVU STRANICU */
+        body.apartman-s-vrtom .hero-visual .reviews-module .review-card {
+            background: rgba(30, 144, 255, 0.15) !important;
+            backdrop-filter: blur(8px) !important;
+            -webkit-backdrop-filter: blur(8px) !important;
+        }
+        
+        /* Dodatni override za sigurnost */
+        body.apartman-s-vrtom .review-card[data-review-id] {
+            background: rgba(30, 144, 255, 0.15) !important;
+            backdrop-filter: blur(8px) !important;
+            -webkit-backdrop-filter: blur(8px) !important;
+        }
+        
+        .hero-visual .reviews-module {
+            margin: 0 auto;
+            overflow-y: auto; /* Omogućavamo vertikalno skrolanje */
+            /* Skrivanje scroll bara */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* Internet Explorer 10+ */
+            /* Zadržavamo originalni glassmorphism design iz reviews.css */
+        }
+        
+        /* Skrivanje scroll bara za WebKit browsere (Chrome, Safari, Edge) */
+        .hero-visual .reviews-module::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* Optimizacija hero-visual kontejnera */
+        .hero-visual {
+            min-height: 500px;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        /* Responsive prilagodbe za hero-visual */
+        @media (max-width: 1024px) {
+            .hero-visual .reviews-module {
+                width: 85%;
+                height: 75%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero-visual .reviews-module {
+                width: 90%;
+                height: 80%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-visual .reviews-module {
+                width: 95%;
+                height: 85%;
+            }
+        }
+    </style>
 </head>
-<body>
+<body class="apartman-s-vrtom">
     <%- include('../modules/header', { lang: 'hr', base: '/hr/desktop' }) %>
     
     <main>
         <!-- Hero sekcija -->
-        <section class="hero-section">
+        <section class="hero-section" style="background-image: url('/images/apartments/apartman-vrt/main-day.jpg');">
             <div class="hero-content">
-                <div class="hero-badge">
-                    <img src="/images/icons/glowingstar.png" alt="Preporučeno" class="badge-icon">
-                    <span>Preporučeno od 200+ gostiju</span>
-                </div>
-                <h1 class="hero-title">Autentični doživljaj Šibenika u <img src="/images/icons/hearth.png" alt="srcu" class="hearth-icon"> <span class="highlight">Dalmacije</span></h1>
-                <p class="hero-description">Smjestite se u našim luksuznimn apartmanima samo 10 minuta hoda od UNESCO katedrale sv. Jakova. Uživajte u privatnom dvorištu i modernim sadržajima u srcu povijesnog grada.</p>
+                <h1 class="hero-title">Apartman s vrtom <img src="/images/icons/garden.png" alt="vrt" class="hearth-icon"></h1>
+                <p class="hero-description">Prostrani luksuzni apartman s privatnim dvorištem i roštiljem, idealan za obitelji do 4 osobe. Uživajte u miru prirode uz sve moderne sadržaje u srcu Šibenika.</p>
 
                 <div class="hero-features">
                     <div class="feature-item">
@@ -43,76 +144,48 @@
                 </div>
             </div>
             <div class="hero-visual">
-                <div class="floating-cards">
-                    <div class="floating-card main-card">
-                        <div class="card-header">
-                            <span class="card-rating" id="reviews-stars">★★★★★</span>
-                            <span class="card-reviews" id="reviews-count">4.9 (127 recenzija)</span>
-                        </div>
-                        <h3>3 Jedinstvena Smještaja</h3>
-                        <p>Od intimnih soba do luksuznih apartmana s dvorištem</p>
-                        <div class="card-stats">
-                            <div class="stat">
-                                <span class="stat-number">2+2</span>
-                                <span class="stat-label">max osoba</span>
-                            </div>
-                            <div class="stat">
-                                <span class="stat-number">24/7</span>
-                                <span class="stat-label">podrška</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Dodatne floating kartice za desktop -->
-                    <div class="extra-floating-card extra-card-1">🔥 Roštilj</div>
-                    <div class="extra-floating-card extra-card-2">🌿 Privatno dvorište</div>
-                    <div class="extra-floating-card extra-card-3">🏛️ UNESCO baština u blizini</div>
-                    <div class="extra-floating-card extra-card-4">⚡ Prvi grad s javnom rasvjetom</div>
-                    <div class="extra-floating-card extra-card-5">🐢 Domaće kornjače</div>
-                    <div class="extra-floating-card extra-card-6">🏰 4 historijske tvrđave</div>
-                    <div class="extra-floating-card extra-card-7">👑 Krešimirov grad 1066.</div>
-                    <div class="extra-floating-card extra-card-8">🌊 Kanali i mostovi</div>
-                    <div class="extra-floating-card extra-card-9">🎭 Međunarodni festival</div>
-                    <div class="extra-floating-card extra-card-10">⚔️ Obrana od 25.000 Turaka</div>
-                    <div class="extra-floating-card extra-card-11">🌅 Najljepši zalazak sunca</div>
-                </div>
+                <%- include('../modules/reviews', { 
+                    unitId: '1',
+                    averageRating: reviewsData?.averageRating || 4.9,
+                    totalReviews: reviewsData?.totalReviews || 127,
+                    platforms: reviewsData?.platforms || {
+                        airbnb: { rating: 4.9, totalReviews: 67 },
+                        booking: { rating: 4.8, totalReviews: 60 }
+                    },
+                    reviews: reviewsData?.allReviews || [], // Koristimo sve recenzije za Load More funkcionalnost
+                    upvoteData: upvoteData || null
+                }) %>
             </div>
         </section>
 
-        <!-- O Šibeniku sekcija -->
-        <section class="about-sibenik section-spacing">
+        <!-- O apartmanu sekcija -->
+        <section class="about-apartment section-spacing">
             <div class="container">
                 <div class="content-grid">
                     <div class="text-content">
-                        <h2 class="section-title">O Šibeniku</h2>
+                        <h2 class="section-title">O apartmanu</h2>
                         <div class="text-block">
-                            <p><strong>Krešimirov grad</strong> - Šibenik je najstariji samorodni Hrvatski grad na Jadranu! Prvi put se spominje na Božić 1066. godine u darovnici kralja Petra Krešimira IV., pa se zato naziva i Krešimirovim gradom. Grad se razvio na brežuljku visine od 70 metara iznad mora, što je današnja lokacija tvrđave sv. Mihovila.</p>
+                            <p><strong>Vaš oaza mira u srcu Šibenika</strong> - Prekrasno uređen klimatizirani apartman s dva spavaća kreveta, potpuno opremljenom kuhinjom, prostranom kupaonicom i spektakularnom terasom prepunom cvijeća. Ovdje možete početi dan s jutarnjom kavom u prirodnom vrtu, uživati u ručku na svježem zraku ili pak popiti čašu vina pod zvjezdanim nebom.</p>
                             
-                            <p><strong>UNESCO čudo arhitekture</strong> - Katedrala sv. Jakova iz 15. stoljeća jedno je od najznačajnijih graditeljskih ostvarenja na tlu Hrvatske. Ova renesansna remek-djela, djelo majstora Jurja Dalmatinca i Nikole Firentinca, građena je potpuno od kamena bez korištenja ijednog vezivnog sredstva! Zbog svojih iznimnih vrijednosti 2000. godine uvrštena je na UNESCO-ov popis svjetskog kulturnog nasljeđa.</p>
+                            <p><strong>Sve na vašoj rašpolaganju</strong> - Kao naši gosti, imate ekskluzivan pristup cijelom apartmanu. Za boravke duže od pet dana, naši gosti dobivaju besplatne ulaznice za posjet povijesnim tvrđavama sv. Mihovila i Baron - savršenu priliku da istražite bogatu kulturnu baštinu grada!</p>
                             
-                            <p><strong>Grad elektrike i inovacija</strong> - Šibenik je bio jedan od prvih gradova u svijetu s javnom rasvjetom na izmjeničnu struju! Zahvaljujući hidroelektrani na rijeci Krki iz 1895. godine, grad je dobio modernu rasvjetu kad još mnogi europski gradovi nisu imali ni plinsku. Ova hidroelektrana i danas radi, što svjedoči o kvaliteti inženjerskog rješenja.</p>
+                            <p><strong>Uvijek tu kad trebate savjet</strong> - Vaši domaćini žive na katu iznad i dostupni su u svakom trenutku za savjete o najboljem načinu kretanja po gradu, preporuke restorana, skrivenih plaža ili bilo što drugo što može učiniti vaš boravak nezaboravnim.</p>
                             
-                            <p><strong>Herojska obrana grada</strong> - Tijekom velike osmanske opsade 1647. godine, više od 25.000 vojnika napalo je Šibenik, ali grad se hrabro obranio zahvaljujući četiri tvrđave i manje od 6.000 branitelja. Najžešća borba vodila se oko tek dovršene tvrđave sv. Ivana, što je bila jedna od najvećih pobjeda u Šibenskoj povijesti.</p>
+                            <p><strong>Savršen spoj udobnosti i praktičnosti</strong> - Apartman je opremljen svim potrebnim sadržajima za potpuno opuštanje: besplatno parkiranje na imanju, perilica rublja, besplatna televizija i Wi-Fi, aparat za kavu za savršeno jutarnje buđenje, sušilo za kosu, šampon za svježinu nakon dugog dana, te prekrasno uređen vrt gdje možete uživati u tišini daleko od gradske vreve.</p>
                             
-                            <p><strong>Moderni turistički dragulj</strong> - Danas je Šibenik živopisni mediteranski grad koji uspješno spaja bogatu povijest s modernim sadržajima. Poznat je po svojim festivalima, posebno Međunarodnom dječjem festivalu, te kao idealna polazna točka za istraživanje nacionalnih parkova Kornati i Krka.</p>
+                            <p><strong>Idealna lokacija za istražavanje</strong> - Smješteni u mirnom dijelu Šibenika, apartman je savršena polazna točka za otkrivanje UNESCO-ove katedrale sv. Jakova, šetnju kroz stari gradsku jezgru, ili pak planiranje izleta u obližnje nacionalne parkove Krka i Kornati.</p>
                         </div>
                     </div>
                     <div class="gallery-content">
-                        <div class="sibenik-gallery">
+                        <div class="apartment-gallery">
                             <%- include('../modules/gallery', { 
                                 images: [
-                                    { fullsize: '/galleries/sibenik/sibenik1.jpg', thumbnail: '/galleries/sibenik/sibenik1.jpg', alt: 'Šibenik - Katedrala sv. Jakova' },
-                                    { fullsize: '/galleries/sibenik/sibenik2.jpg', thumbnail: '/galleries/sibenik/sibenik2.jpg', alt: 'Šibenik - Stari grad' },
-                                    { fullsize: '/galleries/sibenik/sibenik3.jpg', thumbnail: '/galleries/sibenik/sibenik3.jpg', alt: 'Šibenik - Panorama grada' },
-                                    { fullsize: '/galleries/sibenik/sibenik4.jpg', thumbnail: '/galleries/sibenik/sibenik4.jpg', alt: 'Šibenik - Tvrđava sv. Mihovila' },
-                                    { fullsize: '/galleries/sibenik/sibenik5.jpg', thumbnail: '/galleries/sibenik/sibenik5.jpg', alt: 'Šibenik - Gradska luka' },
-                                    { fullsize: '/galleries/sibenik/sibenik6.jpg', thumbnail: '/galleries/sibenik/sibenik6.jpg', alt: 'Šibenik - Ulice starog grada' },
-                                    { fullsize: '/galleries/sibenik/sibenik7.jpg', thumbnail: '/galleries/sibenik/sibenik7.jpg', alt: 'Šibenik - Tvrđava Barone' },
-                                    { fullsize: '/galleries/sibenik/sibenik8.jpg', thumbnail: '/galleries/sibenik/sibenik8.jpg', alt: 'Šibenik - Kanali' },
-                                    { fullsize: '/galleries/sibenik/sibenik9.jpg', thumbnail: '/galleries/sibenik/sibenik9.jpg', alt: 'Šibenik - Pogled s mora' },
-                                    { fullsize: '/galleries/sibenik/sibenik10.jpg', thumbnail: '/galleries/sibenik/sibenik10.jpg', alt: 'Šibenik - Zalazak sunca' },
-                                    { fullsize: '/galleries/sibenik/sibenik11.jpg', thumbnail: '/galleries/sibenik/sibenik11.jpg', alt: 'Šibenik - Trgovi' },
-                                    { fullsize: '/galleries/sibenik/sibenik12.jpg', thumbnail: '/galleries/sibenik/sibenik12.jpg', alt: 'Šibenik - Arhitektura' }
+                                    { fullsize: '/galleries/apartments/apartman-vrt/apartman-vrt-1.jpg', thumbnail: '/galleries/apartments/apartman-vrt/apartman-vrt-1.jpg', alt: 'Apartman s vrtom - Vrt i terasa' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/apartman-vrt-2.jpg', thumbnail: '/galleries/apartments/apartman-vrt/apartman-vrt-2.jpg', alt: 'Apartman s vrtom - Kuhinja' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/apartman-vrt-3.jpg', thumbnail: '/galleries/apartments/apartman-vrt/apartman-vrt-3.jpg', alt: 'Apartman s vrtom - Terasa s cvijećem' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/apartman-vrt-4.jpg', thumbnail: '/galleries/apartments/apartman-vrt/apartman-vrt-4.jpg', alt: 'Apartman s vrtom - Spavaća soba' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/apartman-vrt-5.jpg', thumbnail: '/galleries/apartments/apartman-vrt/apartman-vrt-5.jpg', alt: 'Apartman s vrtom - Kupaonica' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/apartman-vrt-6.jpg', thumbnail: '/galleries/apartments/apartman-vrt/apartman-vrt-6.jpg', alt: 'Apartman s vrtom - Dnevni boravak' }
                                 ] 
                             }) %>
                         </div>
@@ -121,82 +194,19 @@
             </div>
         </section>
 
-        <!-- Naši apartmani sekcija -->
-        <section class="apartments-section section-spacing">
+        <!-- Kalendar i rezervacija sekcija -->
+        <section class="calendar-reservation-section section-spacing">
             <div class="container">
-                <h2 class="section-title centered">Naši Apartmani</h2>
-                <p class="section-subtitle">Odaberite smještaj koji najbolje odgovara vašim potrebama</p>
+                <div class="calendar-header">
+                    <h2>Kalendar rezervacija</h2>
+                </div>
                 
-                <div class="apartments-grid">
-                    <!-- Apartman s vrtom -->
-                    <div class="apartment-card">
-                        <div class="card-image">
-                            <img src="/images/apartments/apartman-vrt/main.jpg" alt="Apartman s vrtom" loading="lazy">
-                            <div class="card-badge">Najpopularniji</div>
-                        </div>
-                        <div class="card-content">
-                            <h3>Apartman s vrtom</h3>
-                            <p>Prostrani apartman s privatnim dvorištem, idealan za obitelji i grupe do 2+2 osoba. Uključuje potpuno opremljenu kuhinju, dnevni boravak, dvorište s roštiljem i kornjače.</p>
-                            <ul class="amenities">
-                                <li><img src="/images/icons/garden.png" alt="Privatno dvorište" class="icon"> Privatno dvorište</li>
-                                <li><img src="/images/icons/family.png" alt="Do 2+2 osoba" class="icon"> Do 2+2 osoba</li>
-                                <li><img src="/images/icons/kitchen.png" alt="Potpuna kuhinja" class="icon"> Potpuna kuhinja</li>
-                                <li><img src="/images/icons/turtles.png" alt="Kornjače" class="icon"> Kornjače</li>
-                            </ul>
-                            <a href="/hr/apartman-s-vrtom" class="card-link modern-btn">
-                                <span>Saznaj više</span>
-                                <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <path d="M5 12h14m-7-7 7 7-7 7"/>
-                                </svg>
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Studio apartman -->
-                    <div class="apartment-card">
-                        <div class="card-image">
-                            <img src="/images/apartments/studio/main.jpg" alt="Studio apartman" loading="lazy">
-                        </div>
-                        <div class="card-content">
-                            <h3>Studio apartman</h3>
-                            <p>Moderni studio apartman savršen za parove ili manje obitelji. Kombinirani dnevni boravak i spavaća soba s mini kuhinjom za do 2+1 osoba.</p>
-                            <ul class="amenities">
-                                <li><img src="/images/icons/couple.png" alt="Do 2+1 osoba" class="icon"> Do 2+1 osoba</li>
-                                <li><img src="/images/icons/studio.png" alt="Studio layout" class="icon"> Studio layout</li>
-                                <li><img src="/images/icons/kitchen_mini.png" alt="Mini kuhinja" class="icon"> Mini kuhinja</li>
-                                <li><img src="/images/icons/bathroom.png" alt="Privatna kupaona" class="icon"> Privatna kupaona</li>
-                            </ul>
-                            <a href="/hr/studio-apartman" class="card-link modern-btn">
-                                <span>Saznaj više</span>
-                                <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <path d="M5 12h14m-7-7 7 7-7 7"/>
-                                </svg>
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Soba -->
-                    <div class="apartment-card">
-                        <div class="card-image">
-                            <img src="/images/apartments/soba/main.jpg" alt="Soba" loading="lazy">
-                        </div>
-                        <div class="card-content">
-                            <h3>Soba</h3>
-                            <p>Udobna soba s privatnom kupaonom, idealna za parove ili solo putnike. Jednostavno, ali komfortno uređena za maksimalno 2 osobe.</p>
-                            <ul class="amenities">
-                                <li><img src="/images/icons/room.png" alt="Privatna soba" class="icon"> Privatna soba</li>
-                                <li><img src="/images/icons/couple.png" alt="Maksimalno 2 osobe" class="icon"> Maksimalno 2 osobe</li>
-                                <li><img src="/images/icons/bathroom.png" alt="Privatna kupaona" class="icon"> Privatna kupaona</li>
-                                <li><img src="/images/icons/economic.png" alt="Ekonomična opcija" class="icon"> Ekonomična opcija</li>
-                            </ul>
-                            <a href="/hr/soba" class="card-link modern-btn">
-                                <span>Saznaj više</span>
-                                <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <path d="M5 12h14m-7-7 7 7-7 7"/>
-                                </svg>
-                            </a>
-                        </div>
-                    </div>
+                <!-- Kalendar modul -->
+                <div class="calendar-wrapper">
+                    <%- include('../modules/calendar', { 
+                        unitId: '1',
+                        calendarData: calendar2 || {}
+                    }) %>
                 </div>
             </div>
         </section>
@@ -246,5 +256,25 @@
     <%- include('../modules/footer') %>
     
     <script src="/javascripts/hr/home.js"></script>
+    <script src="/javascripts/reviews.js"></script>
+    <script>
+        // Dinamičko mijenjanje pozadine ovisno o vremenu
+        function setHeroBackground() {
+            const hour = new Date().getHours();
+            const heroSection = document.querySelector('.hero-section');
+            
+            if (hour >= 20 || hour < 6) {
+                heroSection.style.backgroundImage = "url('/images/apartments/apartman-vrt/main-night.jpg')";
+            } else {
+                heroSection.style.backgroundImage = "url('/images/apartments/apartman-vrt/main-day.jpg')";
+            }
+        }
+        
+        // Initialize reviews module for apartman-s-vrtom
+        document.addEventListener('DOMContentLoaded', function() {
+            setHeroBackground();
+            console.log('Reviews module initialized for apartman-s-vrtom');
+        });
+    </script>
 </body>
 </html>

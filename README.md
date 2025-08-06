@@ -28,6 +28,35 @@
 - 🛡️ **API security** with authentication and rate limiting
 
 ### **Enhanced Review System**
+- 📝 **Comprehensive review management** with JSON database backend
+- 👍 **Upvote system** with real-time feedback and user tracking
+- 🔐 **Internal API** with secret key authentication for secure operations
+- 📊 **Admin management portal** with full CRUD operations
+- 🖼️ **Guest avatar support** with file upload and default fallback
+- ✨ **Unified Review ID System** - All review references use consistent unique IDs across the platform
+
+#### **🆔 Review ID System Documentation**
+**Important**: All reviews use unique, sequential integer IDs that remain consistent across all files and operations.
+
+**File Structure & ID Usage:**
+- `data/private/reviews.json`: Master database with unique review IDs (1, 2, 3, 4, ...)
+- `data/public_data/upvotes.json`: Maps review ID → upvote count (`{"1": 6, "2": 0, "3": 2}`)
+- `data/user_data/user_upvotes.json`: Maps user ID → array of upvoted review IDs (`{"userId": ["1", "3", "5"]}`)
+
+**API Endpoints:**
+- `POST /api/reviews/{reviewId}/upvote` - Toggle upvote using review ID
+- Management endpoints automatically maintain ID consistency
+
+**Frontend Integration:**
+- HTML elements use `data-review-id="{reviewId}"` attributes
+- JavaScript functions accept review IDs as parameters
+- Upvote system tracks by review ID, not array index
+
+**⚠️ Critical Rules:**
+1. **Never use array indices** for review identification in APIs or upvote tracking
+2. **Always use review.id** when referencing reviews across files
+3. **Maintain ID consistency** when adding/editing reviews through management portal
+4. **Review IDs are immutable** - once assigned, they never change
 - ⭐ **Upvote functionality** with persistent user tracking
 - 🔒 **Cookie-based user identification** for anonymous voting
 - 📱 **Platform integration** (Airbnb & Booking.com reviews)

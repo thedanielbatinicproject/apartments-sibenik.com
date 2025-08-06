@@ -1,11 +1,11 @@
 <div class="reviews-module" id="reviews-module-<%= unitId %>">
   <div class="reviews-header">
-    <h2 class="reviews-title">Recenzije naših gostiju</h2>
+    <h2 class="reviews-title">Guest Reviews</h2>
     <div class="reviews-summary">
       <div class="rating-badge">EXCELLENT</div>
       <div class="rating-stars">
         <% for (let i = 1; i <= 5; i++) { %>
-          <% if (i <= Math.floor(averageRating || 0)) { %>
+          <% if (i <= Math.round(averageRating || 0)) { %>
             <svg class="star star-filled" viewBox="0 0 24 24">
               <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
             </svg>
@@ -18,7 +18,7 @@
       </div>
       <div class="rating-summary">
         <span class="rating-number"><%= (averageRating || 0).toFixed(1) %></span>
-        <span class="rating-description">(<%= totalReviews || 0 %> recenzija)</span>
+        <span class="rating-description">(<%= totalReviews || 0 %> reviews)</span>
       </div>
     </div>
     <div class="platform-stats">
@@ -46,7 +46,7 @@
   <div class="reviews-grid">
     <% if (reviews && reviews.length > 0) { %>
       <% reviews.forEach((review, index) => { %>
-        <div class="review-card" data-review-id="<%= review.id %>">
+        <div class="review-card" data-review-id="<%= review.id %>" data-review-index="<%= index %>" style="<%= index >= 2 ? 'display: none;' : '' %>">
           <div class="review-header">
             <div class="reviewer-info">
               <img src="<%= review.guestAvatar || '/images/avatars/default.png' %>" 
@@ -100,12 +100,12 @@
           <div class="review-actions">
             <% if ((review.comment || '').length > 150) { %>
               <button class="read-more-btn" data-review-id="<%= review.id %>">
-                Čitaj više
+                Read more
               </button>
             <% } else { %>
               <span></span>
             <% } %>
-            <div class="review-helpful" data-review-index="<%= index %>" data-unit-id="<%= unitId %>">
+            <div class="review-helpful" data-review-id="<%= review.id %>" data-unit-id="<%= unitId %>">
               <img src="/images/icons/upvote.png" alt="Upvote" class="upvote-icon">
               <span class="upvote-count">0</span>
             </div>
@@ -114,10 +114,20 @@
       <% }) %>
     <% } else { %>
       <div class="no-reviews">
-        <p>Trenutno nema dostupnih recenzija.</p>
+        <p>No reviews available at the moment.</p>
       </div>
     <% } %>
   </div>
+  
+  <!-- Load More Button -->
+  <% if (reviews && reviews.length > 2) { %>
+    <div class="load-more-container">
+      <button class="load-more-btn" id="load-more-<%= unitId %>">
+        <span class="load-more-text">Load More Reviews</span>
+        <span class="load-more-count">(<%= reviews.length - 2 %> more)</span>
+      </button>
+    </div>
+  <% } %>
 </div>
 
 <script>
@@ -142,12 +152,50 @@
   // Create Set to track expanded reviews for this module
   const expandedReviews = new Set();
   
-  // Unit ID za upvote funkcionalnost
+  // Unit ID for upvote functionality
   const currentUnitId = '<%= unitId %>';
+  
+  // Load More functionality
+  const loadMoreBtn = document.getElementById('load-more-<%= unitId %>');
+  let currentlyVisible = 2;
+  const totalReviews = <%= reviews ? reviews.length : 0 %>;
+  const reviewsPerLoad = 5;
   
   console.log('Initializing reviews module for unit:', currentUnitId);
   
-  // Funkcija za toggle review text
+  // Load More button handler
+  if (loadMoreBtn) {
+    loadMoreBtn.addEventListener('click', function() {
+      const hiddenReviews = module.querySelectorAll('.review-card[style*="display: none"]');
+      const reviewsToShow = Math.min(reviewsPerLoad, hiddenReviews.length);
+      
+      for (let i = 0; i < reviewsToShow; i++) {
+        hiddenReviews[i].style.display = 'block';
+        hiddenReviews[i].style.opacity = '0';
+        hiddenReviews[i].style.transform = 'translateY(20px)';
+        
+        // Animate in
+        setTimeout(() => {
+          hiddenReviews[i].style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+          hiddenReviews[i].style.opacity = '1';
+          hiddenReviews[i].style.transform = 'translateY(0)';
+        }, i * 100);
+      }
+      
+      currentlyVisible += reviewsToShow;
+      
+      // Update button text
+      const remainingReviews = totalReviews - currentlyVisible;
+      if (remainingReviews <= 0) {
+        loadMoreBtn.style.display = 'none';
+      } else {
+        const countSpan = loadMoreBtn.querySelector('.load-more-count');
+        countSpan.textContent = `(${remainingReviews} more)`;
+      }
+    });
+  }
+  
+  // Toggle review text function
   function toggleReview(reviewId) {
     const reviewCard = module.querySelector(`[data-review-id="${reviewId}"]`);
     if (!reviewCard) return;
@@ -163,12 +211,12 @@
       // Collapse
       expandedReviews.delete(reviewId);
       reviewText.innerHTML = shortText;
-      button.textContent = 'Čitaj više';
+      button.textContent = 'Read more';
     } else {
       // Expand
       expandedReviews.add(reviewId);
       reviewText.innerHTML = fullText;
-      button.textContent = 'Prikaži manje';
+      button.textContent = 'Show less';
     }
 
     reviewCard.scrollIntoView({ 
@@ -178,7 +226,7 @@
     });
   }
 
-  // Event listener za read more buttons
+  // Event listener for read more buttons
   module.addEventListener('click', function(event) {
     if (event.target.classList.contains('read-more-btn')) {
       const reviewId = event.target.dataset.reviewId;
@@ -186,18 +234,18 @@
     }
   });
 
-  // Upvote funkcionalnost
+  // Upvote functionality
   <% if (typeof upvoteData !== 'undefined' && upvoteData) { %>
     const upvoteData = <%- JSON.stringify(upvoteData) %>;
     
-    // Inicijalizacija upvote prikaza
+    // Initialize upvote display
     function initializeUpvotes() {
       console.log('Initializing upvotes for unit:', currentUnitId);
       console.log('Upvote data:', upvoteData);
       
       const upvoteElements = module.querySelectorAll('.review-helpful');
-      upvoteElements.forEach((element, index) => {
-        const reviewId = currentUnitId + '_' + index;
+      upvoteElements.forEach((element) => {
+        const reviewId = element.dataset.reviewId;
         const data = upvoteData[reviewId];
         
         if (data) {
@@ -219,11 +267,59 @@
     }
     
     // Handle upvote click
-    async function handleUpvote(reviewIndex, unitId) {
-      console.log('Handle upvote called with:', reviewIndex, unitId);
+    async function handleUpvote(reviewId, unitId) {
+      const reviewCard = module.querySelector(`[data-review-id="${reviewId}"]`);
+      if (!reviewCard) {
+        console.error('Review card not found for ID:', reviewId);
+        return;
+      }
+      
+      const upvoteElement = reviewCard.querySelector('.review-helpful');
+      if (!upvoteElement) {
+        console.error('Upvote element not found for review ID:', reviewId);
+        return;
+      }
+      
+      const countSpan = upvoteElement.querySelector('.upvote-count');
+      const upvoteIcon = upvoteElement.querySelector('.upvote-icon');
+      
+      // Store current state for potential rollback
+      const wasUpvoted = upvoteElement.classList.contains('upvoted');
+      const originalCount = parseInt(countSpan?.textContent || '0');
+      
+      // Optimistic UI update - immediately show the change
+      if (wasUpvoted) {
+        // User is removing upvote - force remove immediately
+        upvoteElement.classList.remove('upvoted');
+        if (upvoteIcon) {
+          upvoteIcon.classList.remove('upvoted');
+        }
+        if (countSpan) {
+          countSpan.textContent = Math.max(0, originalCount - 1);
+        }
+        
+      } else {
+        // User is adding upvote - force add immediately
+        upvoteElement.classList.add('upvoted');
+        if (upvoteIcon) {
+          upvoteIcon.classList.add('upvoted');
+        }
+        if (countSpan) {
+          countSpan.textContent = originalCount + 1;
+        }
+      }
+      
+      // Force browser repaint
+      upvoteElement.offsetHeight;
+      
+      // Add visual feedback animation
+      upvoteElement.style.transform = 'scale(1.05)';
+      setTimeout(() => {
+        upvoteElement.style.transform = 'scale(1)';
+      }, 150);
       
       try {
-        const response = await fetch(`/api/reviews/${unitId}/${reviewIndex}/upvote`, {
+        const response = await fetch(`/api/reviews/${reviewId}/upvote`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -235,55 +331,74 @@
         }
         
         const result = await response.json();
-        console.log('Upvote response:', result);
         
-        // Update UI
-        const upvoteElement = module.querySelector(`[data-review-index="${reviewIndex}"]`);
-        if (upvoteElement) {
-          const countSpan = upvoteElement.querySelector('.upvote-count');
-          const upvoteIcon = upvoteElement.querySelector('.upvote-icon');
-          
-          if (countSpan) {
-            countSpan.textContent = result.count;
-          }
-          
-          if (result.upvoted) {
-            upvoteElement.classList.add('upvoted');
-            if (upvoteIcon) {
-              upvoteIcon.classList.add('upvoted');
-            }
-          } else {
-            upvoteElement.classList.remove('upvoted');
-            if (upvoteIcon) {
-              upvoteIcon.classList.remove('upvoted');
-            }
-          }
-          
-          // Force repaint
-          upvoteElement.style.transform = 'scale(1.05)';
-          setTimeout(() => {
-            upvoteElement.style.transform = 'scale(1)';
-          }, 150);
+        // Update UI with server response (should match our optimistic update)
+        if (countSpan) {
+          countSpan.textContent = result.count;
         }
+        
+        // Clean up temporary classes and update final state
+        upvoteElement.classList.remove('upvote-adding', 'upvote-removing');
+        
+        if (result.upvoted) {
+          upvoteElement.classList.add('upvoted');
+          if (upvoteIcon) {
+            upvoteIcon.classList.add('upvoted');
+          }
+        } else {
+          upvoteElement.classList.remove('upvoted');
+          if (upvoteIcon) {
+            upvoteIcon.classList.remove('upvoted');
+          }
+        }
+        
       } catch (error) {
         console.error('Error in upvote:', error);
+        
+        // Rollback optimistic update on error
+        if (wasUpvoted) {
+          // Restore upvoted state
+          upvoteElement.classList.add('upvoted');
+          if (upvoteIcon) {
+            upvoteIcon.classList.add('upvoted');
+          }
+        } else {
+          // Remove upvoted state
+          upvoteElement.classList.remove('upvoted');
+          if (upvoteIcon) {
+            upvoteIcon.classList.remove('upvoted');
+          }
+        }
+        
+        // Clean up temporary classes and rollback
+        upvoteElement.classList.remove('upvote-adding', 'upvote-removing');
+        
+        // Restore original count
+        if (countSpan) {
+          countSpan.textContent = originalCount;
+        }
+        
+        // Show error feedback
+        upvoteElement.style.animation = 'shake 0.5s ease-in-out';
+        setTimeout(() => {
+          upvoteElement.style.animation = '';
+        }, 500);
       }
     }
     
-    // Event listener za upvote buttons
+    // Event listener for upvote buttons
     module.addEventListener('click', function(event) {
       const upvoteButton = event.target.closest('.review-helpful');
       if (upvoteButton) {
         event.preventDefault();
         
-        const reviewIndex = upvoteButton.dataset.reviewIndex;
+        const reviewId = upvoteButton.dataset.reviewId;
         const unitId = upvoteButton.dataset.unitId;
         
-        if (reviewIndex !== undefined && unitId) {
-          console.log('Calling handleUpvote with:', reviewIndex, unitId);
-          handleUpvote(reviewIndex, unitId);
+        if (reviewId !== undefined && unitId) {
+          handleUpvote(reviewId, unitId);
         } else {
-          console.log('Missing reviewIndex or unitId');
+          console.log('Missing reviewId or unitId');
         }
       }
     });
@@ -294,8 +409,8 @@
     console.log('No upvote data available for unit:', currentUnitId);
   <% } %>
   
-  // Animation setup
-  const reviewCards = module.querySelectorAll('.review-card');
+  // Animation setup for initially visible reviews
+  const visibleReviewCards = module.querySelectorAll('.review-card:not([style*="display: none"])');
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -308,7 +423,7 @@
     rootMargin: '0px 0px -50px 0px'
   });
 
-  reviewCards.forEach((card, index) => {
+  visibleReviewCards.forEach((card, index) => {
     card.style.opacity = '0';
     card.style.transform = 'translateY(20px)';
     card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;

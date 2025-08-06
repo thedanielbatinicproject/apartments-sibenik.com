@@ -2,6 +2,8 @@
 const express = require('express');
 const { fetchCalendars } = require('../code/calendar/calendarAPI');
 const { generateGalleryImages } = require('../code/utils/galleryHelper');
+const { getCombinedReviews } = require('../code/reviews/reviewsAPI');
+const reviewUpvoteManager = require('../code/reviews/reviewUpvoteManager');
 const router = express.Router();
 
 // Desktop podstranice
@@ -9,11 +11,24 @@ router.get('/desktop/apartman-s-vrtom', async (req, res) => {
   try {
     const calendars = await fetchCalendars();
     const apartmentImages = generateGalleryImages('apartment');
+    
+    // Get reviews and upvote data for unit "1" (apartman s vrtom)
+    const reviews = await getCombinedReviews('1'); // Dohvaćamo sve recenzije
+    const userId = reviewUpvoteManager.getUserId(req, res);
+    const upvoteData = reviewUpvoteManager.getUserUpvoteData(
+      userId,
+      reviews.allReviews, // Koristimo sve recenzije za upvote data
+      '1'
+    );
+    
     res.render('hr/apartman-s-vrtom', { 
       language: 'hr', 
       device: 'desktop',
       calendar1: calendars.calendar1,
-      images: apartmentImages
+      calendar2: calendars.calendar2,
+      images: apartmentImages,
+      reviewsData: reviews,
+      upvoteData: upvoteData
     });
   } catch (err) {
     res.status(500).render('error', {
@@ -133,11 +148,23 @@ router.get('/mobile/apartman-s-vrtom', async (req, res) => {
   try {
     const calendars = await fetchCalendars();
     const apartmentImages = generateGalleryImages('apartment');
+    
+    // Get reviews and upvote data for unit "1" (apartman s vrtom)
+    const reviews = await getCombinedReviews('1');
+    const userId = reviewUpvoteManager.getUserId(req, res);
+    const upvoteData = reviewUpvoteManager.getUserUpvoteData(
+      userId,
+      reviews.reviews,
+      '1'
+    );
+    
     res.render('hr/apartman-s-vrtom', { 
       language: 'hr', 
       device: 'mobile',
       calendar1: calendars.calendar1,
-      images: apartmentImages
+      images: apartmentImages,
+      reviewsData: reviews,
+      upvoteData: upvoteData
     });
   } catch (err) {
     res.status(500).render('error', {

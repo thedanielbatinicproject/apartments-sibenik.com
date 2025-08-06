@@ -1,10 +1,113 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs').promises;
+const multer = require('multer');
 const { calendarScheduler } = require('../code/calendar/calendarScheduler');
 const { reconstructDeltaData, reconstructDeltaDataWithHistory } = require('../code/solar/solarDataManager');
 const authManager = require('../code/auth/authManager');
+const { readReviewsFromDB, writeReviewsToDB, addReview } = require('../code/reviews/reviewsAPI');
 const router = express.Router();
+
+// Function to synchronize upvotes from upvotes.json to reviews.json
+function syncUpvotesData() {
+  try {
+    // Read upvotes.json (now uses reviewId -> upvote_count format)
+    const upvotesPath = path.join(__dirname, '../data/public_data/upvotes.json');
+    let upvotesData = {};
+    try {
+      const upvotesFileData = require('fs').readFileSync(upvotesPath, 'utf8');
+      upvotesData = JSON.parse(upvotesFileData);
+    } catch (error) {
+      // File doesn't exist yet, use empty object
+    }
+    
+    const reviewsData = readReviewsFromDB();
+    let updated = false;
+    
+    // Go through each unit and platform
+    for (const [unitId, unit] of Object.entries(reviewsData)) {
+      for (const [platform, platformData] of Object.entries(unit)) {
+        if (platformData.reviews && Array.isArray(platformData.reviews)) {
+          platformData.reviews.forEach((review) => {
+            const actualUpvotes = upvotesData[review.id] || 0;
+            
+            if (review.upvotes !== actualUpvotes) {
+              review.upvotes = actualUpvotes;
+              updated = true;
+            }
+          });
+        }
+      }
+    }
+    
+    if (updated) {
+      writeReviewsToDB(reviewsData);
+    }
+    
+    return true;
+  } catch (error) {
+    console.error('Error syncing upvotes:', error);
+    return false;
+  }
+}
+
+// Function to update upvotes.json when upvotes are changed in management
+function updateUpvotesFile(reviewId, newUpvoteCount) {
+  try {
+    const upvotesPath = path.join(__dirname, '../data/public_data/upvotes.json');
+    let upvotesData = {};
+    
+    try {
+      const upvotesFileData = require('fs').readFileSync(upvotesPath, 'utf8');
+      upvotesData = JSON.parse(upvotesFileData);
+    } catch (error) {
+      // File doesn't exist yet, use empty object
+    }
+    
+    upvotesData[reviewId] = newUpvoteCount;
+    
+    require('fs').writeFileSync(upvotesPath, JSON.stringify(upvotesData, null, 2));
+    return true;
+  } catch (error) {
+    console.error('Error updating upvotes.json:', error);
+    return false;
+  }
+}
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, '../public/images/avatars/'));
+  },
+  filename: function (req, file, cb) {
+    // Generate filename based on guest name with counter for duplicates
+    const guestName = req.body.guestName || 'guest';
+    const cleanName = guestName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+    const extension = path.extname(file.originalname);
+    
+    // Check for existing files and generate unique filename
+    let counter = 1;
+    let fileName = `${cleanName}${extension}`;
+    
+    // This will be handled synchronously for simplicity
+    cb(null, fileName);
+  }
+});
+
+const upload = multer({ 
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    // Allow only image files
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed!'), false);
+    }
+  },
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit
+  }
+});
 
 // Authentication middleware
 const requireAuth = (req, res, next) => {
@@ -245,6 +348,320 @@ router.get('/', requireAuth, (req, res) => {
     schedulerStatus: calendarScheduler.getStatus(),
     user: req.user
   });
+});
+
+// Reviews management page
+router.get('/reviews', requireAuth, (req, res) => {
+  // Sync upvotes before rendering the page
+  syncUpvotesData();
+  
+  res.render('management/reviews', {
+    title: 'Reviews Management',
+    user: req.user
+  });
+});
+
+// API Routes for Reviews Management
+
+// Get all reviews for management interface
+router.get('/api/reviews', requireAuth, (req, res) => {
+  try {
+    // Sync upvotes before returning data
+    syncUpvotesData();
+    
+    const reviewsData = readReviewsFromDB();
+    const allReviews = [];
+    
+    // Flatten all reviews with unit and platform info
+    for (const [unitId, unit] of Object.entries(reviewsData)) {
+      for (const [platform, platformData] of Object.entries(unit)) {
+        if (platformData.reviews) {
+          for (const review of platformData.reviews) {
+            allReviews.push({
+              ...review,
+              unitId,
+              platform
+            });
+          }
+        }
+      }
+    }
+    
+    // Sort by ID descending (newest first)
+    allReviews.sort((a, b) => b.id - a.id);
+    
+    res.json(allReviews);
+  } catch (error) {
+    console.error('Error fetching reviews:', error);
+    res.status(500).json({ error: 'Failed to fetch reviews' });
+  }
+});
+
+// Add new review
+router.post('/api/reviews', requireAuth, upload.single('avatarFile'), async (req, res) => {
+  try {
+    const { unitId, platform, guestName, reviewDate, rating, comment, isVerified, upvotes } = req.body;
+    
+    // Validate required fields
+    if (!unitId || !platform || !guestName || !reviewDate || !rating || !comment) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    // Generate avatar path
+    let avatarPath = '/images/avatars/default.png';
+    if (req.file) {
+      // Generate unique filename with counter for duplicates
+      const cleanName = guestName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+      const extension = path.extname(req.file.originalname);
+      
+      // Check existing files to generate unique name
+      const avatarsDir = path.join(__dirname, '../public/images/avatars/');
+      const existingFiles = await fs.readdir(avatarsDir);
+      
+      let counter = 1;
+      let fileName = `${cleanName}${extension}`;
+      
+      while (existingFiles.includes(fileName)) {
+        fileName = `${cleanName}-${counter}${extension}`;
+        counter++;
+      }
+      
+      // Rename uploaded file
+      const oldPath = req.file.path;
+      const newPath = path.join(avatarsDir, fileName);
+      await fs.rename(oldPath, newPath);
+      
+      avatarPath = `/images/avatars/${fileName}`;
+    }
+
+    // Format date
+    const formattedDate = new Date(reviewDate).toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+
+    const reviewData = {
+      guestName,
+      guestAvatar: avatarPath,
+      date: formattedDate,
+      rating: parseInt(rating),
+      comment,
+      isVerified: isVerified === 'on' || isVerified === true,
+      platform,
+      upvotes: parseInt(upvotes) || 0
+    };
+
+    const success = await addReview(unitId, platform, reviewData);
+    
+    if (success) {
+      // Recalculate platform statistics
+      const reviewsData = readReviewsFromDB();
+      const platformData = reviewsData[unitId][platform];
+      
+      if (platformData && platformData.reviews) {
+        // Find the newly added review to get its ID
+        const newReview = platformData.reviews[platformData.reviews.length - 1];
+        
+        // Update upvotes.json with new upvote count using review ID
+        updateUpvotesFile(newReview.id, parseInt(upvotes) || 0);
+        
+        // Recalculate average rating
+        const totalRating = platformData.reviews.reduce((sum, r) => sum + r.rating, 0);
+        platformData.rating = Math.round((totalRating / platformData.reviews.length) * 10) / 10;
+        
+        // Update total reviews count
+        platformData.totalReviews = platformData.reviews.length;
+        
+        // Save updated data
+        writeReviewsToDB(reviewsData);
+      }
+      
+      res.json({ success: true, message: 'Review added successfully' });
+    } else {
+      res.status(500).json({ error: 'Failed to add review' });
+    }
+  } catch (error) {
+    console.error('Error adding review:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Update existing review
+router.put('/api/reviews/:reviewId', requireAuth, upload.single('avatarFile'), async (req, res) => {
+  try {
+    const reviewId = parseInt(req.params.reviewId);
+    const { unitId, platform, guestName, reviewDate, rating, comment, isVerified, upvotes, removeAvatar } = req.body;
+    
+    const reviewsData = readReviewsFromDB();
+    
+    // Find and update the review
+    let reviewFound = false;
+    let avatarPath = null;
+    let oldUnitId = null;
+    let oldPlatform = null;
+    
+    // First find the existing review to get current avatar and location
+    for (const [uId, unit] of Object.entries(reviewsData)) {
+      for (const [pf, platformData] of Object.entries(unit)) {
+        const review = platformData.reviews?.find(r => r.id === reviewId);
+        if (review) {
+          avatarPath = review.guestAvatar; // Keep existing avatar by default
+          oldUnitId = uId;
+          oldPlatform = pf;
+          reviewFound = true;
+          break;
+        }
+      }
+      if (reviewFound) break;
+    }
+    
+    if (!reviewFound) {
+      return res.status(404).json({ error: 'Review not found' });
+    }
+    
+    // Handle avatar removal or new upload
+    if (removeAvatar === 'true') {
+      // Remove current avatar, set to default
+      avatarPath = '/images/avatars/default-avatar.png';
+    } else if (req.file) {
+      const cleanName = guestName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+      const extension = path.extname(req.file.originalname);
+      
+      const avatarsDir = path.join(__dirname, '../public/images/avatars/');
+      const existingFiles = await fs.readdir(avatarsDir);
+      
+      let counter = 1;
+      let fileName = `${cleanName}${extension}`;
+      
+      while (existingFiles.includes(fileName)) {
+        fileName = `${cleanName}-${counter}${extension}`;
+        counter++;
+      }
+      
+      const oldPath = req.file.path;
+      const newPath = path.join(avatarsDir, fileName);
+      await fs.rename(oldPath, newPath);
+      
+      avatarPath = `/images/avatars/${fileName}`;
+    }
+
+    // Format date
+    const formattedDate = new Date(reviewDate).toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+
+    // Remove review from old location
+    const oldPlatformData = reviewsData[oldUnitId][oldPlatform];
+    const reviewIndex = oldPlatformData.reviews.findIndex(r => r.id === reviewId);
+    if (reviewIndex !== -1) {
+      oldPlatformData.reviews.splice(reviewIndex, 1);
+      
+      // Recalculate old platform statistics
+      if (oldPlatformData.reviews.length > 0) {
+        const totalRating = oldPlatformData.reviews.reduce((sum, r) => sum + r.rating, 0);
+        oldPlatformData.rating = Math.round((totalRating / oldPlatformData.reviews.length) * 10) / 10;
+      } else {
+        oldPlatformData.rating = 0;
+      }
+      oldPlatformData.totalReviews = oldPlatformData.reviews.length;
+    }
+
+    // Add review to new location (or same if not changed)
+    const newReview = {
+      id: reviewId,
+      guestName,
+      guestAvatar: avatarPath,
+      date: formattedDate,
+      rating: parseInt(rating),
+      comment,
+      isVerified: isVerified === 'on' || isVerified === true,
+      platform,
+      upvotes: parseInt(upvotes) || 0
+    };
+
+    // Ensure the new unit and platform exist
+    if (!reviewsData[unitId]) {
+      reviewsData[unitId] = {};
+    }
+    if (!reviewsData[unitId][platform]) {
+      reviewsData[unitId][platform] = {
+        rating: 0,
+        totalReviews: 0,
+        reviews: []
+      };
+    }
+
+    reviewsData[unitId][platform].reviews.push(newReview);
+    
+    // Update upvotes.json with new upvote count using review ID
+    updateUpvotesFile(reviewId, parseInt(upvotes) || 0);
+    
+    // Recalculate new platform statistics
+    const newPlatformData = reviewsData[unitId][platform];
+    const totalRating = newPlatformData.reviews.reduce((sum, r) => sum + r.rating, 0);
+    newPlatformData.rating = Math.round((totalRating / newPlatformData.reviews.length) * 10) / 10;
+    newPlatformData.totalReviews = newPlatformData.reviews.length;
+    
+    const success = writeReviewsToDB(reviewsData);
+    if (success) {
+      res.json({ success: true, message: 'Review updated successfully' });
+    } else {
+      res.status(500).json({ error: 'Failed to save updated review' });
+    }
+  } catch (error) {
+    console.error('Error updating review:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Delete review
+router.delete('/api/reviews/:reviewId', requireAuth, async (req, res) => {
+  try {
+    const reviewId = parseInt(req.params.reviewId);
+    const reviewsData = readReviewsFromDB();
+    
+    let reviewFound = false;
+    
+    // Find and remove the review
+    for (const unit of Object.values(reviewsData)) {
+      for (const platformData of Object.values(unit)) {
+        const reviewIndex = platformData.reviews?.findIndex(r => r.id === reviewId);
+        if (reviewIndex !== -1) {
+          platformData.reviews.splice(reviewIndex, 1);
+          
+          // Recalculate platform statistics
+          if (platformData.reviews.length > 0) {
+            const totalRating = platformData.reviews.reduce((sum, r) => sum + r.rating, 0);
+            platformData.rating = Math.round((totalRating / platformData.reviews.length) * 10) / 10;
+          } else {
+            platformData.rating = 0;
+          }
+          platformData.totalReviews = platformData.reviews.length;
+          
+          reviewFound = true;
+          break;
+        }
+      }
+      if (reviewFound) break;
+    }
+    
+    if (reviewFound) {
+      const success = writeReviewsToDB(reviewsData);
+      if (success) {
+        res.json({ success: true, message: 'Review deleted successfully' });
+      } else {
+        res.status(500).json({ error: 'Failed to save changes' });
+      }
+    } else {
+      res.status(404).json({ error: 'Review not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting review:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 // Scheduler control routes

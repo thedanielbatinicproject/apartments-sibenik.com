@@ -2,167 +2,42 @@ const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 
-// Mock data for now - later you can integrate real APIs
-const mockReviewsData = {
-  1: {
-    airbnb: {
-      rating: 4.8,
-      totalReviews: 137,
-      reviews: [
-        {
-          id: 1,
-          guestName: "Klaus",
-          guestAvatar: "/images/avatars/klaus.jpg",
-          date: "5. October, 2024",
-          rating: 5,
-          comment: "Sehr empfehlenswert, in der Nähe des Busbahnhofes, des Fährhafens, der Altstadt. Voll ausgestattete Wohnung mit Garten!",
-          isVerified: true,
-          platform: "airbnb"
-        },
-        {
-          id: 2,
-          guestName: "Roman",
-          guestAvatar: "/images/avatars/roman.jpg",
-          date: "16. August, 2024",
-          rating: 5,
-          comment: "Brigita je super prijateljska i komunikativna. Dala nam je sjajne savjete za naš boravak u Šibeniku. Stan je centralni i ima dobar, besplatan parking...",
-          isVerified: true,
-          platform: "airbnb"
-        },
-        {
-          id: 3,
-          guestName: "Verena",
-          guestAvatar: "/images/avatars/verena.jpg",
-          date: "23. September, 2024",
-          rating: 5,
-          comment: "Thank you Brigita! We had a great time and followed some of your recommendations to get around town. We'd like to come back some day...",
-          isVerified: true,
-          platform: "airbnb"
-        },
-        {
-          id: 4,
-          guestName: "Klaus",
-          guestAvatar: "/images/avatars/klaus2.jpg",
-          date: "4. October, 2024",
-          rating: 5,
-          comment: "Einfach alles SUPER -empfehlenswert!",
-          isVerified: true,
-          platform: "airbnb"
-        },
-        {
-          id: 5,
-          guestName: "Karl-Heinz",
-          guestAvatar: "/images/avatars/karl.jpg",
-          date: "26. September, 2024",
-          rating: 5,
-          comment: "Brigita ist herzlich und hat sehr gute Informationen gegeben, was man alles unternehmen kann. Die Nähe zum Zentrum ist ideal für Ausflüge zu Fuss...",
-          isVerified: true,
-          platform: "airbnb"
-        },
-        {
-          id: 6,
-          guestName: "Rachelle",
-          guestAvatar: "/images/avatars/rachelle.jpg",
-          date: "30. September, 2024",
-          rating: 5,
-          comment: "Brigita was wonderful. We arrived late and she explained everything to us with tons of recommendations of sights to see. Because we were late she let us have a...",
-          isVerified: true,
-          platform: "airbnb"
-        }
-      ]
-    },
-    booking: {
-      rating: 4.7,
-      totalReviews: 89,
-      reviews: [
-        {
-          id: 7,
-          guestName: "Miaoxue",
-          guestAvatar: "/images/avatars/miaoxue.jpg",
-          date: "22. August, 2024",
-          rating: 5,
-          comment: "Brigita一家人非常友好，她的公寓非常温馨，床非常舒适，有阳台子和马路，给我们介绍了很多好玩的地方，距离市中心很近距离海滨也很近距离海滨步行可达距离...",
-          isVerified: true,
-          platform: "booking"
-        },
-        {
-          id: 8,
-          guestName: "Miriam",
-          guestAvatar: "/images/avatars/miriam.jpg",
-          date: "20. August, 2024",
-          rating: 5,
-          comment: "Thank you Brigita! We loved your house and my baby enjoyed the time with the turtles. We hope to return next year. Thank you for all the recommendations...",
-          isVerified: true,
-          platform: "booking"
-        },
-        {
-          id: 9,
-          guestName: "Hamza",
-          guestAvatar: "/images/avatars/hamza.jpg",
-          date: "21. September, 2024",
-          rating: 5,
-          comment: "Nice garden and spacious room, great for our one night stay!",
-          isVerified: true,
-          platform: "booking"
-        },
-        {
-          id: 10,
-          guestName: "Marion",
-          guestAvatar: "/images/avatars/marion.jpg",
-          date: "23. August, 2024",
-          rating: 5,
-          comment: "Brigita a été notre coup de cœur de Croatie ! Son accueil, sa gentillesse, sa bienveillance, ses recommandations et l'amour pour sa ville de Šibenik nous ont...",
-          isVerified: true,
-          platform: "booking"
-        }
-      ]
+// Path to reviews JSON database
+const REVIEWS_DB_PATH = path.join(__dirname, '../../data/private/reviews.json');
+
+/**
+ * Reads reviews from JSON database
+ * @returns {Object} Reviews data from JSON file
+ */
+function readReviewsFromDB() {
+  try {
+    if (!fs.existsSync(REVIEWS_DB_PATH)) {
+      console.error('Reviews database file not found:', REVIEWS_DB_PATH);
+      return {};
     }
-  },
-  2: {
-    airbnb: {
-      rating: 4.9,
-      totalReviews: 92,
-      reviews: [
-        {
-          id: 11,
-          guestName: "Stefan",
-          guestAvatar: "/images/avatars/stefan.jpg",
-          date: "15. September, 2024",
-          rating: 5,
-          comment: "Excellent location, very clean and comfortable. Brigita is a wonderful host!",
-          isVerified: true,
-          platform: "airbnb"
-        },
-        {
-          id: 12,
-          guestName: "Maria",
-          guestAvatar: "/images/avatars/maria.jpg",
-          date: "8. October, 2024",
-          rating: 5,
-          comment: "Perfect apartment for exploring Šibenik. Everything was just as described.",
-          isVerified: true,
-          platform: "airbnb"
-        }
-      ]
-    },
-    booking: {
-      rating: 4.8,
-      totalReviews: 56,
-      reviews: [
-        {
-          id: 13,
-          guestName: "Thomas",
-          guestAvatar: "/images/avatars/thomas.jpg",
-          date: "12. September, 2024",
-          rating: 5,
-          comment: "Great accommodation with excellent service. Highly recommended!",
-          isVerified: true,
-          platform: "booking"
-        }
-      ]
-    }
+    
+    const data = fs.readFileSync(REVIEWS_DB_PATH, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Error reading reviews database:', error);
+    return {};
   }
-};
+}
+
+/**
+ * Writes reviews to JSON database
+ * @param {Object} reviewsData - Reviews data to write
+ * @returns {boolean} Success status
+ */
+function writeReviewsToDB(reviewsData) {
+  try {
+    fs.writeFileSync(REVIEWS_DB_PATH, JSON.stringify(reviewsData, null, 2), 'utf8');
+    return true;
+  } catch (error) {
+    console.error('Error writing reviews database:', error);
+    return false;
+  }
+}
 
 /**
  * Fetch reviews for specific accommodation unit
@@ -171,9 +46,9 @@ const mockReviewsData = {
  */
 async function fetchReviews(unitId) {
   try {
-    // For now we return mock data
-    // Here you would implement calls to real APIs
-    const reviews = mockReviewsData[unitId] || {
+    const reviewsData = readReviewsFromDB();
+    
+    const reviews = reviewsData[unitId] || {
       airbnb: { rating: 0, totalReviews: 0, reviews: [] },
       booking: { rating: 0, totalReviews: 0, reviews: [] }
     };
@@ -191,9 +66,10 @@ async function fetchReviews(unitId) {
 /**
  * Combines reviews from both platforms and sorts them by date
  * @param {string} unitId - Accommodation unit ID
+ * @param {number} limit - Maximum number of reviews to return (optional, returns all if not specified)
  * @returns {Object} Combined reviews with total statistics
  */
-async function getCombinedReviews(unitId) {
+async function getCombinedReviews(unitId, limit = null) {
   try {
     const reviews = await fetchReviews(unitId);
     
@@ -212,10 +88,14 @@ async function getCombinedReviews(unitId) {
       ((reviews.airbnb.rating * reviews.airbnb.totalReviews) + 
        (reviews.booking.rating * reviews.booking.totalReviews)) / totalReviews : 0;
     
+    // Apply limit if specified, otherwise return all reviews
+    const reviewsToReturn = limit ? allReviews.slice(0, limit) : allReviews;
+    
     return {
       averageRating: Math.round(averageRating * 10) / 10,
       totalReviews: totalReviews,
-      reviews: allReviews.slice(0, 6), // Prikazujemo samo prvih 6 recenzija
+      reviews: reviewsToReturn,
+      allReviews: allReviews, // Dodajemo sve recenzije za potrebe JavaScript-a
       platforms: {
         airbnb: reviews.airbnb,
         booking: reviews.booking
@@ -263,9 +143,65 @@ function generateStarsHTML(rating) {
   return starsHTML;
 }
 
+/**
+ * Adds a new review to the database
+ * @param {string} unitId - Accommodation unit ID
+ * @param {string} platform - Platform (airbnb or booking)
+ * @param {Object} reviewData - Review data
+ * @returns {boolean} Success status
+ */
+async function addReview(unitId, platform, reviewData) {
+  try {
+    const reviewsData = readReviewsFromDB();
+    
+    // Ensure unit exists
+    if (!reviewsData[unitId]) {
+      reviewsData[unitId] = {
+        airbnb: { rating: 0, totalReviews: 0, reviews: [] },
+        booking: { rating: 0, totalReviews: 0, reviews: [] }
+      };
+    }
+    
+    // Ensure platform exists
+    if (!reviewsData[unitId][platform]) {
+      reviewsData[unitId][platform] = { rating: 0, totalReviews: 0, reviews: [] };
+    }
+    
+    // Generate new ID - globally unique across all units and platforms
+    let maxId = 0;
+    for (const unit of Object.values(reviewsData)) {
+      for (const platformData of Object.values(unit)) {
+        if (platformData.reviews) {
+          for (const review of platformData.reviews) {
+            if (review.id > maxId) {
+              maxId = review.id;
+            }
+          }
+        }
+      }
+    }
+    
+    reviewData.id = maxId + 1;
+    reviewData.platform = platform;
+    
+    // Add review
+    reviewsData[unitId][platform].reviews.push(reviewData);
+    
+    // Note: We don't update totalReviews and rating here since it's done in the API endpoint
+    
+    return writeReviewsToDB(reviewsData);
+  } catch (error) {
+    console.error('Error adding review:', error);
+    return false;
+  }
+}
+
 module.exports = {
   fetchReviews,
   getCombinedReviews,
   truncateReviewText,
-  generateStarsHTML
+  generateStarsHTML,
+  addReview,
+  readReviewsFromDB,
+  writeReviewsToDB
 };
