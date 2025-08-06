@@ -179,14 +179,7 @@
                     <div class="gallery-content">
                         <div class="apartment-gallery">
                             <%- include('../modules/gallery', { 
-                                images: [
-                                    { fullsize: '/galleries/apartments/apartman-vrt/apartman-vrt-1.jpg', thumbnail: '/galleries/apartments/apartman-vrt/apartman-vrt-1.jpg', alt: 'Apartman s vrtom - Vrt i terasa' },
-                                    { fullsize: '/galleries/apartments/apartman-vrt/apartman-vrt-2.jpg', thumbnail: '/galleries/apartments/apartman-vrt/apartman-vrt-2.jpg', alt: 'Apartman s vrtom - Kuhinja' },
-                                    { fullsize: '/galleries/apartments/apartman-vrt/apartman-vrt-3.jpg', thumbnail: '/galleries/apartments/apartman-vrt/apartman-vrt-3.jpg', alt: 'Apartman s vrtom - Terasa s cvijećem' },
-                                    { fullsize: '/galleries/apartments/apartman-vrt/apartman-vrt-4.jpg', thumbnail: '/galleries/apartments/apartman-vrt/apartman-vrt-4.jpg', alt: 'Apartman s vrtom - Spavaća soba' },
-                                    { fullsize: '/galleries/apartments/apartman-vrt/apartman-vrt-5.jpg', thumbnail: '/galleries/apartments/apartman-vrt/apartman-vrt-5.jpg', alt: 'Apartman s vrtom - Kupaonica' },
-                                    { fullsize: '/galleries/apartments/apartman-vrt/apartman-vrt-6.jpg', thumbnail: '/galleries/apartments/apartman-vrt/apartman-vrt-6.jpg', alt: 'Apartman s vrtom - Dnevni boravak' }
-                                ] 
+                                images: galleryImages || []
                             }) %>
                         </div>
                     </div>
