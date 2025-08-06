@@ -1,25 +1,20 @@
 const fs = require('fs');
 const path = require('path');
 
-// Helper function to dynamically load gallery images from directory
-function generateApartmentGalleryImages(apartmentType) {
+// Safe function to generate apartment gallery images with existence check
+function generateApartmentVrtGallery() {
   try {
-    const galleryPath = path.join(__dirname, '../../public/galleries/apartments', apartmentType);
+    const galleryPath = path.join(__dirname, '../../public/galleries/apartments/apartman-vrt');
     
-    // Check if directory exists
     if (!fs.existsSync(galleryPath)) {
       console.warn(`Gallery directory not found: ${galleryPath}`);
       return [];
     }
     
-    // Read all files from directory
     const files = fs.readdirSync(galleryPath);
-    
-    // Filter for image files and sort them numerically
     const imageFiles = files
       .filter(file => /\.(jpg|jpeg|png|gif|webp)$/i.test(file))
       .sort((a, b) => {
-        // Extract numbers from filenames for proper numerical sorting
         const aMatch = a.match(/(\d+)/);
         const bMatch = b.match(/(\d+)/);
         
@@ -27,40 +22,22 @@ function generateApartmentGalleryImages(apartmentType) {
           return parseInt(aMatch[1]) - parseInt(bMatch[1]);
         }
         
-        // Fallback to alphabetical sorting if no numbers found
         return a.localeCompare(b);
       });
     
-    // Generate image objects
     const images = imageFiles.map((file, index) => {
-      const filePath = `/galleries/apartments/${apartmentType}/${file}`;
-      
-      // Generate more descriptive alt text based on apartment type
-      let altText;
-      switch(apartmentType) {
-        case 'apartman-vrt':
-          altText = `Apartman s vrtom - Slika ${index + 1}`;
-          break;
-        case 'studio-apartman':
-          altText = `Studio apartman - Slika ${index + 1}`;
-          break;
-        case 'soba':
-          altText = `Soba - Slika ${index + 1}`;
-          break;
-        default:
-          altText = `${apartmentType} - Slika ${index + 1}`;
-      }
-      
+      const filePath = `/galleries/apartments/apartman-vrt/${file}`;
       return {
         fullsize: filePath,
-        thumbnail: filePath, // Using same image for thumbnail for now
-        alt: altText
+        thumbnail: filePath,
+        alt: `Apartman s vrtom - Slika ${index + 1}`
       };
     });
     
+    console.log(`Generated ${images.length} images for apartman-vrt gallery`);
     return images;
   } catch (error) {
-    console.error(`Error loading gallery images for ${apartmentType}:`, error);
+    console.error('Error loading apartman-vrt gallery:', error);
     return [];
   }
 }
@@ -131,4 +108,4 @@ function generateGalleryImages(type) {
   return images;
 }
 
-module.exports = { generateGalleryImages, generateApartmentGalleryImages };
+module.exports = { generateGalleryImages, generateApartmentVrtGallery };

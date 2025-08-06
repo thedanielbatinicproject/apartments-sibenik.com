@@ -1,7 +1,7 @@
 
 const express = require('express');
 const { fetchCalendars } = require('../code/calendar/calendarAPI');
-const { generateGalleryImages, generateApartmentGalleryImages } = require('../code/utils/galleryHelper');
+const { generateGalleryImages } = require('../code/utils/galleryHelper');
 const { getCombinedReviews } = require('../code/reviews/reviewsAPI');
 const reviewUpvoteManager = require('../code/reviews/reviewUpvoteManager');
 const router = express.Router();
@@ -10,7 +10,7 @@ const router = express.Router();
 router.get('/desktop/apartman-s-vrtom', async (req, res) => {
   try {
     const calendars = await fetchCalendars();
-    const apartmentImages = generateApartmentGalleryImages('apartman-vrt');
+    const apartmentImages = generateGalleryImages('apartment');
     
     // Get reviews and upvote data for unit "1" (apartman s vrtom)
     const reviews = await getCombinedReviews('1'); // Dohvaćamo sve recenzije
@@ -28,8 +28,7 @@ router.get('/desktop/apartman-s-vrtom', async (req, res) => {
       calendar2: calendars.calendar2,
       images: apartmentImages,
       reviewsData: reviews,
-      upvoteData: upvoteData,
-      galleryImages: apartmentImages // Pass gallery images for the page
+      upvoteData: upvoteData
     });
   } catch (err) {
     res.status(500).render('error', {
@@ -148,7 +147,7 @@ router.get('/mobile', async (req, res) => {
 router.get('/mobile/apartman-s-vrtom', async (req, res) => {
   try {
     const calendars = await fetchCalendars();
-    const apartmentImages = generateApartmentGalleryImages('apartman-vrt');
+    const apartmentImages = generateGalleryImages('apartment');
     
     // Get reviews and upvote data for unit "1" (apartman s vrtom)
     const reviews = await getCombinedReviews('1');
@@ -165,8 +164,7 @@ router.get('/mobile/apartman-s-vrtom', async (req, res) => {
       calendar1: calendars.calendar1,
       images: apartmentImages,
       reviewsData: reviews,
-      upvoteData: upvoteData,
-      galleryImages: apartmentImages // Pass gallery images for the page
+      upvoteData: upvoteData
     });
   } catch (err) {
     res.status(500).render('error', {
