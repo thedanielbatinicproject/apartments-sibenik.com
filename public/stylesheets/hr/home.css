@@ -130,12 +130,18 @@ body {
   background-attachment: fixed;
   min-height: 100vh;
   transition: var(--transition);
+  overflow-x: hidden; /* Sprječava horizontalni scroll */
+}
+
+main {
+  max-width: 70vw;
+  margin: 0 auto;
 }
 
 .container {
-  max-width: var(--container-max-width);
+  max-width: 100%; /* Povećano s 1200px na 100% */
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0; /* Promijenjeno s 24px na 0 */
 }
 
 .section-spacing {
@@ -160,20 +166,24 @@ body {
 
 /* Hero sekcija - poboljšana */
 .hero-section {
-  padding: 120px 0 80px;
+  padding: 0 0 80px; /* Uklonjen padding-top da se prilijepi uz header */
   display: flex;
   align-items: center;
   min-height: 100vh;
   position: relative;
   overflow: hidden;
-  margin: 0 -5vw; /* Proširuje hero van container-a */
-  padding-left: 5vw;
-  padding-right: 5vw;
+  margin: 0 calc(-50vw + 50%); /* Omogućava full screen iz container-a */
+  width: 100vw; /* Full screen širina */
   background-image: url('/images/hero-day.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
+  margin-bottom: 80px; /* Razmak ispod hero bloka */
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
 }
 
 .hero-section::before {
@@ -197,10 +207,10 @@ body {
 }
 
 .hero-content {
-  flex: 1;
-  max-width: 600px;
+  flex: 0 0 50%; /* Točno 50% širine */
+  max-width: 50%;
   z-index: 3;
-  padding: 0 24px;
+  padding: 0 3vw;
   position: relative;
 }
 
@@ -251,7 +261,8 @@ body {
   flex-direction: column;
   gap: 16px;
   margin-bottom: 40px;
-  align-items: flex-start;
+  align-items: center; /* Centrirano i na desktop verziji */
+  justify-content: center;
 }
 
 .feature-item {
@@ -270,6 +281,7 @@ body {
   display: flex;
   gap: 16px;
   flex-wrap: wrap;
+  justify-content: center; /* Centrirano i na desktop verziji */
 }
 
 .explore-btn {
@@ -325,11 +337,12 @@ body {
 }
 
 .hero-visual {
-  flex: 1;
+  flex: 0 0 50%; /* Točno 50% širine */
+  max-width: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0 24px;
+  padding: 0 3vw;
   position: relative;
   z-index: 3;
 }
@@ -341,6 +354,122 @@ body {
   width: 100%;
   max-width: 500px;
   align-items: center;
+  position: relative;
+}
+
+/* Desktop verzija - 13x13 grid sistem */
+@media (min-width: 1025px) {
+  .hero-visual {
+    height: 95vh;
+  }
+  
+  .floating-cards {
+    display: grid;
+    grid-template-columns: repeat(13, 1fr);
+    grid-template-rows: repeat(13, 1fr);
+    gap: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    position: relative;
+    perspective: 1000px; /* Dodano za 3D efekte */
+  }
+  
+  /* Stvaranje nevidljivih grid ćelija za strukturu */
+  .floating-cards::before {
+    content: '';
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+    pointer-events: none;
+  }
+  
+  /* Sve kartice su apsolutno pozicionirane iznad grida */
+  .floating-cards > * {
+    position: absolute;
+    pointer-events: auto;
+  }
+  
+  .main-card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 280px;
+    animation: float-main 8s ease-in-out infinite;
+    z-index: 5;
+  }
+  
+  /* UKLONJENO: .mini-cards-row CSS - više se ne koristi jer su kartice sada .extra-floating-card */
+  
+  .extra-floating-card {
+    position: absolute;
+    background: var(--card-bg);
+    backdrop-filter: var(--blur-effect);
+    -webkit-backdrop-filter: var(--blur-effect);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    box-shadow: var(--box-shadow);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-color);
+    z-index: 4;
+    transition: transform 0.3s ease;
+    padding: 8px 12px;
+    text-align: center;
+    width: fit-content;
+    max-width: 180px;
+    min-width: 120px;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transform-style: preserve-3d; /* Dodano za 3D transformacije */
+  }
+}
+
+/* Animacije za dodatne kartice */
+@keyframes float-extra-1 {
+  0%, 100% { transform: translate(-50%, -50%) translateY(0px) rotate(-2deg); }
+  50% { transform: translate(-50%, -50%) translateY(-12px) rotate(1deg); }
+}
+
+@keyframes float-extra-2 {
+  0%, 100% { transform: translate(-50%, -50%) translateY(0px) rotate(3deg); }
+  50% { transform: translate(-50%, -50%) translateY(-8px) rotate(-2deg); }
+}
+
+@keyframes float-extra-3 {
+  0%, 100% { transform: translate(-50%, -50%) translateY(0px) rotate(1deg); }
+  50% { transform: translate(-50%, -50%) translateY(-10px) rotate(-1deg); }
+}
+
+@keyframes float-extra-4 {
+  0%, 100% { transform: translate(-50%, -50%) translateY(0px) rotate(-1deg); }
+  50% { transform: translate(-50%, -50%) translateY(-15px) rotate(2deg); }
+}
+
+@keyframes float-extra-5 {
+  0%, 100% { transform: translate(-50%, -50%) translateY(0px) rotate(2deg); }
+  50% { transform: translate(-50%, -50%) translateY(-6px) rotate(-3deg); }
+}
+
+@keyframes float-extra-6 {
+  0%, 100% { transform: translate(-50%, -50%) translateY(0px) rotate(-2deg); }
+  50% { transform: translate(-50%, -50%) translateY(-14px) rotate(1deg); }
+}
+
+@keyframes float-extra-7 {
+  0%, 100% { transform: translate(-50%, -50%) translateY(0px) rotate(1deg); }
+  50% { transform: translate(-50%, -50%) translateY(-9px) rotate(-2deg); }
+}
+
+@keyframes float-extra-8 {
+  0%, 100% { transform: translate(-50%, -50%) translateY(0px) rotate(-1deg); }
+  50% { transform: translate(-50%, -50%) translateY(-11px) rotate(2deg); }
+}
+
+@keyframes float-extra-9 {
+  0%, 100% { transform: translate(-50%, -50%) translateY(0px) rotate(1deg); }
+  50% { transform: translate(-50%, -50%) translateY(-13px) rotate(-1deg); }
 }
 
 .floating-card {
@@ -363,13 +492,13 @@ body {
 /* Posebna animacija za main-card */
 @keyframes float-main {
   0%, 100% { 
-    transform: translateY(0px) rotate(0deg); 
+    transform: translate(-50%, -50%) translateY(0px) rotate(0deg); 
   }
   33% { 
-    transform: translateY(-8px) rotate(1deg); 
+    transform: translate(-50%, -50%) translateY(-8px) rotate(1deg); 
   }
   66% { 
-    transform: translateY(-12px) rotate(-1deg); 
+    transform: translate(-50%, -50%) translateY(-12px) rotate(-1deg); 
   }
 }
 
@@ -395,30 +524,7 @@ body {
   }
 }
 
-.mini-cards-row {
-  display: flex;
-  gap: 20px;
-  width: 100%;
-  justify-content: center;
-}
-
-.mini-card {
-  padding: 20px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  width: 160px;
-  animation: float-mini 6s ease-in-out infinite;
-}
-
-.mini-card:first-of-type {
-  animation-delay: -1s;
-  transform: rotate(-3deg);
-}
-
-.mini-card:last-of-type {
-  animation-delay: -2s;
-  transform: rotate(3deg);
-}
+/* UKLONJENO: .mini-cards-row i .mini-card CSS - konvertirano u .extra-floating-card */
 
 .floating-card:hover {
   animation-play-state: paused;
@@ -444,11 +550,13 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
+  flex-wrap: nowrap; /* spriječi prelom u novi red */
 }
 
 .card-rating {
   color: var(--accent-color);
   font-size: 1.1rem;
+  white-space: nowrap; /* drži zvjezdice u jednom redu */
 }
 
 .card-reviews {
@@ -497,7 +605,7 @@ body {
   background: var(--card-bg);
   backdrop-filter: var(--blur-effect);
   -webkit-backdrop-filter: var(--blur-effect);
-  margin: 60px 5% 60px 5%; /* Dodao gore razmak od 60px */
+  margin: 60px 8% 60px 8%; /* Smanjeno s 15% na 8% za širi layout */
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
 }
@@ -605,22 +713,48 @@ body {
   margin: 0;
 }
 
+.time-display {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.detected-time {
+  color: var(--text-color);
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 25px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: inline-block;
+}
+
+#current-time {
+  font-weight: 700;
+  color: var(--primary-color);
+  font-family: 'Courier New', monospace;
+  letter-spacing: 1px;
+}
+
 /* O Šibeniku sekcija */
 .about-sibenik {
   background: var(--card-bg);
   backdrop-filter: var(--blur-effect);
   -webkit-backdrop-filter: var(--blur-effect);
   border-radius: var(--border-radius);
-  margin: 0 5%; /* Povećano s 24px na 5% za više prostora galeriji */
+  margin: 0 8%; /* Vraćeno na originalno */
   box-shadow: var(--box-shadow);
 }
 
 .content-grid {
   display: grid;
   grid-template-columns: 1fr 1.2fr;
-  gap: 40px;
+  gap: 20px; /* Smanjeno s 40px na 20px */
   align-items: center;
-  padding: 40px;
+  padding: 25px; /* Vraćeno na 25px */
 }
 
 .section-title {
@@ -902,7 +1036,7 @@ body {
   backdrop-filter: var(--blur-effect);
   -webkit-backdrop-filter: var(--blur-effect);
   border-radius: var(--border-radius);
-  margin: 0 5%; /* Povećano s 24px na 5% za više prostora */
+  margin: 0 8%; /* Smanjeno s 15% na 8% za širi layout */
   box-shadow: var(--box-shadow);
 }
 
@@ -946,21 +1080,66 @@ body {
 }
 
 /* Responsive dizajn */
+/* Dodatna zaštita za manje desktop ekrane */
+@media (min-width: 1025px) and (max-width: 1440px) {
+  .extra-floating-card {
+    max-width: 180px; /* Manje kartice */
+    font-size: 0.8rem; /* Manji font */
+    padding: 16px 20px; /* Manji padding */
+  }
+  
+  /* UKLONJENO: Stare static pozicije koje interferiraju s JavaScript grid algoritmom */
+  /* NAPOMENA: Pozicioniranje se sad radi dinamički preko JavaScript-a */
+  .extra-card-1,
+  .extra-card-2,
+  .extra-card-3,
+  .extra-card-4,
+  .extra-card-5,
+  .extra-card-6,
+  .extra-card-7,
+  .extra-card-8 {
+    right: unset !important; /* Reset stare pozicije */
+    left: unset !important;
+    top: unset !important;
+    bottom: unset !important;
+  }
+}
+
 @media (max-width: 1024px) {
+  main {
+    max-width: 85vw; /* Šire na tabletu */
+  }
+
   .content-grid {
     grid-template-columns: 1fr;
-    gap: 40px;
-    padding: 40px;
+    gap: 20px; /* Smanjeno s 40px na 20px */
+    padding: 25px; /* Vraćeno na 25px */
   }
   
   .hero-section {
     flex-direction: column;
     text-align: center;
-    padding: 80px 0 60px;
-    margin: 0 -3vw; /* Manje proširenje na tabletu */
-    padding-left: 3vw;
-    padding-right: 3vw;
-    background-attachment: scroll; /* Bolje performanse na mobilnim */
+    padding: 20px 0 60px;
+    margin: 0 calc(-50vw + 50%);
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    background-attachment: scroll;
+    margin-bottom: 60px;
+  }
+
+  .hero-content {
+    flex: none;
+    max-width: 100%;
+    margin-bottom: 40px;
+    padding: 0 3vw;
+  }
+
+  .hero-visual {
+    flex: none;
+    max-width: 100%;
+    padding: 0 3vw;
   }
   
   .hero-content {
@@ -972,14 +1151,27 @@ body {
   }
 
   .floating-cards {
+    display: flex;
+    flex-direction: column;
     gap: 20px;
     max-width: 100%;
     align-items: center;
+  }
+  
+  /* Sakrij dodatne floating kartice na tabletu */
+  .extra-floating-card {
+    display: none;
+  }
+  
+  /* Sakrij mini kartice na tabletu */
+  .mini-cards-row {
+    display: none;
   }
 
   .main-card {
     width: 100%;
     max-width: 320px;
+    animation: float-main-mobile 8s ease-in-out infinite; /* koristi mobilnu animaciju i na tabletu */
   }
 
   .mini-cards-row {
@@ -1019,13 +1211,18 @@ body {
   :root {
     --section-spacing: 60px;
   }
+
+  main {
+    max-width: 95vw; /* Maksimalna širina na mobilnom */
+  }
   
   .container {
-    padding: 0 16px;
+    padding: 0; /* Promijenjeno s 16px na 0 */
   }
   
   .content-grid {
-    padding: 32px 24px;
+    padding: 0; /* Uklonjen padding iz grid-a za mobilnu */
+    display: block; /* Promjena iz grid u block za bolju kontrolu */
   }
   
   .reservation-wrapper {
@@ -1033,17 +1230,33 @@ body {
   }
   
   .hero-section {
-    padding: 60px 0 40px;
+    padding: 20px 0 40px;
     min-height: 80vh;
-    margin: 0 -2vw; /* Minimalno proširenje na mobitelima */
-    padding-left: 2vw;
-    padding-right: 2vw;
+    margin: 0 calc(-50vw + 50%);
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
     background-attachment: scroll;
+    margin-bottom: 40px;
+  }
+
+  .hero-content {
+    flex: none;
+    max-width: 100%;
+    padding: 0 10vw; /* Povećan padding s 2vw na 10vw */
+  }
+
+  .hero-visual {
+    flex: none;
+    max-width: 100%;
+    padding: 0 2vw;
   }
 
   .hero-actions {
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     width: 100%;
   }
 
@@ -1056,7 +1269,12 @@ body {
   .hero-features {
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 16px;
+  }
+
+  .hero-description {
+    padding: 0 20px; /* Dodao padding za mobilnu verziju */
   }
 
   .floating-cards {
@@ -1069,6 +1287,37 @@ body {
   .main-card {
     width: 100%;
     max-width: 320px;
+    animation: float-main-mobile 8s ease-in-out infinite; /* koristi mobilnu animaciju */
+  }
+  
+  /* Mobilna animacija za main-card bez translate(-50%, -50%) */
+  @keyframes float-main-mobile {
+    0%, 100% { 
+      transform: translateY(0px) rotate(0deg); 
+    }
+    33% { 
+      transform: translateY(-8px) rotate(1deg); 
+    }
+    66% { 
+      transform: translateY(-12px) rotate(-1deg); 
+    }
+  }
+  
+  .card-header {
+    flex-wrap: nowrap; /* osiguraj da zvjezdice ne idu u novi red na mobilnom */
+    gap: 8px; /* dodaj mali razmak između elemenata */
+  }
+  
+  .card-rating {
+    white-space: nowrap; /* sprječava prelom zvjezdica u novi red */
+    flex-shrink: 0; /* ne dozvoljavaj smanjivanje */
+  }
+  
+  .card-reviews {
+    white-space: nowrap; /* sprječava prelom broja recenzija u novi red */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0; /* omogućava text-overflow da radi */
   }
 
   .mini-cards-row {
@@ -1088,6 +1337,16 @@ body {
     justify-content: center;
   }
   
+  /* Sakrij dodatne floating kartice na mobilnim */
+  .extra-floating-card {
+    display: none;
+  }
+  
+  /* Sakrij mini kartice na mobilnim */
+  .mini-cards-row {
+    display: none;
+  }
+  
   .apartments-grid {
     grid-template-columns: 1fr;
   }
@@ -1102,18 +1361,46 @@ body {
 
   /* MOBILNI - širina blokova */
   .about-sibenik {
-    margin: 0 5%; /* Ista širina kao desktop */
-    margin-bottom: 40px; /* Vertikalni razmak */
+    margin: 0; /* Puna širina - uklonjen margin */
+    margin-bottom: 40px;
+    background: none; /* Uklonjena pozadina */
+    backdrop-filter: none; /* Uklonjen blur efekt */
+    -webkit-backdrop-filter: none;
+    box-shadow: none; /* Uklonjena sjena */
+    border-radius: 0; /* Uklonjen border-radius */
+  }
+
+  .about-sibenik .text-block {
+    padding: 40px 20px; /* Značajan padding za tekst */
+  }
+
+  .about-sibenik .sibenik-gallery {
+    padding: 0; /* Galerija bez paddinga - puna širina */
+    margin: 0 calc(-50vw + 50%); /* Full screen širina */
+    width: 100vw;
   }
 
   .reservation-section {
-    margin: 0 5%; /* Ista širina kao desktop */
+    margin: 0 5%; /* Vraćeno na 5% za mobilne */
     margin-bottom: 40px; /* Vertikalni razmak */
   }
 
   .theme-section {
-    margin: 40px 5% 40px 5%; /* Razmak gore i dolje na mobilnim */
+    margin: 40px 5% 40px 5%; /* Vraćeno na 5% za mobilne */
     padding: 40px 0;
+  }
+
+  .time-display {
+    margin-top: 16px;
+  }
+
+  .detected-time {
+    font-size: 0.9rem;
+    padding: 10px 16px;
+  }
+
+  #current-time {
+    font-size: 0.9rem;
   }
 
   .theme-slider-container {
@@ -1127,6 +1414,10 @@ body {
 }
 
 @media (max-width: 480px) {
+  main {
+    max-width: 100vw; /* Puna širina na vrlo malim ekranima */
+  }
+
   .hero-title {
     font-size: 2rem;
   }
@@ -1141,6 +1432,19 @@ body {
   
   .floating-card {
     padding: 24px;
+  }
+  
+  .main-card {
+    animation: float-main-mobile 8s ease-in-out infinite; /* koristi mobilnu animaciju i na najmanjim uređajima */
+  }
+  
+  .card-header {
+    flex-wrap: nowrap; /* osiguraj da se zvjezdice ne prelome na najmanjih ekranima */
+    font-size: 0.9rem; /* smanjeno na manjim ekranima */
+  }
+  
+  .card-rating {
+    font-size: 1rem; /* malo smanjeno na najmanjih ekranima */
   }
   
   .explore-btn {
@@ -1281,7 +1585,8 @@ body {
   
   .floating-card,
   .mini-card,
-  .hearth-icon {
+  .hearth-icon,
+  .extra-floating-card {
     animation: none;
   }
 }

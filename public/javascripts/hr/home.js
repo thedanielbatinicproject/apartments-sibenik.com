@@ -6,10 +6,10 @@ class HomePageManager {
     constructor() {
         this.themeSlider = null;
         this.currentTheme = 'auto';
-        this.init();
     }
 
     init() {
+        this.initRandomFloatingCards();
         this.initThemeSlider();
         this.setDynamicTheme();
         this.setupScrollAnimations();
@@ -18,6 +18,397 @@ class HomePageManager {
         this.setupGalleryInteractions();
         this.startThemeUpdateInterval();
         this.loadReviewsData();
+        this.initTimeDisplay();
+    }
+
+    /**
+     * Postavlja random pozicije za floating kartice na desktop verziji
+     */
+    initRandomFloatingCards() {
+        // Funkcija za apliciranje random pozicija
+        const applyRandomPositions = () => {
+            // Provjeri da li je desktop verzija
+            if (window.innerWidth < 1025) {
+                // Na mobilnim uređajima ukloni custom pozicioniranje
+                const floatingCards = document.querySelectorAll('.extra-floating-card');
+                floatingCards.forEach(card => {
+                    card.style.left = '';
+                    card.style.top = '';
+                    card.style.transform = '';
+                    card.style.animation = '';
+                });
+                return;
+            }
+
+            const floatingCards = document.querySelectorAll('.extra-floating-card');
+            const heroVisual = document.querySelector('.hero-visual');
+            const mainCard = document.querySelector('.main-card');
+            
+            console.log(`🔍 DEBUG: Pronađeno ${floatingCards.length} floating kartica`);
+            console.log(`🔍 DEBUG: heroVisual element:`, heroVisual);
+            console.log(`🔍 DEBUG: mainCard element:`, mainCard);
+            
+            if (!floatingCards.length || !heroVisual || !mainCard) {
+                console.log(`❌ DEBUG: Nedostaju elementi - kartice: ${floatingCards.length}, heroVisual: ${!!heroVisual}, mainCard: ${!!mainCard}`);
+                return;
+            }
+
+            // Izmjeri dimenzije kontajnera
+            const containerRect = heroVisual.getBoundingClientRect();
+            const containerWidth = containerRect.width;
+            const containerHeight = containerRect.height;
+
+            // Definiraj glavnu karticu kao no-go zonu (centar)
+            const mainCardZone = {
+                x: containerWidth * 0.35, // 35% - 65% horizontalno
+                y: containerHeight * 0.35, // 35% - 65% vertikalno  
+                width: containerWidth * 0.3,
+                height: containerHeight * 0.3
+            };
+
+            // Definiraj 13x13 grid pozicije (u pikselima relativno na kontajner)
+            const gridSize = 13;
+            const cellWidth = containerWidth / gridSize;
+            const cellHeight = containerHeight / gridSize;
+            
+            // Generiraj sve moguće pozicije IZVAN radijusa od centra (6,6)
+            const availablePositions = [];
+            const centerRow = 6;
+            const centerCol = 6;
+            
+            // POVEĆAJ UDALJENOST - različito za veličine ekrana
+            let forbiddenRadius;
+            if (containerWidth >= 1600) {
+                forbiddenRadius = 3; // POVEĆANO - veliki ekrani
+            } else if (containerWidth >= 1200) {
+                forbiddenRadius = 3; // POVEĆANO - srednji ekrani  
+            } else {
+                forbiddenRadius = 2; // POVEĆANO - manji desktop ekrani
+            }
+            
+            console.log(`Veličina kontajnera: ${containerWidth}px, forbidden radius: ${forbiddenRadius}`);
+            
+            // Provjeri veličinu ekrana za broj kartica
+            const isSmallScreen = containerWidth < 1200;
+            
+            for (let row = 0; row < gridSize; row++) {
+                for (let col = 0; col < gridSize; col++) {
+                    // Preskačemo centar (6,6) za glavnu karticu
+                    if (row === 6 && col === 6) continue;
+                    
+                    // ZABRANJUJEMO pozicije u radijusu oko centra
+                    const distanceFromCenter = Math.max(Math.abs(row - centerRow), Math.abs(col - centerCol));
+                    if (distanceFromCenter <= forbiddenRadius) continue;
+                    
+                    // ZABRANJUJEMO pozicije po rubu grida (prva i zadnja kolona/red)
+                    // VRAĆAMO ovu restrikciju da kartice ne budu po rubovima!
+                    if (row === 0 || row === gridSize - 1 || col === 0 || col === gridSize - 1) continue;
+                    
+                    // POSEBNA LOGIKA ZA MANJE DESKTOP EKRANE - preferiraj cirkularno oko centra
+                    if (isSmallScreen) {
+                        // Na manjim desktop ekranima, samo pozicije blizu centra
+                        const distanceFromCenter = Math.sqrt((row - centerRow) ** 2 + (col - centerCol) ** 2);
+                        
+                        // Preferiraj pozicije u radijusu 4-6 oko centra
+                        if (distanceFromCenter < 4 || distanceFromCenter > 6) {
+                            continue; // preskačemo pozicije koje su preblizu ili predaleko
+                        }
+                    }
+                    
+                    // Dodaj poziciju u centru ćelije s malim random offsetom
+                    const baseX = (col * cellWidth) + (cellWidth / 2);
+                    const baseY = (row * cellHeight) + (cellHeight / 2);
+                    
+                    // Mali random offset unutar ćelije (max 10% ćelije za preciznost)
+                    const offsetRange = Math.min(cellWidth, cellHeight) * 0.1;
+                    const offsetX = (Math.random() - 0.5) * offsetRange;
+                    const offsetY = (Math.random() - 0.5) * offsetRange;
+                    
+                    // Izračunaj prioritet na temelju udaljenosti od centra - CIRKULARNO
+                    const distanceScore = Math.sqrt((row - centerRow) ** 2 + (col - centerCol) ** 2);
+                    let priority = 20 - distanceScore; // veći broj = veći prioritet
+                    
+                    // BONUS prioritet za pozicije u idealnom radijusu oko centra
+                    const idealDistance = isSmallScreen ? 4.5 : 5; // idealna udaljenost od centra
+                    const distanceFromIdeal = Math.abs(distanceScore - idealDistance);
+                    if (distanceFromIdeal < 1) {
+                        priority += 10; // veliki bonus za pozicije blizu idealnog radijusa
+                    } else if (distanceFromIdeal < 2) {
+                        priority += 5; // manji bonus za pozicije u prihvatljivom radijusu
+                    }
+                    
+                    availablePositions.push({
+                        x: baseX + offsetX,
+                        y: baseY + offsetY,
+                        col: col,
+                        row: row,
+                        priority: priority
+                    });
+                }
+            }
+            
+            // Sortiraj pozicije po prioritetu (bliže centru = veći prioritet)
+            availablePositions.sort((a, b) => b.priority - a.priority);
+            
+            // DODAJ RANDOMNESS - pomijšaj pozicije visokog prioriteta da budu random ali kvalitetne
+            const highPriorityPositions = availablePositions.slice(0, Math.min(50, availablePositions.length)); // POVEĆANO s 30 na 50
+            const lowPriorityPositions = availablePositions.slice(50);
+            
+            // Shuffle high priority pozicije za randomness
+            for (let i = highPriorityPositions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [highPriorityPositions[i], highPriorityPositions[j]] = [highPriorityPositions[j], highPriorityPositions[i]];
+            }
+            
+            // Kombinuj nazad
+            const shuffledPositions = [...highPriorityPositions, ...lowPriorityPositions];
+            
+            console.log(`Dostupno ${shuffledPositions.length} pozicija za ${floatingCards.length} kartica (isSmallScreen: ${isSmallScreen})`);
+            console.log(`Forbidden radius: ${forbiddenRadius}, Container: ${containerWidth}x${containerHeight}`);
+            console.log(`🔍 DEBUG: Prva 10 shuffled pozicija:`, shuffledPositions.slice(0, 10).map(p => `(${p.col},${p.row})`));
+
+            // Funkcija za provjeru kolizije između dvije kartice
+            const checkCollision = (pos1, pos2, cardWidth = 180, cardHeight = 60) => {
+                const buffer = 40; // POVEĆAN BUFFER za sprečavanje preklapanja
+                return Math.abs(pos1.x - pos2.x) < (cardWidth/2 + buffer) && 
+                       Math.abs(pos1.y - pos2.y) < (cardHeight/2 + buffer);
+            };
+
+            // Funkcija za provjeru da kartice nisu previše blizu
+            const checkAdjacentGridBoxes = (pos1, pos2) => {
+                const rowDiff = Math.abs(pos1.row - pos2.row);
+                const colDiff = Math.abs(pos1.col - pos2.col);
+                
+                // POVEĆAJ RESTRIKCIJE - sprečavanje preklapanja
+                // Zabranjuj kartice koje su preblizu jedna drugoj
+                if (rowDiff <= 1 && colDiff <= 1) {
+                    return true; // susjedne i dijagonalne pozicije - zabranjeno
+                }
+                
+                return false; // inače dozvoljeno
+            };
+
+            // Funkcija za provjeru kolizije s glavnom karticom
+            const checkMainCardCollision = (pos, cardWidth = 180, cardHeight = 60) => {
+                // OPTIMIZIRANI BUFFER za cirkularno raspoređivanje
+                let buffer;
+                if (containerWidth >= 1600) {
+                    buffer = 60; // optimalni buffer za velike ekrane
+                } else if (containerWidth >= 1200) {
+                    buffer = 50; // optimalni buffer za srednje ekrane
+                } else {
+                    buffer = 40; // optimalni buffer za manje desktop ekrane
+                }
+                
+                return (pos.x + cardWidth/2 + buffer > mainCardZone.x && 
+                        pos.x - cardWidth/2 - buffer < mainCardZone.x + mainCardZone.width &&
+                        pos.y + cardWidth/2 + buffer > mainCardZone.y && 
+                        pos.y - cardWidth/2 - buffer < mainCardZone.y + mainCardZone.height);
+            };
+
+            // Pametno pozicioniranje bez preklapanja
+            const placedPositions = [];
+            const animations = [
+                'float-extra-1', 'float-extra-2', 'float-extra-3', 
+                'float-extra-4', 'float-extra-5', 'float-extra-6',
+                'float-extra-7', 'float-extra-8', 'float-extra-9',
+                'float-extra-3', 'float-extra-1' // različite animacije za 10. i 11. karticu
+            ];
+
+            // Ograniči broj kartica na temelju veličine ekrana
+            let maxCards = floatingCards.length;
+            if (isSmallScreen) {
+                maxCards = Math.min(7, floatingCards.length); // povećaj na 7 kartica za manje ekrane (dodane 2 nove)
+            }
+
+            // VRAĆAM RANDOM ALGORITAM - dodaju se random pozicije ali s kvalitetnim prioritetom
+            console.log(`🎯 Počinje pozicioniranje ${maxCards} kartica od ukupno ${floatingCards.length}`);
+            console.log(`🔍 DEBUG: positionsPool.length = ${shuffledPositions.length}`);
+            
+            // Koristi shuffled pozicije umjesto original array
+            const positionsPool = [...shuffledPositions];
+            console.log(`🔍 DEBUG: Kreiran positionsPool s ${positionsPool.length} pozicija`);
+            
+            // KONVERTIRAJ NodeList u Array da možemo koristiti .slice()
+            const floatingCardsArray = Array.from(floatingCards);
+            
+            floatingCardsArray.slice(0, maxCards).forEach((card, index) => {
+                console.log(`\n📍 Pozicioniram karticu ${index}: "${card.textContent?.slice(0, 20)}..."`);
+                console.log(`🔍 DEBUG: positionsPool ima ${positionsPool.length} pozicija prije ovog pozicioniranja`);
+                console.log(`🔍 DEBUG: placedPositions ima ${placedPositions.length} već postavljenih pozicija`);
+                // Procjeni veličinu kartice
+                const cardText = card.textContent || '';
+                const baseWidth = Math.min(Math.max(cardText.length * 6 + 30, 120), 180);
+                const estimatedWidth = baseWidth;
+                const estimatedHeight = 50;
+                
+                let validPosition = null;
+                let attempts = 0;
+                const maxAttempts = Math.min(50, positionsPool.length); // ograniči pokušaje da bude brže
+                
+                // Pokušaj pronaći validnu poziciju - RANDOM pristup
+                console.log(`🔍 DEBUG: Početak while petlje - attempts: ${attempts}, maxAttempts: ${maxAttempts}, positionsPool.length: ${positionsPool.length}`);
+                while (attempts < maxAttempts && !validPosition && positionsPool.length > 0) {
+                    // UZMI RANDOM POZICIJU iz pool-a umjesto sekvencijalne
+                    const randomIndex = Math.floor(Math.random() * positionsPool.length);
+                    const testPosition = positionsPool.splice(randomIndex, 1)[0]; // ukloni random poziciju
+                    
+                    console.log(`  🔍 Testiram poziciju (${testPosition.col},${testPosition.row}): ${((testPosition.x / containerWidth) * 100).toFixed(1)}%, ${((testPosition.y / containerHeight) * 100).toFixed(1)}%`);
+                    console.log(`  🔍 DEBUG: positionsPool sada ima ${positionsPool.length} pozicija`);
+                    
+                    // Provjeri koliziju s glavnom karticom
+                    if (checkMainCardCollision(testPosition, estimatedWidth, estimatedHeight)) {
+                        console.log(`  ❌ Kolizija s glavnom karticom`);
+                        attempts++;
+                        continue;
+                    }
+                    
+                    // Provjeri koliziju s već postavljenim karticama
+                    let hasCollision = false;
+                    for (let i = 0; i < placedPositions.length; i++) {
+                        const placedPos = placedPositions[i];
+                        
+                        // VRATAMO adjacent grid boxes provjeru - VAŽNO za spacing!
+                        if (checkAdjacentGridBoxes(testPosition, placedPos)) {
+                            console.log(`  ❌ Susjedni grid box s karticom ${i} na (${placedPos.col},${placedPos.row})`);
+                            hasCollision = true;
+                            break;
+                        }
+                        
+                        // Provjeri pixel koliziju
+                        if (checkCollision(testPosition, placedPos, estimatedWidth, estimatedHeight)) {
+                            console.log(`  ❌ Pixel kolizija s karticom ${i} na (${placedPos.col},${placedPos.row})`);
+                            hasCollision = true;
+                            break;
+                        }
+                    }
+                    
+                    if (!hasCollision) {
+                        validPosition = testPosition;
+                        console.log(`  ✅ Pozicija validna!`);
+                    } else {
+                        console.log(`  ❌ Pozicija odbačena zbog kolizije`);
+                    }
+                    
+                    attempts++;
+                }
+                
+                console.log(`🔍 DEBUG: Kraj while petlje - attempts: ${attempts}, validPosition: ${!!validPosition}, positionsPool.length: ${positionsPool.length}`);
+                
+                // Aplicirај poziciju
+                if (validPosition) {
+                    placedPositions.push(validPosition);
+                    
+                    const leftPercent = (validPosition.x / containerWidth) * 100;
+                    const topPercent = (validPosition.y / containerHeight) * 100;
+                    
+                    console.log(`🎉 Kartica ${index} postavljena na (${validPosition.col},${validPosition.row}) = ${leftPercent.toFixed(1)}%, ${topPercent.toFixed(1)}%`);
+                    
+                    // POSTAVKE POZICIJE - ključno sa !important!
+                    card.style.setProperty('position', 'absolute', 'important');
+                    card.style.setProperty('left', `${leftPercent}%`, 'important');
+                    card.style.setProperty('top', `${topPercent}%`, 'important');
+                    card.style.setProperty('right', 'unset', 'important'); // reset stare pozicije
+                    card.style.setProperty('bottom', 'unset', 'important'); // reset stare pozicije
+                    card.style.transform = 'translate(-50%, -50%)';
+                    card.style.maxWidth = `${estimatedWidth}px`;
+                    card.style.minHeight = `${estimatedHeight}px`;
+                    card.style.zIndex = '10'; // osiguraj da su vidljive
+                    
+                    // Dodaj animaciju bez delay-a - kartice počinju odmah animirati
+                    const animationName = animations[index % animations.length];
+                    const baseDuration = 6 + (index * 0.3); // kraći interval između kartica
+                    const randomVariation = (Math.random() - 0.5) * 2; // ±1 sekunda varijacija
+                    const finalDuration = Math.max(4, baseDuration + randomVariation); // minimum 4 sekunde
+                    
+                    card.style.animation = `${animationName} ${finalDuration.toFixed(1)}s ease-in-out infinite`;
+                    // UKLANJAMO animationDelay da kartice ne "teleportiraju"
+                    card.style.animationDelay = '0s';
+                    
+                    // Mouse tracking efekti
+                    card.addEventListener('mousemove', (e) => {
+                        const rect = card.getBoundingClientRect();
+                        const centerX = rect.left + rect.width / 2;
+                        const centerY = rect.top + rect.height / 2;
+                        
+                        const deltaX = (e.clientX - centerX) / rect.width;
+                        const deltaY = (e.clientY - centerY) / rect.height;
+                        
+                        const rotateX = deltaY * -10;
+                        const rotateY = deltaX * 10;
+                        
+                        card.style.transform = `translate(-50%, -50%) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                    });
+                    
+                    card.addEventListener('mouseleave', () => {
+                        card.style.transform = 'translate(-50%, -50%)';
+                    });
+                } else {
+                    console.log(`❌ Kartica ${index}: NEMA VALIDNU POZICIJU nakon ${attempts} pokušaja`);
+                    // POBOLJŠANI Fallback pozicioniranje - raspoređuj kartice po gridu
+                    const fallbackCol = (index % 4) + 1; // kolone 1-4
+                    const fallbackRow = Math.floor(index / 4) + 1; // redovi 1, 2, 3...
+                    
+                    const fallbackX = (fallbackCol * cellWidth) + (cellWidth / 2);
+                    const fallbackY = (fallbackRow * cellHeight) + (cellHeight / 2);
+                    
+                    const fallbackLeftPercent = (fallbackX / containerWidth) * 100;
+                    const fallbackTopPercent = (fallbackY / containerHeight) * 100;
+                    
+                    console.log(`🔧 Fallback pozicija za karticu ${index}: (${fallbackCol},${fallbackRow}) = ${fallbackLeftPercent.toFixed(1)}%, ${fallbackTopPercent.toFixed(1)}%`);
+                    
+                    card.style.position = 'absolute';
+                    card.style.setProperty('left', `${fallbackLeftPercent}%`, 'important');
+                    card.style.setProperty('top', `${fallbackTopPercent}%`, 'important');
+                    card.style.transform = 'translate(-50%, -50%)';
+                    card.style.zIndex = '10';
+                    
+                    // Dodaj animaciju i za fallback kartice - bez delay-a
+                    const animationName = animations[index % animations.length];
+                    const finalDuration = 6 + (index * 0.3);
+                    card.style.animation = `${animationName} ${finalDuration.toFixed(1)}s ease-in-out infinite`;
+                    card.style.animationDelay = '0s';
+                }
+            });
+            
+            // Sakrij preostale kartice koje se ne koriste na manjim ekranima
+            if (isSmallScreen && maxCards < floatingCards.length) {
+                Array.from(floatingCards).slice(maxCards).forEach(card => {
+                    card.style.display = 'none';
+                });
+            }
+        };
+
+        // Aplikacija pozicija na učitavanje - povećaj delay
+        setTimeout(applyRandomPositions, 500); // Povećana pauza da se elementi učitaju
+
+        // Ponovno apliciraj pozicije na resize (za responsivnost)
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(applyRandomPositions, 250);
+        });
+        
+        // DODAJ DEBUG EVENT za provjeru kad se pozicioniranje završi
+        setTimeout(() => {
+            const floatingCards = document.querySelectorAll('.extra-floating-card');
+            console.log(`\n🔍 FINAL CHECK - ${floatingCards.length} floating kartica:`);
+            floatingCards.forEach((card, i) => {
+                console.log(`  Kartica ${i}: left=${card.style.left}, top=${card.style.top}, transform=${card.style.transform}`);
+            });
+        }, 1000);
+    }
+
+    /**
+     * Shuffle array funkcija
+     */
+    shuffleArray(array) {
+        const shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
     }
 
     /**
@@ -507,7 +898,7 @@ class HomePageManager {
             
             // Ažuriraj DOM
             cardRating.innerHTML = stars; // Koristimo innerHTML umjesto textContent za HTML ikone
-            cardReviews.textContent = `${roundedRating} (${totalReviews} ${this.getReviewsText(totalReviews)})`;
+            cardReviews.textContent = `Prosječna ocjena: ${roundedRating} (${totalReviews} ${this.getReviewsText(totalReviews)})`;
         }
     }
 
@@ -540,6 +931,39 @@ class HomePageManager {
         if (count >= 2 && count <= 4) return 'recenzije';
         return 'recenzija';
     }
+
+    /**
+     * Inicijalizuje i ažurira prikaz lokalnog vremena
+     */
+    initTimeDisplay() {
+        this.updateTimeDisplay();
+        // Ažuriraj svake sekunde
+        setInterval(() => {
+            this.updateTimeDisplay();
+        }, 1000);
+    }
+
+    /**
+     * Ažurira prikaz lokalnog vremena u formatu hh:mm:ss AM/PM
+     */
+    updateTimeDisplay() {
+        const timeElement = document.getElementById('current-time');
+        if (!timeElement) return;
+
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+        const seconds = now.getSeconds();
+        
+        // Konvertuj u 12-satni format
+        const hours12 = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours;
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        
+        // Formatiraj s vodećim nulama
+        const formattedTime = `${hours12.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${ampm}`;
+        
+        timeElement.textContent = formattedTime;
+    }
 }
 
 // Globalna funkcija za smooth scroll (koristi se u HTML-u)
@@ -552,6 +976,7 @@ function smoothScrollToSection(selector) {
 // Pokreni manager kada se stranica učita
 document.addEventListener('DOMContentLoaded', () => {
     window.homePageManager = new HomePageManager();
+    window.homePageManager.init(); // POZOVI INIT EKSPLICITNO NAKON ŠTO JE DOM SPREMAN
 });
 
 // Dodatna optimizacija performansi

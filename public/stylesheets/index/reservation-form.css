@@ -1,5 +1,85 @@
 /* Reservation Form Styles */
 
+/* Responsivni padding za reservation wrapper */
+.reservation-wrapper {
+  padding: 0 10vw; /* Veliki desktop ekrani */
+}
+
+/* Srednji desktop ekrani */
+@media (max-width: 1440px) {
+  .reservation-wrapper {
+    padding: 0 8vw;
+  }
+}
+
+/* Manji desktop ekrani */
+@media (max-width: 1200px) {
+  .reservation-wrapper {
+    padding: 0 6vw;
+  }
+}
+
+/* Tablet ekrani */
+@media (max-width: 1024px) {
+  .reservation-wrapper {
+    padding: 0 4vw;
+  }
+}
+
+/* Veliki mobilni ekrani */
+@media (max-width: 768px) {
+  .reservation-wrapper {
+    padding: 0 2vw;
+  }
+}
+
+/* Mali mobilni ekrani */
+@media (max-width: 480px) {
+  .reservation-wrapper {
+    padding: 0; /* Bez paddinga na mobilnim */
+  }
+}
+
+/* Desktop padding za reservation-content */
+@media (min-width: 1025px) {
+  .reservation-form-content {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Centriranje naslova i podnaslova na lijevu stranu */
+.reservation-section-header {
+  text-align: left;
+  margin-bottom: 2rem;
+}
+
+.reservation-section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-color);
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.reservation-section-subtitle {
+  font-size: 1.2rem;
+  color: var(--text-muted);
+  margin-bottom: 0;
+  text-align: left;
+  line-height: 1.5;
+}
+
+@media (max-width: 1024px) {
+  .reservation-section-title {
+    font-size: 2rem;
+  }
+  
+  .reservation-section-subtitle {
+    font-size: 1.1rem;
+  }
+}
+
 .reservation-form-container {
   margin: 2rem auto;
   max-width: 500px;
