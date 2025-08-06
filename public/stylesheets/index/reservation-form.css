@@ -36,7 +36,12 @@
 /* Mali mobilni ekrani */
 @media (max-width: 480px) {
   .reservation-wrapper {
-    padding: 0; /* Bez paddinga na mobilnim */
+    padding: 0; /* Bez paddinga za wrapper na mobilnim */
+  }
+  
+  /* Dodaj padding samo za header (naslov i podnaslov) */
+  .reservation-section-header {
+    padding: 0 1rem; /* Minimalni padding samo za naslov/podnaslov */
   }
 }
 
