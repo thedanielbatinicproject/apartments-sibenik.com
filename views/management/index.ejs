@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
     <link rel="stylesheet" href="/stylesheets/management/solar-dashboard.css">
+    <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
     <div class="management-container">
@@ -112,6 +113,30 @@
                     Configure system settings and user preferences.
                 </p>
                 <div class="card-status status-offline">Coming Soon</div>
+            </div>
+        </div>
+
+        <!-- Relay Control Section -->
+        <div class="relay-controls-section">
+            <h2 class="relay-controls-title">⚡ Relay Controls</h2>
+            <div class="relay-grid">
+                <% for (let i = 1; i <= 4; i++) { %>
+                    <% 
+                    const relayKey = `relay${i}`;
+                    const relayState = relayStates[relayKey] || false;
+                    const cardClass = relayState ? 'powered-on' : 'powered-off';
+                    const statusText = relayState ? 'Powered ON' : 'Powered OFF';
+                    const actionText = relayState ? 'Press to TURN OFF' : 'Press to TURN ON';
+                    %>
+                    <div class="relay-toggle-card <%= cardClass %>" 
+                         data-relay="<%= i %>" 
+                         onclick="toggleRelay(<%= i %>)">
+                        <div class="relay-title">RELAY <%= i %></div>
+                        <img src="/images/icons/power_on.png" alt="Power Icon" class="relay-icon">
+                        <div class="relay-status-text"><%= statusText %></div>
+                        <div class="relay-action-text"><%= actionText %></div>
+                    </div>
+                <% } %>
             </div>
         </div>
 
@@ -320,6 +345,107 @@
                 });
             }
             <% } %>
+
+            // Relay Management Functions
+            let relayStates = {
+                relay1: <%= relayStates.relay1 %>,
+                relay2: <%= relayStates.relay2 %>,
+                relay3: <%= relayStates.relay3 %>,
+                relay4: <%= relayStates.relay4 %>
+            };
+
+            async function toggleRelay(relayNumber) {
+                try {
+                    const relayCard = document.querySelector(`[data-relay="${relayNumber}"]`);
+                    
+                    // Add loading state
+                    relayCard.classList.add('loading');
+                    
+                    const response = await fetch(`/management/api/relay-toggle/${relayNumber}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        // Update local state
+                        relayStates = result.relayStates;
+                        updateRelayUI();
+                    }
+                } catch (error) {
+                    console.error('Error toggling relay:', error.message);
+                } finally {
+                    // Remove loading state
+                    const relayCard = document.querySelector(`[data-relay="${relayNumber}"]`);
+                    if (relayCard) {
+                        relayCard.classList.remove('loading');
+                    }
+                }
+            }
+
+            function updateRelayUI() {
+                for (let i = 1; i <= 4; i++) {
+                    const relayKey = `relay${i}`;
+                    const relayCard = document.querySelector(`[data-relay="${i}"]`);
+                    const statusText = relayCard.querySelector('.relay-status-text');
+                    const actionText = relayCard.querySelector('.relay-action-text');
+                    const isOn = relayStates[relayKey];
+                    
+                    // Update card classes
+                    relayCard.classList.remove('powered-on', 'powered-off');
+                    relayCard.classList.add(isOn ? 'powered-on' : 'powered-off');
+                    
+                    // Update text content
+                    statusText.textContent = isOn ? 'Powered ON' : 'Powered OFF';
+                    actionText.textContent = isOn ? 'Press to TURN OFF' : 'Press to TURN ON';
+                }
+            }
+
+            // Load current relay states from server
+            async function loadRelayStates() {
+                try {
+                    console.log('Loading relay states from server...');
+                    const response = await fetch('/management/api/relay-states');
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        relayStates = result.relayStates;
+                        updateRelayUI();
+                        console.log('Relay states loaded from server:', relayStates);
+                    } else {
+                        console.error('Failed to load relay states:', result.message);
+                    }
+                } catch (error) {
+                    console.error('Error loading relay states:', error);
+                }
+            }
+
+            // Socket.IO connection for real-time updates
+            const socket = io();
+            
+            socket.on('connect', function() {
+                console.log('Socket.IO connected');
+                // Load current states when connected
+                loadRelayStates();
+            });
+            
+            socket.on('relayStatesUpdate', function(data) {
+                relayStates = data;
+                updateRelayUI();
+                console.log('Relay states updated via Socket.IO:', data);
+            });
+            
+            socket.on('disconnect', function() {
+                console.log('Socket.IO disconnected');
+            });
+            
+            // Load relay states when page loads
+            document.addEventListener('DOMContentLoaded', function() {
+                loadRelayStates();
+            });
         </script>
     </div>
 </body>

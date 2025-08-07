@@ -1,4 +1,5 @@
 const fs = require('fs').promises;
+const fsSync = require('fs');
 const path = require('path');
 
 // Cache for relay states
@@ -10,6 +11,8 @@ let relayStatesCache = {
 };
 
 let lastUpdateTime = 0;
+let fileWatcher = null;
+let ioInstance = null;
 
 /**
  * Get the path to relay states file
@@ -35,10 +38,8 @@ async function initializeRelayStates() {
     };
     
     lastUpdateTime = states.lastUpdate || Date.now();
-    console.log('[RELAY] Relay states initialized from file:', relayStatesCache);
   } catch (error) {
     // File doesn't exist, create with defaults
-    console.log('[RELAY] Creating default relay states file');
     lastUpdateTime = Date.now();
     try {
       await saveRelayStates();
@@ -74,7 +75,6 @@ async function updateRelayStates(newStates) {
   // Save to file
   await saveRelayStates();
   
-  console.log('[RELAY] Relay states updated:', relayStatesCache);
   return getRelayStates();
 }
 
@@ -90,7 +90,6 @@ async function saveRelayStates() {
     };
     
     await fs.writeFile(relayStatesPath, JSON.stringify(data, null, 2));
-    console.log('[RELAY] Relay states saved to file');
   } catch (error) {
     console.error('[RELAY] Error saving relay states:', error);
     throw error;
@@ -122,10 +121,89 @@ async function toggleRelayState(relayNumber) {
   }
 }
 
+/**
+ * Set Socket.IO instance for real-time updates
+ */
+function setSocketIO(io) {
+  ioInstance = io;
+}
+
+/**
+ * Start file watcher for relay_states.json
+ */
+function startFileWatcher() {
+  if (fileWatcher) {
+    return;
+  }
+
+  const relayStatesPath = getRelayStatesPath();
+  
+  try {
+    fileWatcher = fsSync.watch(relayStatesPath, (eventType, filename) => {
+      if (eventType === 'change') {
+        reloadRelayStatesFromFile();
+      }
+    });
+  } catch (error) {
+    console.error('[RELAY] Error starting file watcher:', error);
+  }
+}
+
+/**
+ * Stop file watcher
+ */
+function stopFileWatcher() {
+  if (fileWatcher) {
+    fileWatcher.close();
+    fileWatcher = null;
+  }
+}
+
+/**
+ * Reload relay states from file and emit Socket.IO update
+ */
+async function reloadRelayStatesFromFile() {
+  try {
+    const relayStatesPath = getRelayStatesPath();
+    const data = await fs.readFile(relayStatesPath, 'utf8');
+    const fileStates = JSON.parse(data);
+    
+    // Check if states actually changed
+    const hasChanged = 
+      relayStatesCache.relay1 !== fileStates.relay1 ||
+      relayStatesCache.relay2 !== fileStates.relay2 ||
+      relayStatesCache.relay3 !== fileStates.relay3 ||
+      relayStatesCache.relay4 !== fileStates.relay4;
+    
+    if (hasChanged) {
+      // Update cache
+      relayStatesCache = {
+        relay1: fileStates.relay1 || false,
+        relay2: fileStates.relay2 || false,
+        relay3: fileStates.relay3 || false,
+        relay4: fileStates.relay4 || false
+      };
+      
+      lastUpdateTime = fileStates.lastUpdate || Date.now();
+      
+      // Emit Socket.IO update if available
+      if (ioInstance) {
+        const currentStates = getRelayStates();
+        ioInstance.emit('relayStatesUpdate', currentStates);
+      }
+    }
+  } catch (error) {
+    console.error('[RELAY] Error reloading relay states from file:', error);
+  }
+}
+
 module.exports = {
   initializeRelayStates,
   getRelayStates,
   updateRelayStates,
   setRelayState,
-  toggleRelayState
+  toggleRelayState,
+  setSocketIO,
+  startFileWatcher,
+  stopFileWatcher
 };

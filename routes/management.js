@@ -4,6 +4,7 @@ const fs = require('fs').promises;
 const multer = require('multer');
 const { calendarScheduler } = require('../code/calendar/calendarScheduler');
 const { reconstructDeltaData, reconstructDeltaDataWithHistory } = require('../code/solar/solarDataManager');
+const { getRelayStates, setRelayState, toggleRelayState, updateRelayStates } = require('../code/solar/relayStateManager');
 const authManager = require('../code/auth/authManager');
 const { readReviewsFromDB, writeReviewsToDB, addReview } = require('../code/reviews/reviewsAPI');
 const router = express.Router();
@@ -257,6 +258,81 @@ router.get('/api/users', requireAuth, requireAdmin, async (req, res) => {
   res.json(result);
 });
 
+// Relay Management API Routes
+router.get('/api/relay-states', requireAuth, async (req, res) => {
+  try {
+    // Force reload from file to ensure fresh data
+    await require('../code/solar/relayStateManager').initializeRelayStates();
+    const relayStates = getRelayStates();
+    res.json({ 
+      success: true, 
+      relayStates: relayStates 
+    });
+  } catch (error) {
+    console.error('[MANAGEMENT] Error getting relay states:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Error getting relay states',
+      error: error.message
+    });
+  }
+});
+
+router.post('/api/relay-toggle/:relayNumber', requireAuth, async (req, res) => {
+  try {
+    const relayNumber = parseInt(req.params.relayNumber);
+    
+    if (isNaN(relayNumber) || relayNumber < 1 || relayNumber > 4) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Invalid relay number. Must be 1-4.' 
+      });
+    }
+
+    // Get current state first
+    const currentStates = getRelayStates();
+    const currentState = currentStates[`relay${relayNumber}`];
+    const newState = !currentState;
+
+    // Update relay state directly using relayStateManager
+    try {
+      const updatedStates = await updateRelayStates({
+        [`relay${relayNumber}`]: newState
+      });
+      
+      // Emit real-time update to all connected clients
+      const io = req.app.get('io');
+      if (io) {
+        io.emit('relayStatesUpdate', updatedStates);
+      }
+
+      res.json({ 
+        success: true, 
+        message: `Relay ${relayNumber} ${newState ? 'turned ON' : 'turned OFF'}`,
+        relayStates: updatedStates,
+        changedRelay: relayNumber,
+        newState: newState
+      });
+      
+    } catch (error) {
+      console.error('[MANAGEMENT] Error updating relay state:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: 'Failed to update relay state',
+        error: error.message
+      });
+    }
+
+  } catch (error) {
+    console.error('[MANAGEMENT] Error toggling relay:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Error toggling relay state',
+      error: error.message
+    });
+  }
+});
+
 // Solar Dashboard route
 router.get('/solar-dashboard', requireAuth, async (req, res) => {
   try {
@@ -343,10 +419,14 @@ router.get('/solar-dashboard', requireAuth, async (req, res) => {
 
 // Management home page
 router.get('/', requireAuth, (req, res) => {
+  // Get current relay states
+  const relayStates = getRelayStates();
+  
   res.render('management/index', {
     title: 'Management Dashboard',
     schedulerStatus: calendarScheduler.getStatus(),
-    user: req.user
+    user: req.user,
+    relayStates: relayStates
   });
 });
 

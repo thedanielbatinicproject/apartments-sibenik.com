@@ -9,6 +9,7 @@ require('dotenv').config();
 
 const { getLocalIPAddress, handle404Error } = require("./code/utils/utils");
 const { calendarScheduler } = require("./code/calendar/calendarScheduler");
+const { initializeRelayStates, setSocketIO, startFileWatcher } = require("./code/solar/relayStateManager");
 const authManager = require("./code/auth/authManager");
 const app = express();
 const server = http.createServer(app);
@@ -208,6 +209,17 @@ io.on('connection', (socket) => {
 
 server.listen(PORT, () => {
   console.log(`[SERVER] App started on port ${PORT} (${localAddress})`);
+  
+  // Set Socket.IO instance for relay state manager
+  setSocketIO(io);
+  
+  // Initialize relay states from file
+  initializeRelayStates().then(() => {
+    // Start file watcher after initialization
+    startFileWatcher();
+  }).catch(error => {
+    console.error('[SERVER] Error initializing relay states:', error);
+  });
   
   // Start calendar scheduler after server starts
   setTimeout(() => {
