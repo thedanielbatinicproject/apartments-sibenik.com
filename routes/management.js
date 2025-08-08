@@ -5,6 +5,106 @@ const multer = require('multer');
 const { calendarScheduler } = require('../code/calendar/calendarScheduler');
 const { reconstructDeltaData, reconstructDeltaDataWithHistory } = require('../code/solar/solarDataManager');
 const { getRelayStates, setRelayState, toggleRelayState, updateRelayStates } = require('../code/solar/relayStateManager');
+
+/**
+ * Gets variable description for tooltips and help
+ * @param {string} variableName - Variable name (new Arduino format)
+ * @returns {string} Description of the variable
+ */
+function getVariableDescription(variableName) {
+  const descriptions = {
+    // Basic Info
+    'Machine_type_high': 'Inverter model/type identifier (high part)',
+    'Machine_type_low': 'Inverter model/type identifier (low part)',
+    'Serial_number_high': 'Device serial number (high part)',
+    'Serial_number_low': 'Device serial number (low part)',
+    'Hardware_version': 'Hardware revision number',
+    'Software_version': 'Firmware version number',
+    'Protocol_version': 'Communication protocol version',
+    
+    // System Info
+    'AC_voltage_grade': 'AC voltage rating/grade of the system',
+    'Rated_power_VA': 'System rated power in VA (Volt-Amperes)',
+    
+    // Voltages
+    'Battery_voltage_V': 'Current battery bank voltage level',
+    'Inverter_voltage_V': 'AC voltage output from inverter',
+    'Grid_voltage_V': 'AC grid voltage from utility connection',
+    'Bus_voltage_V': 'DC bus voltage level in the system',
+    
+    // Currents
+    'Control_current_A': 'System control circuit current',
+    'Inverter_current_A': 'AC current output from inverter',
+    'Grid_current_A': 'Current draw/feed from/to utility grid',
+    'Load_current_A': 'Current consumption by connected loads',
+    
+    // Powers
+    'P_Inverter_W': 'Real power output from inverter',
+    'P_Grid_W': 'Real power exchange with grid (+ = buying, - = selling)',
+    'P_Load_W': 'Real power consumed by loads',
+    'Load_percent': 'Current load as percentage of rated capacity',
+    'S_Inverter_VA': 'Apparent power output from inverter',
+    'S_Grid_VA': 'Apparent power exchange with grid',
+    'S_Load_VA': 'Apparent power consumed by loads',
+    
+    // Reactive Powers
+    'Q_Inverter_var': 'Reactive power output from inverter',
+    'Q_Grid_var': 'Reactive power exchange with grid',
+    'Q_Load_var': 'Reactive power consumed by loads',
+    
+    // Frequencies
+    'Inverter_freq_Hz': 'Inverter output frequency',
+    'Grid_freq_Hz': 'AC grid frequency (should be ~50Hz)',
+    
+    // Inverter Data
+    'Inverter_max_number': 'Maximum number of inverters supported',
+    'Combine_type': 'Inverter combination type/configuration',
+    'Inverter_number': 'Current inverter number in system',
+    
+    // Temperatures
+    'AC_radiator_temp_C': 'AC section heat sink temperature',
+    'Transformer_temp_C': 'Transformer winding temperature',
+    'DC_radiator_temp_C': 'DC section heat sink temperature',
+    
+    // Relay States
+    'Inverter_relay_state': 'Inverter connection relay status',
+    'Grid_relay_state': 'Grid connection relay status',
+    'Load_relay_state': 'Load connection relay status',
+    'N_Line_relay_state': 'Neutral line relay status',
+    'DC_relay_state': 'DC circuit relay status',
+    'Earth_relay_state': 'Earth/ground relay status',
+    
+    // Accumulated Energy
+    'Accum_charger_power_total_KWH': 'Total energy used for battery charging',
+    'Accum_discharger_power_total_KWH': 'Total energy discharged from batteries',
+    'Accum_buy_power_total_KWH': 'Total energy purchased from grid',
+    'Accum_sell_power_total_KWH': 'Total energy sold to grid',
+    'Accum_load_power_total_KWH': 'Total energy consumed by loads',
+    'Accum_selfuse_power_total_KWH': 'Total solar energy used directly',
+    'Accum_PVsell_power_total_KWH': 'Total solar energy sold to grid',
+    'Accum_grid_charger_power_total_KWH': 'Total grid energy used for charging',
+    
+    // Error/Warning Messages
+    'Error_message_1': 'Primary error status code',
+    'Error_message_2': 'Secondary error status code',
+    'Error_message_3': 'Tertiary error status code',
+    'Warning_message_1': 'Primary warning status code',
+    'Warning_message_2': 'Secondary warning status code',
+    
+    // Battery Data
+    'Batt_serial_high': 'Battery serial number (high part)',
+    'Batt_serial_low': 'Battery serial number (low part)',
+    'Batt_hardware_version': 'Battery hardware version',
+    'Batt_software_version': 'Battery software version',
+    'Batt_power_W': 'Battery charge/discharge power (+ = charging, - = discharging)',
+    'Batt_current_A': 'Battery current (+ = charging, - = discharging)',
+    'Batt_voltage_grade_V': 'Battery system voltage rating',
+    'Batt_rated_power_W': 'Battery rated power capacity',
+    'Batt_protocol_version': 'Battery communication protocol version'
+  };
+  
+  return descriptions[variableName] || 'No description available';
+}
 const authManager = require('../code/auth/authManager');
 const { readReviewsFromDB, writeReviewsToDB, addReview } = require('../code/reviews/reviewsAPI');
 const router = express.Router();
@@ -328,6 +428,89 @@ router.post('/api/relay-toggle/:relayNumber', requireAuth, async (req, res) => {
     res.status(500).json({ 
       success: false, 
       message: 'Error toggling relay state',
+      error: error.message
+    });
+  }
+});
+
+// API route for variable descriptions
+router.get('/api/variable-description/:variableName', requireAuth, (req, res) => {
+  try {
+    const variableName = req.params.variableName;
+    const description = getVariableDescription(variableName);
+    res.json({ 
+      success: true, 
+      variable: variableName,
+      description: description 
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      message: 'Error getting variable description',
+      error: error.message
+    });
+  }
+});
+
+// API route for loading more solar data
+router.get('/api/solar-data/load-more', requireAuth, async (req, res) => {
+  try {
+    const offset = parseInt(req.query.offset) || 0;
+    const limit = parseInt(req.query.limit) || 10;
+    
+    // Load solar data
+    const solarDataPath = path.join(__dirname, '../data/public_data/solars_public.json');
+    let solarData = [];
+    
+    try {
+      const data = await fs.readFile(solarDataPath, 'utf8');
+      solarData = JSON.parse(data);
+    } catch (err) {
+      return res.json({ 
+        success: true, 
+        data: [],
+        hasMore: false,
+        totalRecords: 0
+      });
+    }
+
+    // Calculate the range to return (from end backwards)
+    const totalRecords = solarData.length;
+    const startIndex = Math.max(0, totalRecords - offset - limit);
+    const endIndex = totalRecords - offset;
+    
+    // Get the slice of data
+    const dataSlice = solarData.slice(startIndex, endIndex);
+    
+    // Reconstruct delta data if available
+    let reconstructedData;
+    try {
+      if (typeof reconstructDeltaDataWithHistory === 'function') {
+        reconstructedData = await reconstructDeltaDataWithHistory(dataSlice, solarData);
+      } else if (typeof reconstructDeltaData === 'function') {
+        reconstructedData = reconstructDeltaData(dataSlice);
+      } else {
+        reconstructedData = dataSlice;
+      }
+    } catch (error) {
+      reconstructedData = dataSlice;
+    }
+
+    // Check if there's more data available
+    const hasMore = startIndex > 0;
+
+    res.json({ 
+      success: true, 
+      data: reconstructedData,
+      hasMore: hasMore,
+      totalRecords: totalRecords,
+      nextOffset: offset + limit
+    });
+
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      message: 'Error loading more solar data',
       error: error.message
     });
   }

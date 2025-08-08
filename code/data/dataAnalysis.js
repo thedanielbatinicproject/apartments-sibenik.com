@@ -78,13 +78,13 @@ function calculateWeeklyAverages(data) {
     return recordTime >= weekAgo && recordTime <= now;
   });
   
-  const fields = ['PV_voltage_V', 'Battery_voltage_V', 'Charger_power_W'];
+  const fields = ['Bus_voltage_V', 'Battery_voltage_V', 'P_Inverter_W'];
   const averages = calculateAverages(weeklyData, fields);
   
   return {
-    pvVoltage: Math.round(averages.PV_voltage_V * 100) / 100,
+    busVoltage: Math.round(averages.Bus_voltage_V * 100) / 100,
     batteryVoltage: Math.round(averages.Battery_voltage_V * 100) / 100,
-    chargerPower: Math.round(averages.Charger_power_W * 100) / 100
+    inverterPower: Math.round(averages.P_Inverter_W * 100) / 100
   };
 }
 
@@ -122,22 +122,22 @@ function sampleDataPoints(data, maxPoints) {
  */
 function extractChartData(records) {
   const timePoints = [];
-  const pvVoltage = [];
+  const busVoltage = [];
   const batteryVoltage = [];
-  const chargerPower = [];
+  const inverterPower = [];
   
   for (const record of records) {
     timePoints.push(record.timestamp);
-    pvVoltage.push(parseFloat(record.PV_voltage_V) || 0);
+    busVoltage.push(parseFloat(record.Bus_voltage_V) || 0);
     batteryVoltage.push(parseFloat(record.Battery_voltage_V) || 0);
-    chargerPower.push(parseFloat(record.Charger_power_W) || 0);
+    inverterPower.push(parseFloat(record.P_Inverter_W) || 0);
   }
   
   return {
     timePoints,
-    pvVoltage,
+    busVoltage,
     batteryVoltage,
-    chargerPower
+    inverterPower
   };
 }
 

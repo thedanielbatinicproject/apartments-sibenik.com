@@ -1,10 +1,135 @@
 [
   {
-    "test_field": "test_value",
-    "Error_code": 0,
-    "Warning_code": 0,
-    "PV_voltage_V": 12.5,
-    "timestamp": "2025-08-05T12:54:55.871Z",
-    "local_time": "05. 08. 2025. 14:54:55"
+    "timestamp": "2025-08-08T15:08:40.360Z",
+    "local_time": "08. 08. 2025. 17:08:40",
+    "PV_voltage_V": 18.4,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-08-08T15:08:52.340Z",
+    "local_time": "08. 08. 2025. 17:08:52",
+    "Battery_voltage_V": 13.5,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-08-08T15:09:03.371Z",
+    "local_time": "08. 08. 2025. 17:09:03",
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-08-08T15:09:51.261Z",
+    "local_time": "08. 08. 2025. 17:09:51",
+    "Battery_voltage_V": 13.5,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-08-08T15:17:48.492Z",
+    "local_time": "08. 08. 2025. 17:17:48",
+    "Battery_voltage_V": 13.7,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-08-08T16:43:02.696Z",
+    "local_time": "08. 08. 2025. 18:43:02",
+    "Battery_voltage_V": 13.9,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-08-08T16:43:15.894Z",
+    "local_time": "08. 08. 2025. 18:43:15",
+    "relay1": false,
+    "relay2": false,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-08-08T16:43:21.143Z",
+    "local_time": "08. 08. 2025. 18:43:21",
+    "relay1": true,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-08-08T16:43:23.699Z",
+    "local_time": "08. 08. 2025. 18:43:23",
+    "Battery_voltage_V": 13.5,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-08-08T16:43:25.662Z",
+    "local_time": "08. 08. 2025. 18:43:25",
+    "relay1": false,
+    "relay2": false,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-08-08T16:43:27.387Z",
+    "local_time": "08. 08. 2025. 18:43:27",
+    "relay1": true,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-08-08T16:43:44.301Z",
+    "local_time": "08. 08. 2025. 18:43:44",
+    "Battery_voltage_V": 13.4,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-08-08T16:44:04.958Z",
+    "local_time": "08. 08. 2025. 18:44:04",
+    "Battery_voltage_V": 13.5,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-08-08T16:49:57.305Z",
+    "local_time": "08. 08. 2025. 18:49:57",
+    "Battery_voltage_V": 13.7,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-08-08T16:52:45.257Z",
+    "local_time": "08. 08. 2025. 18:52:45",
+    "Battery_voltage_V": 13.5,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-08-08T16:53:05.845Z",
+    "local_time": "08. 08. 2025. 18:53:05",
+    "Battery_voltage_V": 13.7,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-08-08T17:07:57.586Z",
+    "local_time": "08. 08. 2025. 19:07:57",
+    "Battery_voltage_V": 13.6,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-08-08T17:08:18.493Z",
+    "local_time": "08. 08. 2025. 19:08:18",
+    "Battery_voltage_V": 13.7,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-08-08T17:19:40.841Z",
+    "local_time": "08. 08. 2025. 19:19:40",
+    "Battery_voltage_V": 13.6,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-08-08T17:20:01.547Z",
+    "local_time": "08. 08. 2025. 19:20:01",
+    "Battery_voltage_V": 13.7,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-08-08T17:21:23.921Z",
+    "local_time": "08. 08. 2025. 19:21:23",
+    "Battery_voltage_V": 13.6,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-08-08T17:22:05.655Z",
+    "local_time": "08. 08. 2025. 19:22:05",
+    "Battery_voltage_V": 13.7,
+    "_type": "delta"
   }
 ]

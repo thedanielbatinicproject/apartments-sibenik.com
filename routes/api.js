@@ -98,24 +98,27 @@ router.post('/backyard-management', async (req, res) => {
     const incomingData = { ...req.body };
     delete incomingData.secret_key;
 
+    // Use incoming data directly (new Arduino format)
+    const solarData = incomingData;
+
     // Extract relay states if present and update them separately
     const relayStates = {};
     let hasRelayData = false;
     
-    if (typeof incomingData.relay1 !== 'undefined') {
-      relayStates.relay1 = incomingData.relay1;
+    if (typeof solarData.relay1 !== 'undefined') {
+      relayStates.relay1 = solarData.relay1;
       hasRelayData = true;
     }
-    if (typeof incomingData.relay2 !== 'undefined') {
-      relayStates.relay2 = incomingData.relay2;
+    if (typeof solarData.relay2 !== 'undefined') {
+      relayStates.relay2 = solarData.relay2;
       hasRelayData = true;
     }
-    if (typeof incomingData.relay3 !== 'undefined') {
-      relayStates.relay3 = incomingData.relay3;
+    if (typeof solarData.relay3 !== 'undefined') {
+      relayStates.relay3 = solarData.relay3;
       hasRelayData = true;
     }
-    if (typeof incomingData.relay4 !== 'undefined') {
-      relayStates.relay4 = incomingData.relay4;
+    if (typeof solarData.relay4 !== 'undefined') {
+      relayStates.relay4 = solarData.relay4;
       hasRelayData = true;
     }
 
@@ -134,10 +137,10 @@ router.post('/backyard-management', async (req, res) => {
       }
     }
 
-    // Save solar data (without relay states for monitoring purposes)
+    // Save solar data (new Arduino format)
     let saveResult;
     try {
-      saveResult = await saveSolarData(incomingData);
+      saveResult = await saveSolarData(solarData);
     } catch (saveError) {
       console.error('[API] Error saving solar data:', saveError);
       return res.status(500).json({ 

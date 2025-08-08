@@ -6,12 +6,12 @@
  * Create delta record from new data and last data
  */
 function createDeltaRecord(newData, lastData) {
-  // RULE 1: If Error_code > 0 or Warning_code > 0, save entire object
-  if (newData.Error_code > 0 || newData.Warning_code > 0) {
+  // RULE 1: If Error_message_1 > 0 or Warning_message_1 > 0, save entire object
+  if (newData.Error_message_1 > 0 || newData.Warning_message_1 > 0) {
     return { 
       type: 'full', 
       data: newData, 
-      reason: `Error=${newData.Error_code}, Warning=${newData.Warning_code}` 
+      reason: `Error=${newData.Error_message_1}, Warning=${newData.Warning_message_1}` 
     };
   }
 
@@ -31,9 +31,19 @@ function createDeltaRecord(newData, lastData) {
   };
 
   const significantFields = [
-    'PV_voltage_V', 'Battery_voltage_V', 'Charger_current_A', 'Charger_power_W',
-    'Radiator_temp_C', 'External_temp_C', 'AC_freq_Hz', 'Humidity_percent',
-    'Error_code', 'Warning_code', 'Status',
+    // New Arduino format variable names
+    'Battery_voltage_V', 'Inverter_voltage_V', 'Grid_voltage_V', 'Bus_voltage_V',
+    'Control_current_A', 'Inverter_current_A', 'Grid_current_A', 'Load_current_A',
+    'P_Inverter_W', 'P_Grid_W', 'P_Load_W', 'Load_percent',
+    'S_Inverter_VA', 'S_Grid_VA', 'S_Load_VA',
+    'Q_Inverter_var', 'Q_Grid_var', 'Q_Load_var',
+    'Inverter_freq_Hz', 'Grid_freq_Hz',
+    'AC_radiator_temp_C', 'Transformer_temp_C', 'DC_radiator_temp_C',
+    'Inverter_relay_state', 'Grid_relay_state', 'Load_relay_state', 
+    'N_Line_relay_state', 'DC_relay_state', 'Earth_relay_state',
+    'Error_message_1', 'Error_message_2', 'Error_message_3',
+    'Warning_message_1', 'Warning_message_2',
+    'Machine_type_high', 'Batt_power_W', 'Batt_current_A',
     'relay1', 'relay2', 'relay3', 'relay4'
   ];
 

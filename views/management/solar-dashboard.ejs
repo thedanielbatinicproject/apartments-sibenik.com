@@ -554,28 +554,68 @@
         <% if (latestData) { %>
         <div class="dashboard-grid">
             <% 
-            // Define all variables to display
+            // Define all variables to display (using new Arduino format names)
             const displayVariables = [
-                'PV_voltage_V', 'Battery_voltage_V', 'Charger_current_A', 'Charger_power_W',
-                'Radiator_temp_C', 'External_temp_C', 'Battery_relay', 'PV_relay',
-                'Error_code', 'Warning_code', 'Batt_voltage_grade', 'Rated_current_A',
-                'Accum_power_high', 'Accum_power_low', 'Serial_high', 'Serial_low', 'HW_version', 'FW_version',
-                'Cal_PV_coeff', 'Cal_Batt_coeff', 'DC_current_A', 'DC_voltage_V',
-                'DC_power_W', 'AC_power_W', 'AC_freq_Hz', 'Temp_cabinet_C', 'Status'
+                // Basic Info
+                'Machine_type_high', 'Machine_type_low', 'Serial_number_high', 'Serial_number_low', 
+                'Hardware_version', 'Software_version', 'Protocol_version',
+                
+                // System Info
+                'AC_voltage_grade', 'Rated_power_VA',
+                
+                // Voltages
+                'Battery_voltage_V', 'Inverter_voltage_V', 'Grid_voltage_V', 'Bus_voltage_V',
+                
+                // Currents
+                'Control_current_A', 'Inverter_current_A', 'Grid_current_A', 'Load_current_A',
+                
+                // Powers
+                'P_Inverter_W', 'P_Grid_W', 'P_Load_W', 'Load_percent', 
+                'S_Inverter_VA', 'S_Grid_VA', 'S_Load_VA',
+                
+                // Reactive Powers
+                'Q_Inverter_var', 'Q_Grid_var', 'Q_Load_var',
+                
+                // Frequencies
+                'Inverter_freq_Hz', 'Grid_freq_Hz',
+                
+                // Inverter Data
+                'Inverter_max_number', 'Combine_type', 'Inverter_number',
+                
+                // Temperatures
+                'AC_radiator_temp_C', 'Transformer_temp_C', 'DC_radiator_temp_C',
+                
+                // Relay States
+                'Inverter_relay_state', 'Grid_relay_state', 'Load_relay_state', 
+                'N_Line_relay_state', 'DC_relay_state', 'Earth_relay_state',
+                
+                // Accumulated Energy
+                'Accum_charger_power_total_KWH', 'Accum_discharger_power_total_KWH',
+                'Accum_buy_power_total_KWH', 'Accum_sell_power_total_KWH',
+                'Accum_load_power_total_KWH', 'Accum_selfuse_power_total_KWH',
+                'Accum_PVsell_power_total_KWH', 'Accum_grid_charger_power_total_KWH',
+                
+                // Error/Warning Messages
+                'Error_message_1', 'Error_message_2', 'Error_message_3',
+                'Warning_message_1', 'Warning_message_2',
+                
+                // Battery Data
+                'Batt_serial_high', 'Batt_serial_low', 'Batt_hardware_version', 'Batt_software_version',
+                'Batt_power_W', 'Batt_current_A', 'Batt_voltage_grade_V', 
+                'Batt_rated_power_W', 'Batt_protocol_version'
             ];
             
             displayVariables.forEach((variable) => {
                 const varInfo = solarVariables[variable] || {};
                 const name = varInfo.name || variable.replace(/_/g, ' ');
                 const unit = varInfo.unit || '';
-                const description = varInfo.description || 'No description available';
                 const value = latestData[variable] || '0';
             %>
             <div class="dashboard-card">
                 <h3 class="card-title"><%= name %></h3>
                 <div class="card-value" id="<%= variable.toLowerCase().replace(/_/g, '-') %>"><%= value %></div>
                 <div class="card-unit"><%= unit %></div>
-                <div class="info-btn" onclick="showTooltip(event, '<%= name %>', '<%= description %>')">i</div>
+                <div class="info-btn" onclick="showTooltip(event, '<%= name %>', '<%= variable %>')">i</div>
             </div>
             <% }); %>
             
@@ -611,15 +651,15 @@
             <!-- Three separate charts -->
             <div class="charts-grid">
                 <div class="chart-container">
-                    <h3 class="chart-subtitle">PV Voltage (V)</h3>
+                    <h3 class="chart-subtitle">Bus Voltage [V]</h3>
                     <canvas id="pvVoltageChart"></canvas>
                 </div>
                 <div class="chart-container">
-                    <h3 class="chart-subtitle">Battery Voltage (V)</h3>
+                    <h3 class="chart-subtitle">Battery Voltage [V]</h3>
                     <canvas id="batteryVoltageChart"></canvas>
                 </div>
                 <div class="chart-container">
-                    <h3 class="chart-subtitle">Charge Power (W)</h3>
+                    <h3 class="chart-subtitle">Inverter Power [W]</h3>
                     <canvas id="chargePowerChart"></canvas>
                 </div>
             </div>
@@ -633,23 +673,23 @@
                     <thead>
                         <tr>
                             <th>Time</th>
-                            <th>PV Voltage (V)</th>
                             <th>Battery Voltage (V)</th>
-                            <th>Charger Current (A)</th>
-                            <th>Charger Power (W)</th>
-                            <th>Radiator Temp (°C)</th>
-                            <th>External Temp (°C)</th>
-                            <th class="mobile-hidden">DC Current (A)</th>
-                            <th class="mobile-hidden">DC Voltage (V)</th>
-                            <th class="mobile-hidden">DC Power (W)</th>
-                            <th class="mobile-hidden">AC Power (W)</th>
-                            <th class="mobile-hidden">AC Freq (Hz)</th>
-                            <th class="mobile-hidden">Cabinet Temp (°C)</th>
-                            <th class="mobile-hidden">Battery Relay</th>
-                            <th class="mobile-hidden">PV Relay</th>
-                            <th class="mobile-hidden">Error Code</th>
-                            <th class="mobile-hidden">Warning Code</th>
-                            <th>Status</th>
+                            <th>Grid Voltage (V)</th>
+                            <th>Load Current (A)</th>
+                            <th>Inverter Power (W)</th>
+                            <th>Grid Power (W)</th>
+                            <th>Load Power (W)</th>
+                            <th class="mobile-hidden">Grid Frequency (Hz)</th>
+                            <th class="mobile-hidden">AC Radiator Temp (°C)</th>
+                            <th class="mobile-hidden">Transformer Temp (°C)</th>
+                            <th class="mobile-hidden">DC Radiator Temp (°C)</th>
+                            <th class="mobile-hidden">Inverter Relay</th>
+                            <th class="mobile-hidden">Grid Relay</th>
+                            <th class="mobile-hidden">Load Relay</th>
+                            <th class="mobile-hidden">DC Relay</th>
+                            <th class="mobile-hidden">Error Msg 1</th>
+                            <th class="mobile-hidden">Warning Msg 1</th>
+                            <th>Machine Type</th>
                         </tr>
                     </thead>
                     <tbody id="historyTableBody">
@@ -658,23 +698,23 @@
                             <% solarData.slice(-displayCount).reverse().forEach((record, index) => { %>
                             <tr>
                                 <td><%= new Date(record.timestamp).toLocaleString() %></td>
-                                <td><%= record.PV_voltage_V || '0' %></td>
                                 <td><%= record.Battery_voltage_V || '0' %></td>
-                                <td><%= record.Charger_current_A || '0' %></td>
-                                <td><%= record.Charger_power_W || '0' %></td>
-                                <td><%= record.Radiator_temp_C || '0' %></td>
-                                <td><%= record.External_temp_C || '0' %></td>
-                                <td class="mobile-hidden"><%= record.DC_current_A || '0' %></td>
-                                <td class="mobile-hidden"><%= record.DC_voltage_V || '0' %></td>
-                                <td class="mobile-hidden"><%= record.DC_power_W || '0' %></td>
-                                <td class="mobile-hidden"><%= record.AC_power_W || '0' %></td>
-                                <td class="mobile-hidden"><%= record.AC_freq_Hz || '0' %></td>
-                                <td class="mobile-hidden"><%= record.Temp_cabinet_C || '0' %></td>
-                                <td class="mobile-hidden"><%= record.Battery_relay || '0' %></td>
-                                <td class="mobile-hidden"><%= record.PV_relay || '0' %></td>
-                                <td class="mobile-hidden"><%= record.Error_code || '0' %></td>
-                                <td class="mobile-hidden"><%= record.Warning_code || '0' %></td>
-                                <td><%= record.Status || '0' %></td>
+                                <td><%= record.Grid_voltage_V || '0' %></td>
+                                <td><%= record.Load_current_A || '0' %></td>
+                                <td><%= record.P_Inverter_W || '0' %></td>
+                                <td><%= record.P_Grid_W || '0' %></td>
+                                <td><%= record.P_Load_W || '0' %></td>
+                                <td class="mobile-hidden"><%= record.Grid_freq_Hz || '0' %></td>
+                                <td class="mobile-hidden"><%= record.AC_radiator_temp_C || '0' %></td>
+                                <td class="mobile-hidden"><%= record.Transformer_temp_C || '0' %></td>
+                                <td class="mobile-hidden"><%= record.DC_radiator_temp_C || '0' %></td>
+                                <td class="mobile-hidden"><%= record.Inverter_relay_state || '0' %></td>
+                                <td class="mobile-hidden"><%= record.Grid_relay_state || '0' %></td>
+                                <td class="mobile-hidden"><%= record.Load_relay_state || '0' %></td>
+                                <td class="mobile-hidden"><%= record.DC_relay_state || '0' %></td>
+                                <td class="mobile-hidden"><%= record.Error_message_1 || '0' %></td>
+                                <td class="mobile-hidden"><%= record.Warning_message_1 || '0' %></td>
+                                <td><%= record.Machine_type_high || '0' %></td>
                             </tr>
                             <% }); %>
                         <% } %>
@@ -717,9 +757,9 @@
         
         // Store last known values for chart delta reconstruction
         let lastKnownChartValues = {
-            PV_voltage_V: null,
+            Bus_voltage_V: null,
             Battery_voltage_V: null,
-            Charger_power_W: null
+            P_Grid_W: null
         };
         
         // Socket.IO connection for real-time updates
@@ -738,9 +778,9 @@
             console.log('Full data object:', data);
             console.log('Data type:', data._type);
             console.log('Timestamp:', data.timestamp);
-            console.log('PV Voltage:', data.PV_voltage_V);
+            console.log('Bus Voltage:', data.Bus_voltage_V);
             console.log('Battery Voltage:', data.Battery_voltage_V);
-            console.log('Charger Power:', data.Charger_power_W);
+            console.log('Grid Power:', data.P_Grid_W);
             console.log('Charts exist - PV:', !!pvVoltageChart, 'Battery:', !!batteryVoltageChart, 'Power:', !!chargePowerChart);
             console.log('lastKnownDashboardValues keys:', Object.keys(lastKnownDashboardValues || {}));
             console.log('=====================================');
@@ -753,12 +793,12 @@
             
             // Update all dashboard values with reconstructed data
             const displayVariables = [
-                'PV_voltage_V', 'Battery_voltage_V', 'Charger_current_A', 'Charger_power_W',
-                'Radiator_temp_C', 'External_temp_C', 'Battery_relay', 'PV_relay',
-                'Error_code', 'Warning_code', 'Batt_voltage_grade', 'Rated_current_A',
-                'Accum_power_high', 'Accum_power_low', 'Serial_high', 'Serial_low', 'HW_version', 'FW_version',
-                'Cal_PV_coeff', 'Cal_Batt_coeff', 'DC_current_A', 'DC_voltage_V',
-                'DC_power_W', 'AC_power_W', 'AC_freq_Hz', 'Temp_cabinet_C', 'Status'
+                'Bus_voltage_V', 'Battery_voltage_V', 'Control_current_A', 'P_Grid_W',
+                'AC_radiator_temp_C', 'Transformer_temp_C', 'DC_relay_state', 'Grid_relay_state',
+                'Error_message_1', 'Warning_message_1', 'Batt_voltage_grade_V', 'Rated_current_A',
+                'Accum_charger_power_total_KWH', 'Accum_discharger_power_total_KWH', 'Serial_number_high', 'Serial_number_low', 'Hardware_version', 'Software_version',
+                'Cal_PV_coeff', 'Cal_Batt_coeff', 'Control_current_A', 'Bus_voltage_V',
+                'P_Grid_W', 'P_Inverter_W', 'Grid_freq_Hz', 'DC_radiator_temp_C', 'Machine_type_high'
             ];
             
             displayVariables.forEach(variable => {
@@ -787,13 +827,53 @@
 
         function reconstructDeltaForDashboard(newData) {
             const allDashboardVariables = [
-                'PV_voltage_V', 'Battery_voltage_V', 'Charger_current_A', 'Charger_power_W',
-                'Radiator_temp_C', 'External_temp_C', 'Battery_relay', 'PV_relay',
-                'Error_code', 'Warning_code', 'Batt_voltage_grade', 'Rated_current_A',
-                'Accum_power_high', 'Accum_power_low', 'Accum_time_days', 'Accum_time_hours',
-                'Accum_time_minutes', 'Serial_high', 'Serial_low', 'HW_version', 'FW_version',
-                'Cal_PV_coeff', 'Cal_Batt_coeff', 'DC_current_A', 'DC_voltage_V',
-                'DC_power_W', 'AC_power_W', 'AC_freq_Hz', 'Temp_cabinet_C', 'Status'
+                // Basic Info
+                'Machine_type_high', 'Machine_type_low', 'Serial_number_high', 'Serial_number_low', 
+                'Hardware_version', 'Software_version', 'Protocol_version',
+                
+                // System Info
+                'AC_voltage_grade', 'Rated_power_VA',
+                
+                // Voltages
+                'Battery_voltage_V', 'Inverter_voltage_V', 'Grid_voltage_V', 'Bus_voltage_V',
+                
+                // Currents
+                'Control_current_A', 'Inverter_current_A', 'Grid_current_A', 'Load_current_A',
+                
+                // Powers
+                'P_Inverter_W', 'P_Grid_W', 'P_Load_W', 'Load_percent', 
+                'S_Inverter_VA', 'S_Grid_VA', 'S_Load_VA',
+                
+                // Reactive Powers
+                'Q_Inverter_var', 'Q_Grid_var', 'Q_Load_var',
+                
+                // Frequencies
+                'Inverter_freq_Hz', 'Grid_freq_Hz',
+                
+                // Inverter Data
+                'Inverter_max_number', 'Combine_type', 'Inverter_number',
+                
+                // Temperatures
+                'AC_radiator_temp_C', 'Transformer_temp_C', 'DC_radiator_temp_C',
+                
+                // Relay States
+                'Inverter_relay_state', 'Grid_relay_state', 'Load_relay_state', 
+                'N_Line_relay_state', 'DC_relay_state', 'Earth_relay_state',
+                
+                // Accumulated Energy
+                'Accum_charger_power_total_KWH', 'Accum_discharger_power_total_KWH',
+                'Accum_buy_power_total_KWH', 'Accum_sell_power_total_KWH',
+                'Accum_load_power_total_KWH', 'Accum_selfuse_power_total_KWH',
+                'Accum_PVsell_power_total_KWH', 'Accum_grid_charger_power_total_KWH',
+                
+                // Error/Warning Messages
+                'Error_message_1', 'Error_message_2', 'Error_message_3',
+                'Warning_message_1', 'Warning_message_2',
+                
+                // Battery Data
+                'Batt_serial_high', 'Batt_serial_low', 'Batt_hardware_version', 'Batt_software_version',
+                'Batt_power_W', 'Batt_current_A', 'Batt_voltage_grade_V', 
+                'Batt_rated_power_W', 'Batt_protocol_version'
             ];
 
             if (newData._type === 'delta') {
@@ -837,23 +917,29 @@
             const newRow = document.createElement('tr');
             newRow.innerHTML = `
                 <td>${new Date(reconstructedData.timestamp).toLocaleString()}</td>
-                <td>${reconstructedData.PV_voltage_V || '0'}</td>
                 <td>${reconstructedData.Battery_voltage_V || '0'}</td>
-                <td>${reconstructedData.Charger_current_A || '0'}</td>
-                <td>${reconstructedData.Charger_power_W || '0'}</td>
-                <td>${reconstructedData.Radiator_temp_C || '0'}</td>
-                <td>${reconstructedData.External_temp_C || '0'}</td>
-                <td class="mobile-hidden">${reconstructedData.DC_current_A || '0'}</td>
-                <td class="mobile-hidden">${reconstructedData.DC_voltage_V || '0'}</td>
-                <td class="mobile-hidden">${reconstructedData.DC_power_W || '0'}</td>
-                <td class="mobile-hidden">${reconstructedData.AC_power_W || '0'}</td>
-                <td class="mobile-hidden">${reconstructedData.AC_freq_Hz || '0'}</td>
-                <td class="mobile-hidden">${reconstructedData.Temp_cabinet_C || '0'}</td>
-                <td class="mobile-hidden">${reconstructedData.Battery_relay || '0'}</td>
-                <td class="mobile-hidden">${reconstructedData.PV_relay || '0'}</td>
-                <td class="mobile-hidden">${reconstructedData.Error_code || '0'}</td>
-                <td class="mobile-hidden">${reconstructedData.Warning_code || '0'}</td>
-                <td>${reconstructedData.Status || '0'}</td>
+                <td>${reconstructedData.Grid_voltage_V || '0'}</td>
+                <td>${reconstructedData.Load_current_A || '0'}</td>
+                <td>${reconstructedData.P_Inverter_W || '0'}</td>
+                <td>${reconstructedData.P_Grid_W || '0'}</td>
+                <td>${reconstructedData.P_Load_W || '0'}</td>
+                <td class="mobile-hidden">${reconstructedData.Grid_freq_Hz || '0'}</td>
+                <td class="mobile-hidden">${reconstructedData.AC_radiator_temp_C || '0'}</td>
+                <td class="mobile-hidden">${reconstructedData.Transformer_temp_C || '0'}</td>
+                <td class="mobile-hidden">${reconstructedData.DC_radiator_temp_C || '0'}</td>
+                <td class="mobile-hidden">${reconstructedData.Inverter_relay_state || '0'}</td>
+                <td class="mobile-hidden">${reconstructedData.Grid_relay_state || '0'}</td>
+                <td class="mobile-hidden">${reconstructedData.Load_relay_state || '0'}</td>
+                <td class="mobile-hidden">${reconstructedData.DC_relay_state || '0'}</td>
+                <td class="mobile-hidden">${reconstructedData.Error_message_1 || '0'}</td>
+                <td class="mobile-hidden">${reconstructedData.Warning_message_1 || '0'}</td>
+                <td>${reconstructedData.Machine_type_high || '0'}</td>
+            `;
+                <td class="mobile-hidden">${reconstructedData.DC_relay_state || '0'}</td>
+                <td class="mobile-hidden">${reconstructedData.Grid_relay_state || '0'}</td>
+                <td class="mobile-hidden">${reconstructedData.Error_message_1 || '0'}</td>
+                <td class="mobile-hidden">${reconstructedData.Warning_message_1 || '0'}</td>
+                <td>${reconstructedData.Machine_type_high || '0'}</td>
             `;
             
             // Insert new row at the top
@@ -880,10 +966,10 @@
 
         function reconstructDeltaForTable(newData) {
             const allVariables = [
-                'PV_voltage_V', 'Battery_voltage_V', 'Charger_current_A', 'Charger_power_W',
-                'Radiator_temp_C', 'External_temp_C', 'DC_current_A', 'DC_voltage_V',
-                'DC_power_W', 'AC_power_W', 'AC_freq_Hz', 'Temp_cabinet_C',
-                'Battery_relay', 'PV_relay', 'Error_code', 'Warning_code', 'Status'
+                'Bus_voltage_V', 'Battery_voltage_V', 'Control_current_A', 'P_Grid_W',
+                'AC_radiator_temp_C', 'Board_temp_C', 'PV_current_A', 'Inverter_voltage_V',
+                'P_Inverter_W', 'P_Total_W', 'AC_freq_Hz', 'DC_bus_temp_C',
+                'Battery_relay', 'Inverter_relay', 'Error_message_1', 'Warning_message_1', 'Machine_type_high'
             ];
 
             if (newData._type === 'delta') {
@@ -933,18 +1019,18 @@
             
             console.log('Updating charts with delta-reconstructed data:', {
                 time: timeLabel,
-                pvVoltage: reconstructedData.PV_voltage_V,
+                busVoltage: reconstructedData.Bus_voltage_V,
                 batteryVoltage: reconstructedData.Battery_voltage_V,
-                chargerPower: reconstructedData.Charger_power_W,
+                inverterPower: reconstructedData.P_Inverter_W,
                 isDelta: newData._type === 'delta'
             });
             
             // Update all three charts with new data
             const maxPoints = 50;
             
-            // PV Voltage Chart
+            // Bus Voltage Chart
             pvVoltageChart.data.labels.push(timeLabel);
-            pvVoltageChart.data.datasets[0].data.push(reconstructedData.PV_voltage_V);
+            pvVoltageChart.data.datasets[0].data.push(reconstructedData.Bus_voltage_V);
             // Add weekly average data point (stays constant)
             if (pvVoltageChart.data.datasets[1]) {
                 const avgValue = pvVoltageChart.data.datasets[1].data[0] || 0;
@@ -976,9 +1062,9 @@
             }
             batteryVoltageChart.update('none');
             
-            // Charge Power Chart
+            // Grid Power Chart
             chargePowerChart.data.labels.push(timeLabel);
-            chargePowerChart.data.datasets[0].data.push(reconstructedData.Charger_power_W);
+            chargePowerChart.data.datasets[0].data.push(reconstructedData.P_Inverter_W);
             // Add weekly average data point (stays constant)
             if (chargePowerChart.data.datasets[1]) {
                 const avgValue = chargePowerChart.data.datasets[1].data[0] || 0;
@@ -1000,14 +1086,14 @@
             // If this is a delta record, merge with last known values
             if (newData._type === 'delta') {
                 // Update only the fields that are present in the delta
-                if (newData.PV_voltage_V !== undefined) {
-                    lastKnownChartValues.PV_voltage_V = newData.PV_voltage_V;
-                }
                 if (newData.Battery_voltage_V !== undefined) {
                     lastKnownChartValues.Battery_voltage_V = newData.Battery_voltage_V;
                 }
-                if (newData.Charger_power_W !== undefined) {
-                    lastKnownChartValues.Charger_power_W = newData.Charger_power_W;
+                if (newData.P_Inverter_W !== undefined) {
+                    lastKnownChartValues.P_Inverter_W = newData.P_Inverter_W;
+                }
+                if (newData.P_Grid_W !== undefined) {
+                    lastKnownChartValues.P_Grid_W = newData.P_Grid_W;
                 }
                 
                 console.log('Chart delta reconstruction - using last known values:', lastKnownChartValues);
@@ -1015,23 +1101,23 @@
                 // Return reconstructed data with all values
                 return {
                     timestamp: newData.timestamp,
-                    PV_voltage_V: lastKnownChartValues.PV_voltage_V,
                     Battery_voltage_V: lastKnownChartValues.Battery_voltage_V,
-                    Charger_power_W: lastKnownChartValues.Charger_power_W
+                    P_Inverter_W: lastKnownChartValues.P_Inverter_W,
+                    P_Grid_W: lastKnownChartValues.P_Grid_W
                 };
             } else {
                 // Full record - update all last known values
-                lastKnownChartValues.PV_voltage_V = newData.PV_voltage_V || lastKnownChartValues.PV_voltage_V;
                 lastKnownChartValues.Battery_voltage_V = newData.Battery_voltage_V || lastKnownChartValues.Battery_voltage_V;
-                lastKnownChartValues.Charger_power_W = newData.Charger_power_W || lastKnownChartValues.Charger_power_W;
+                lastKnownChartValues.P_Inverter_W = newData.P_Inverter_W || lastKnownChartValues.P_Inverter_W;
+                lastKnownChartValues.P_Grid_W = newData.P_Grid_W || lastKnownChartValues.P_Grid_W;
                 
                 console.log('Chart full record - updated last known values:', lastKnownChartValues);
                 
                 return {
                     timestamp: newData.timestamp,
-                    PV_voltage_V: newData.PV_voltage_V || lastKnownChartValues.PV_voltage_V,
                     Battery_voltage_V: newData.Battery_voltage_V || lastKnownChartValues.Battery_voltage_V,
-                    Charger_power_W: newData.Charger_power_W || lastKnownChartValues.Charger_power_W
+                    P_Inverter_W: newData.P_Inverter_W || lastKnownChartValues.P_Inverter_W,
+                    P_Grid_W: newData.P_Grid_W || lastKnownChartValues.P_Grid_W
                 };
             }
         }
@@ -1044,50 +1130,45 @@
             button.textContent = 'Loading...';
             
             // Fetch more data from server
-            fetch('/api/solar/history', {
-                method: 'POST',
+            fetch(`/management/api/solar-data/load-more?offset=${displayedRecords}&limit=10`, {
+                method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json',
                     'x-api-key': '<%= process.env.API_SECRET || "your-secret-api-key-here" %>'
-                },
-                body: JSON.stringify({
-                    offset: displayedRecords,
-                    limit: 10
-                })
+                }
             })
             .then(response => response.json())
             .then(data => {
-                if (data.success && data.records.length > 0) {
+                if (data.success && data.data.length > 0) {
                     // Add new rows to the table
-                    data.records.forEach(record => {
+                    data.data.forEach(record => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td>${new Date(record.timestamp).toLocaleString()}</td>
-                            <td>${record.PV_voltage_V || '0'}</td>
                             <td>${record.Battery_voltage_V || '0'}</td>
-                            <td>${record.Charger_current_A || '0'}</td>
-                            <td>${record.Charger_power_W || '0'}</td>
-                            <td>${record.Radiator_temp_C || '0'}</td>
-                            <td>${record.External_temp_C || '0'}</td>
-                            <td class="mobile-hidden">${record.DC_current_A || '0'}</td>
-                            <td class="mobile-hidden">${record.DC_voltage_V || '0'}</td>
-                            <td class="mobile-hidden">${record.DC_power_W || '0'}</td>
-                            <td class="mobile-hidden">${record.AC_power_W || '0'}</td>
-                            <td class="mobile-hidden">${record.AC_freq_Hz || '0'}</td>
-                            <td class="mobile-hidden">${record.Temp_cabinet_C || '0'}</td>
-                            <td class="mobile-hidden">${record.Battery_relay || '0'}</td>
-                            <td class="mobile-hidden">${record.PV_relay || '0'}</td>
-                            <td class="mobile-hidden">${record.Error_code || '0'}</td>
-                            <td class="mobile-hidden">${record.Warning_code || '0'}</td>
-                            <td>${record.Status || '0'}</td>
+                            <td>${record.Grid_voltage_V || '0'}</td>
+                            <td>${record.Load_current_A || '0'}</td>
+                            <td>${record.P_Inverter_W || '0'}</td>
+                            <td>${record.P_Grid_W || '0'}</td>
+                            <td>${record.P_Load_W || '0'}</td>
+                            <td class="mobile-hidden">${record.Grid_freq_Hz || '0'}</td>
+                            <td class="mobile-hidden">${record.AC_radiator_temp_C || '0'}</td>
+                            <td class="mobile-hidden">${record.Transformer_temp_C || '0'}</td>
+                            <td class="mobile-hidden">${record.DC_radiator_temp_C || '0'}</td>
+                            <td class="mobile-hidden">${record.Inverter_relay_state || '0'}</td>
+                            <td class="mobile-hidden">${record.Grid_relay_state || '0'}</td>
+                            <td class="mobile-hidden">${record.Load_relay_state || '0'}</td>
+                            <td class="mobile-hidden">${record.DC_relay_state || '0'}</td>
+                            <td class="mobile-hidden">${record.Error_message_1 || '0'}</td>
+                            <td class="mobile-hidden">${record.Warning_message_1 || '0'}</td>
+                            <td>${record.Machine_type_high || '0'}</td>
                         `;
                         tbody.appendChild(row);
                     });
                     
-                    displayedRecords += data.records.length;
+                    displayedRecords += data.data.length;
                     
                     // Hide button if no more data
-                    if (data.records.length < 10 || displayedRecords >= totalAvailableRecords) {
+                    if (!data.hasMore || data.data.length < 10) {
                         button.style.display = 'none';
                     } else {
                         button.disabled = false;
@@ -1178,17 +1259,37 @@
             }
         }
 
-        function showTooltip(event, title, description) {
+        async function showTooltip(event, title, variableName) {
             const tooltip = document.getElementById('infoTooltip');
             const titleElement = document.getElementById('tooltipTitle');
             const descElement = document.getElementById('tooltipDescription');
             
             titleElement.textContent = title;
-            descElement.textContent = description;
+            descElement.textContent = 'Loading description...';
             
+            // Show tooltip immediately with loading text
             tooltip.style.display = 'block';
             tooltip.style.position = 'fixed';
             tooltip.style.transform = 'none';
+            
+            // Fetch description from API
+            try {
+                const response = await fetch(`/management/api/variable-description/${encodeURIComponent(variableName)}`, {
+                    headers: {
+                        'x-api-key': '<%= process.env.API_SECRET || "your-secret-api-key-here" %>'
+                    }
+                });
+                const data = await response.json();
+                
+                if (data.success && data.description) {
+                    descElement.textContent = data.description;
+                } else {
+                    descElement.textContent = 'No description available';
+                }
+            } catch (error) {
+                console.error('Error fetching variable description:', error);
+                descElement.textContent = 'Error loading description';
+            }
             
             // Get button position relative to viewport
             const rect = event.target.getBoundingClientRect();
@@ -1350,14 +1451,14 @@
             }
             
             // Initialize last known values with the latest data point from chart
-            if (data.pvVoltage && data.pvVoltage.length > 0) {
-                lastKnownChartValues.PV_voltage_V = data.pvVoltage[data.pvVoltage.length - 1];
-            }
             if (data.batteryVoltage && data.batteryVoltage.length > 0) {
                 lastKnownChartValues.Battery_voltage_V = data.batteryVoltage[data.batteryVoltage.length - 1];
             }
-            if (data.chargerPower && data.chargerPower.length > 0) {
-                lastKnownChartValues.Charger_power_W = data.chargerPower[data.chargerPower.length - 1];
+            if (data.inverterPower && data.inverterPower.length > 0) {
+                lastKnownChartValues.P_Inverter_W = data.inverterPower[data.inverterPower.length - 1];
+            }
+            if (data.gridPower && data.gridPower.length > 0) {
+                lastKnownChartValues.P_Grid_W = data.gridPower[data.gridPower.length - 1];
             }
             
             console.log('Initialized last known chart values for delta reconstruction:', lastKnownChartValues);
@@ -1441,14 +1542,14 @@
             }
 
             // Initialize last known values with the latest data point from chart
-            if (data.pvVoltage && data.pvVoltage.length > 0) {
-                lastKnownChartValues.PV_voltage_V = data.pvVoltage[data.pvVoltage.length - 1];
-            }
             if (data.batteryVoltage && data.batteryVoltage.length > 0) {
                 lastKnownChartValues.Battery_voltage_V = data.batteryVoltage[data.batteryVoltage.length - 1];
             }
-            if (data.chargerPower && data.chargerPower.length > 0) {
-                lastKnownChartValues.Charger_power_W = data.chargerPower[data.chargerPower.length - 1];
+            if (data.inverterPower && data.inverterPower.length > 0) {
+                lastKnownChartValues.P_Inverter_W = data.inverterPower[data.inverterPower.length - 1];
+            }
+            if (data.gridPower && data.gridPower.length > 0) {
+                lastKnownChartValues.P_Grid_W = data.gridPower[data.gridPower.length - 1];
             }
             
             console.log('Initialized last known chart values for delta reconstruction:', lastKnownChartValues);
@@ -1543,7 +1644,7 @@
                 }
             };
 
-            // PV Voltage Chart (0-50V range)
+            // Bus Voltage Chart (0-50V range)
             const pvCtx = document.getElementById('pvVoltageChart').getContext('2d');
             pvVoltageChart = new Chart(pvCtx, {
                 type: 'line',
@@ -1554,8 +1655,8 @@
                         hour12: true 
                     })),
                     datasets: [{
-                        label: 'PV Voltage (V)',
-                        data: data.pvVoltage,
+                        label: 'Bus Voltage [V]',
+                        data: data.busVoltage,
                         borderColor: '#FF6B6B',
                         backgroundColor: 'rgba(255, 107, 107, 0.1)',
                         tension: 0.4,
@@ -1564,7 +1665,7 @@
                         pointHoverRadius: 4
                     }, {
                         label: 'Weekly Average',
-                        data: Array(data.timePoints.length).fill(data.weeklyAverages?.pvVoltage || 0),
+                        data: Array(data.timePoints.length).fill(data.weeklyAverages?.busVoltage || 0),
                         borderColor: 'rgba(128, 128, 128, 0.9)',
                         backgroundColor: 'transparent',
                         borderDash: [5, 5],
@@ -1604,7 +1705,7 @@
                         hour12: true 
                     })),
                     datasets: [{
-                        label: 'Battery Voltage (V)',
+                        label: 'Battery Voltage [V]',
                         data: data.batteryVoltage,
                         borderColor: '#4ECDC4',
                         backgroundColor: 'rgba(78, 205, 196, 0.1)',
@@ -1643,7 +1744,7 @@
                 }
             });
 
-            // Charge Power Chart (0-1000W range)
+            // Inverter Power Chart (0-1000W range)
             const powerCtx = document.getElementById('chargePowerChart').getContext('2d');
             chargePowerChart = new Chart(powerCtx, {
                 type: 'line',
@@ -1654,8 +1755,8 @@
                         hour12: true 
                     })),
                     datasets: [{
-                        label: 'Charge Power (W)',
-                        data: data.chargerPower,
+                        label: 'Inverter Power [W]',
+                        data: data.inverterPower,
                         borderColor: '#45B7D1',
                         backgroundColor: 'rgba(69, 183, 209, 0.1)',
                         tension: 0.4,
@@ -1664,7 +1765,7 @@
                         pointHoverRadius: 4
                     }, {
                         label: 'Weekly Average',
-                        data: Array(data.timePoints.length).fill(data.weeklyAverages?.chargerPower || 0),
+                        data: Array(data.timePoints.length).fill(data.weeklyAverages?.inverterPower || 0),
                         borderColor: 'rgba(128, 128, 128, 0.9)',
                         backgroundColor: 'transparent',
                         borderDash: [5, 5],
@@ -1720,10 +1821,10 @@
                 // Map table columns to variable names
                 const columnMapping = [
                     null, // timestamp
-                    'PV_voltage_V', 'Battery_voltage_V', 'Charger_current_A', 'Charger_power_W',
-                    'Radiator_temp_C', 'External_temp_C', 'DC_current_A', 'DC_voltage_V',
-                    'DC_power_W', 'AC_power_W', 'AC_freq_Hz', 'Temp_cabinet_C',
-                    'Battery_relay', 'PV_relay', 'Error_code', 'Warning_code', 'Status'
+                    'Bus_voltage_V', 'Battery_voltage_V', 'Control_current_A', 'P_Grid_W',
+                    'AC_radiator_temp_C', 'Board_temp_C', 'PV_current_A', 'Inverter_voltage_V',
+                    'P_Inverter_W', 'P_Total_W', 'AC_freq_Hz', 'DC_bus_temp_C',
+                    'Battery_relay', 'Inverter_relay', 'Error_message_1', 'Warning_message_1', 'Machine_type_high'
                 ];
                 
                 columnMapping.forEach((varName, index) => {
@@ -1740,13 +1841,13 @@
         function initializeLastKnownDashboardValues() {
             // Initialize dashboard values from current dashboard cards
             const allDashboardVariables = [
-                'PV_voltage_V', 'Battery_voltage_V', 'Charger_current_A', 'Charger_power_W',
-                'Radiator_temp_C', 'External_temp_C', 'Battery_relay', 'PV_relay',
-                'Error_code', 'Warning_code', 'Batt_voltage_grade', 'Rated_current_A',
-                'Accum_power_high', 'Accum_power_low', 'Accum_time_days', 'Accum_time_hours',
-                'Accum_time_minutes', 'Serial_high', 'Serial_low', 'HW_version', 'FW_version',
-                'Cal_PV_coeff', 'Cal_Batt_coeff', 'DC_current_A', 'DC_voltage_V',
-                'DC_power_W', 'AC_power_W', 'AC_freq_Hz', 'Temp_cabinet_C', 'Status'
+                'Bus_voltage_V', 'Battery_voltage_V', 'Control_current_A', 'P_Grid_W',
+                'AC_radiator_temp_C', 'Board_temp_C', 'Battery_relay', 'Inverter_relay',
+                'Error_message_1', 'Warning_message_1', 'Battery_grade_V', 'Control_rated_current_A',
+                'Accum_energy_high', 'Accum_energy_low', 'Total_accum_time_days', 'Total_accum_time_hours',
+                'Total_accum_time_minutes', 'Serial_number_high', 'Serial_number_low', 'Hardware_version', 'Software_version',
+                'Calibration_PV_voltage', 'Calibration_battery_voltage', 'PV_current_A', 'Inverter_voltage_V',
+                'P_Inverter_W', 'P_Total_W', 'AC_freq_Hz', 'DC_bus_temp_C', 'Machine_type_high'
             ];
             
             allDashboardVariables.forEach(variable => {
