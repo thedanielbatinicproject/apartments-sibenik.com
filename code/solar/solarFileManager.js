@@ -41,32 +41,6 @@ async function saveSolarData(incomingData) {
   await logToFile('incomingData: ' + JSON.stringify(incomingData));
   await logToFile('completeRealtimeData: ' + JSON.stringify(completeRealtimeData));
 
-  // Use delta compression
-  let lastData;
-  try {
-    lastData = getLastSignificantData();
-    await logToFile('lastData: ' + JSON.stringify(lastData));
-  } catch (e) {
-    await logToFile('getLastSignificantData ERROR: ' + e.toString());
-    lastData = undefined;
-  }
-
-  let deltaResult;
-  try {
-    deltaResult = createDeltaRecord(completeRealtimeData, lastData);
-    await logToFile('deltaResult: ' + JSON.stringify(deltaResult));
-  } catch (e) {
-    await logToFile('createDeltaRecord ERROR: ' + e.toString());
-    throw e;
-  }
-
-  if (deltaResult.type === 'skip') {
-    const logMsg = `[SKIPPED] ${deltaResult.reason}`;
-    console.log(logMsg);
-    await logToFile(logMsg);
-    return { skipped: true, reason: deltaResult.reason };
-  }
-
   // Read existing data
   let existingData = [];
   try {
@@ -78,6 +52,37 @@ async function saveSolarData(incomingData) {
     await logToFile('solars_public.json read error: ' + err.toString());
     // File doesn't exist, start with empty array
     existingData = [];
+  }
+
+  // Use delta compression, but if file is empty, always save as full
+  let lastData;
+  try {
+    lastData = getLastSignificantData();
+    await logToFile('lastData: ' + JSON.stringify(lastData));
+  } catch (e) {
+    await logToFile('getLastSignificantData ERROR: ' + e.toString());
+    lastData = undefined;
+  }
+
+  let deltaResult;
+  if (existingData.length === 0) {
+    await logToFile('File is empty, saving first record as FULL');
+    deltaResult = { type: 'full', data: completeRealtimeData };
+  } else {
+    try {
+      deltaResult = createDeltaRecord(completeRealtimeData, lastData);
+      await logToFile('deltaResult: ' + JSON.stringify(deltaResult));
+    } catch (e) {
+      await logToFile('createDeltaRecord ERROR: ' + e.toString());
+      throw e;
+    }
+  }
+
+  if (deltaResult.type === 'skip') {
+    const logMsg = `[SKIPPED] ${deltaResult.reason}`;
+    console.log(logMsg);
+    await logToFile(logMsg);
+    return { skipped: true, reason: deltaResult.reason };
   }
 
   // Add new record

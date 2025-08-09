@@ -4,6 +4,15 @@ const path = require('path');
 // Global variable to store last significant data
 let lastSignificantData = null;
 
+// On module load, initialize from file (auto)
+initializeLastSignificantData();
+/**
+ * Reset last significant data (RAM)
+ */
+function resetLastSignificantData() {
+  lastSignificantData = null;
+}
+
 /**
  * Initialize last significant data on startup
  */
@@ -189,6 +198,7 @@ module.exports = {
   initializeLastSignificantData,
   getLastSignificantData,
   setLastSignificantData,
+  resetLastSignificantData,
   reconstructDeltaData,
   reconstructDeltaDataWithHistory,
   readSolarDataWithCache
