@@ -24,10 +24,6 @@ async function saveSolarData(incomingData) {
     })
   };
 
-  // Use delta compression
-  const lastData = getLastSignificantData();
-  const deltaResult = createDeltaRecord(completeRealtimeData, lastData);
-
   // Log file path
   const logPath = path.join(__dirname, '../../data/public_data/solar-app.log');
 
@@ -41,6 +37,29 @@ async function saveSolarData(incomingData) {
     }
   }
 
+  await logToFile('--- saveSolarData called ---');
+  await logToFile('incomingData: ' + JSON.stringify(incomingData));
+  await logToFile('completeRealtimeData: ' + JSON.stringify(completeRealtimeData));
+
+  // Use delta compression
+  let lastData;
+  try {
+    lastData = getLastSignificantData();
+    await logToFile('lastData: ' + JSON.stringify(lastData));
+  } catch (e) {
+    await logToFile('getLastSignificantData ERROR: ' + e.toString());
+    lastData = undefined;
+  }
+
+  let deltaResult;
+  try {
+    deltaResult = createDeltaRecord(completeRealtimeData, lastData);
+    await logToFile('deltaResult: ' + JSON.stringify(deltaResult));
+  } catch (e) {
+    await logToFile('createDeltaRecord ERROR: ' + e.toString());
+    throw e;
+  }
+
   if (deltaResult.type === 'skip') {
     const logMsg = `[SKIPPED] ${deltaResult.reason}`;
     console.log(logMsg);
@@ -52,14 +71,19 @@ async function saveSolarData(incomingData) {
   let existingData = [];
   try {
     const data = await fs.readFile(publicDataPath, 'utf8');
+    await logToFile('Read solars_public.json: ' + data);
     existingData = JSON.parse(data);
+    await logToFile('existingData parsed: ' + JSON.stringify(existingData));
   } catch (err) {
+    await logToFile('solars_public.json read error: ' + err.toString());
     // File doesn't exist, start with empty array
     existingData = [];
   }
 
   // Add new record
+  await logToFile('Adding new record: ' + JSON.stringify(deltaResult.data));
   existingData.push(deltaResult.data);
+  await logToFile('existingData after push: ' + JSON.stringify(existingData));
 
   // Update last significant data
   if (deltaResult.type === 'full') {
@@ -73,9 +97,15 @@ async function saveSolarData(incomingData) {
   }
 
   // Save to file
-  await fs.writeFile(publicDataPath, JSON.stringify(existingData, null, 2));
-  await logToFile(`[SAVE] Record saved. Total records: ${existingData.length}`);
+  try {
+    await fs.writeFile(publicDataPath, JSON.stringify(existingData, null, 2));
+    await logToFile(`[SAVE] Record saved. Total records: ${existingData.length}`);
+  } catch (e) {
+    await logToFile('fs.writeFile ERROR: ' + e.toString());
+    throw e;
+  }
 
+  await logToFile('Returning from saveSolarData');
   return { 
     saved: true, 
     type: deltaResult.type,
