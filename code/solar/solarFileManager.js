@@ -29,6 +29,7 @@ async function saveSolarData(incomingData) {
   const deltaResult = createDeltaRecord(completeRealtimeData, lastData);
   
   if (deltaResult.type === 'skip') {
+    console.log('[SKIPPED]', deltaResult.reason);
     return { skipped: true, reason: deltaResult.reason };
   }
 

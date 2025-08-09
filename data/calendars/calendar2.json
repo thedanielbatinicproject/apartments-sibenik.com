@@ -88,5 +88,17 @@
     "naziv": "Airbnb (Not available)",
     "pocetak": "2026-08-04T22:00:00.000Z",
     "kraj": "2026-08-05T22:00:00.000Z"
+  },
+  {
+    "event_uuid": "2920a338-d4b7-4eed-b115-02e7a0a797a5",
+    "naziv": "Airbnb (Not available)",
+    "pocetak": "2025-08-05T22:00:00.000Z",
+    "kraj": "2025-08-19T22:00:00.000Z"
+  },
+  {
+    "event_uuid": "0891faaf-a8ca-44d0-84e9-129aff44af1c",
+    "naziv": "Airbnb (Not available)",
+    "pocetak": "2026-08-07T22:00:00.000Z",
+    "kraj": "2026-08-08T22:00:00.000Z"
   }
 ]

@@ -1,0 +1,317 @@
+{
+  "Machine_type_high": {
+    "name": "Machine Type High",
+    "unit": "",
+    "description": "Inverter model/type identifier (high part)"
+  },
+  "Machine_type_low": {
+    "name": "Machine Type Low", 
+    "unit": "",
+    "description": "Inverter model/type identifier (low part)"
+  },
+  "Serial_number_high": {
+    "name": "Serial Number High",
+    "unit": "",
+    "description": "Device serial number (high part)"
+  },
+  "Serial_number_low": {
+    "name": "Serial Number Low",
+    "unit": "",
+    "description": "Device serial number (low part)"
+  },
+  "Hardware_version": {
+    "name": "Hardware Version",
+    "unit": "",
+    "description": "Hardware revision number"
+  },
+  "Software_version": {
+    "name": "Software Version",
+    "unit": "",
+    "description": "Firmware version number"
+  },
+  "Protocol_version": {
+    "name": "Protocol Version",
+    "unit": "",
+    "description": "Communication protocol version"
+  },
+  "AC_voltage_grade": {
+    "name": "AC Voltage Grade",
+    "unit": "V",
+    "description": "AC voltage rating/grade of the system"
+  },
+  "Rated_power_VA": {
+    "name": "Rated Power",
+    "unit": "VA",
+    "description": "System rated power in VA (Volt-Amperes)"
+  },
+  "Battery_voltage_V": {
+    "name": "Battery Voltage",
+    "unit": "V",
+    "description": "Current battery bank voltage level"
+  },
+  "Inverter_voltage_V": {
+    "name": "Inverter Voltage",
+    "unit": "V",
+    "description": "AC voltage output from inverter"
+  },
+  "Grid_voltage_V": {
+    "name": "Grid Voltage",
+    "unit": "V",
+    "description": "AC grid voltage from utility connection"
+  },
+  "Bus_voltage_V": {
+    "name": "Bus Voltage",
+    "unit": "V",
+    "description": "DC bus voltage level in the system"
+  },
+  "Control_current_A": {
+    "name": "Control Current",
+    "unit": "A",
+    "description": "System control circuit current"
+  },
+  "Inverter_current_A": {
+    "name": "Inverter Current",
+    "unit": "A",
+    "description": "AC current output from inverter"
+  },
+  "Grid_current_A": {
+    "name": "Grid Current",
+    "unit": "A",
+    "description": "Current draw/feed from/to utility grid"
+  },
+  "Load_current_A": {
+    "name": "Load Current",
+    "unit": "A",
+    "description": "Current consumption by connected loads"
+  },
+  "P_Inverter_W": {
+    "name": "Inverter Power",
+    "unit": "W",
+    "description": "Real power output from inverter"
+  },
+  "P_Grid_W": {
+    "name": "Grid Power",
+    "unit": "W",
+    "description": "Real power exchange with grid (+ = buying, - = selling)"
+  },
+  "P_Load_W": {
+    "name": "Load Power",
+    "unit": "W",
+    "description": "Real power consumed by loads"
+  },
+  "Load_percent": {
+    "name": "Load Percentage",
+    "unit": "%",
+    "description": "Current load as percentage of rated capacity"
+  },
+  "S_Inverter_VA": {
+    "name": "Inverter Apparent Power",
+    "unit": "VA",
+    "description": "Apparent power output from inverter"
+  },
+  "S_Grid_VA": {
+    "name": "Grid Apparent Power",
+    "unit": "VA",
+    "description": "Apparent power exchange with grid"
+  },
+  "S_Load_VA": {
+    "name": "Load Apparent Power",
+    "unit": "VA",
+    "description": "Apparent power consumed by loads"
+  },
+  "Q_Inverter_var": {
+    "name": "Inverter Reactive Power",
+    "unit": "var",
+    "description": "Reactive power output from inverter"
+  },
+  "Q_Grid_var": {
+    "name": "Grid Reactive Power",
+    "unit": "var",
+    "description": "Reactive power exchange with grid"
+  },
+  "Q_Load_var": {
+    "name": "Load Reactive Power",
+    "unit": "var",
+    "description": "Reactive power consumed by loads"
+  },
+  "Inverter_freq_Hz": {
+    "name": "Inverter Frequency",
+    "unit": "Hz",
+    "description": "AC frequency output from inverter"
+  },
+  "Grid_freq_Hz": {
+    "name": "Grid Frequency",
+    "unit": "Hz",
+    "description": "AC frequency of utility grid"
+  },
+  "Inverter_max_number": {
+    "name": "Max Inverters",
+    "unit": "",
+    "description": "Maximum number of inverters in system"
+  },
+  "Combine_type": {
+    "name": "Combine Type",
+    "unit": "",
+    "description": "Type of inverter combination/configuration"
+  },
+  "Inverter_number": {
+    "name": "Inverter Number",
+    "unit": "",
+    "description": "Current inverter identification number"
+  },
+  "AC_radiator_temp_C": {
+    "name": "AC Radiator Temp",
+    "unit": "°C",
+    "description": "Temperature of AC section heat sink"
+  },
+  "Transformer_temp_C": {
+    "name": "Transformer Temp",
+    "unit": "°C",
+    "description": "Temperature of isolation transformer"
+  },
+  "DC_radiator_temp_C": {
+    "name": "DC Radiator Temp",
+    "unit": "°C",
+    "description": "Temperature of DC section heat sink"
+  },
+  "Inverter_relay_state": {
+    "name": "Inverter Relay",
+    "unit": "",
+    "description": "Status of inverter output relay (0=Off, 1=On)"
+  },
+  "Grid_relay_state": {
+    "name": "Grid Relay",
+    "unit": "",
+    "description": "Status of grid connection relay (0=Off, 1=On)"
+  },
+  "Load_relay_state": {
+    "name": "Load Relay",
+    "unit": "",
+    "description": "Status of load connection relay (0=Off, 1=On)"
+  },
+  "N_Line_relay_state": {
+    "name": "Neutral Line Relay",
+    "unit": "",
+    "description": "Status of neutral line relay (0=Off, 1=On)"
+  },
+  "DC_relay_state": {
+    "name": "DC Relay",
+    "unit": "",
+    "description": "Status of DC section relay (0=Off, 1=On)"
+  },
+  "Earth_relay_state": {
+    "name": "Earth Relay",
+    "unit": "",
+    "description": "Status of earth/ground relay (0=Off, 1=On)"
+  },
+  "Accum_charger_power_total_KWH": {
+    "name": "Total Charger Energy",
+    "unit": "kWh",
+    "description": "Accumulated energy from charger/grid to battery"
+  },
+  "Accum_discharger_power_total_KWH": {
+    "name": "Total Discharge Energy",
+    "unit": "kWh",
+    "description": "Accumulated energy discharged from battery"
+  },
+  "Accum_buy_power_total_KWH": {
+    "name": "Total Bought Energy",
+    "unit": "kWh",
+    "description": "Total energy purchased from grid"
+  },
+  "Accum_sell_power_total_KWH": {
+    "name": "Total Sold Energy",
+    "unit": "kWh",
+    "description": "Total energy sold to grid"
+  },
+  "Accum_load_power_total_KWH": {
+    "name": "Total Load Energy",
+    "unit": "kWh",
+    "description": "Total energy consumed by loads"
+  },
+  "Accum_selfuse_power_total_KWH": {
+    "name": "Total Self-Use Energy",
+    "unit": "kWh",
+    "description": "Total energy used directly from solar"
+  },
+  "Accum_PVsell_power_total_KWH": {
+    "name": "Total PV Sold Energy",
+    "unit": "kWh",
+    "description": "Total solar energy sold to grid"
+  },
+  "Accum_grid_charger_power_total_KWH": {
+    "name": "Total Grid Charge Energy",
+    "unit": "kWh",
+    "description": "Total energy used to charge battery from grid"
+  },
+  "Error_message_1": {
+    "name": "Error Message 1",
+    "unit": "",
+    "description": "Primary error code/status indicator"
+  },
+  "Error_message_2": {
+    "name": "Error Message 2",
+    "unit": "",
+    "description": "Secondary error code/status indicator"
+  },
+  "Error_message_3": {
+    "name": "Error Message 3",
+    "unit": "",
+    "description": "Tertiary error code/status indicator"
+  },
+  "Warning_message_1": {
+    "name": "Warning Message 1",
+    "unit": "",
+    "description": "Primary warning code/status indicator"
+  },
+  "Warning_message_2": {
+    "name": "Warning Message 2",
+    "unit": "",
+    "description": "Secondary warning code/status indicator"
+  },
+  "Batt_serial_high": {
+    "name": "Battery Serial High",
+    "unit": "",
+    "description": "Battery serial number (high part)"
+  },
+  "Batt_serial_low": {
+    "name": "Battery Serial Low",
+    "unit": "",
+    "description": "Battery serial number (low part)"
+  },
+  "Batt_hardware_version": {
+    "name": "Battery Hardware Version",
+    "unit": "",
+    "description": "Battery management system hardware version"
+  },
+  "Batt_software_version": {
+    "name": "Battery Software Version",
+    "unit": "",
+    "description": "Battery management system firmware version"
+  },
+  "Batt_power_W": {
+    "name": "Battery Power",
+    "unit": "W",
+    "description": "Current battery power (+ = charging, - = discharging)"
+  },
+  "Batt_current_A": {
+    "name": "Battery Current",
+    "unit": "A",
+    "description": "Current flow to/from battery"
+  },
+  "Batt_voltage_grade_V": {
+    "name": "Battery Voltage Grade",
+    "unit": "V",
+    "description": "Battery voltage rating/grade"
+  },
+  "Batt_rated_power_W": {
+    "name": "Battery Rated Power",
+    "unit": "W",
+    "description": "Maximum rated power of battery system"
+  },
+  "Batt_protocol_version": {
+    "name": "Battery Protocol Version",
+    "unit": "",
+    "description": "Battery communication protocol version"
+  }
+}
