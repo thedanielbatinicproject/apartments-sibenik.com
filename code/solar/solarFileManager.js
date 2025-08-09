@@ -27,9 +27,24 @@ async function saveSolarData(incomingData) {
   // Use delta compression
   const lastData = getLastSignificantData();
   const deltaResult = createDeltaRecord(completeRealtimeData, lastData);
-  
+
+  // Log file path
+  const logPath = path.join(__dirname, '../../data/public_data/solar-app.log');
+
+  // Helper for logging
+  async function logToFile(msg) {
+    const line = `[${new Date().toISOString()}] ${msg}\n`;
+    try {
+      await fs.appendFile(logPath, line);
+    } catch (e) {
+      // fallback: ignore log error
+    }
+  }
+
   if (deltaResult.type === 'skip') {
-    console.log('[SKIPPED]', deltaResult.reason);
+    const logMsg = `[SKIPPED] ${deltaResult.reason}`;
+    console.log(logMsg);
+    await logToFile(logMsg);
     return { skipped: true, reason: deltaResult.reason };
   }
 
@@ -49,15 +64,18 @@ async function saveSolarData(incomingData) {
   // Update last significant data
   if (deltaResult.type === 'full') {
     setLastSignificantData(deltaResult.data);
+    await logToFile('[FULL] New full record saved.');
   } else if (deltaResult.type === 'delta' && lastData) {
     // Apply delta to create new last significant data
     const updatedData = { ...lastData, ...deltaResult.data };
     setLastSignificantData(updatedData);
+    await logToFile('[DELTA] New delta record saved.');
   }
 
   // Save to file
   await fs.writeFile(publicDataPath, JSON.stringify(existingData, null, 2));
-  
+  await logToFile(`[SAVE] Record saved. Total records: ${existingData.length}`);
+
   return { 
     saved: true, 
     type: deltaResult.type,
