@@ -157,22 +157,30 @@
                 grid-template-columns: repeat(2, 1fr);
                 gap: 8px;
             }
-            
             .dashboard-card {
                 padding: 10px;
                 min-height: 70px;
             }
-            
             .card-title {
                 font-size: 0.8rem;
             }
-            
             .card-value {
                 font-size: 1rem;
             }
-            
             .card-unit {
                 font-size: 0.6rem;
+            }
+            /* Arrow flag card stilovi za mobitel */
+            .dashboard-card.arrow-flag-mobile {
+                font-size: 0.85rem !important;
+                min-width: 83vw !important;
+                max-width: 100% !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+                word-break: break-word;
+            }
+            .dashboard-card.arrow-flag-mobile .card-value {
+                font-size: 0.95rem !important;
             }
         }
 
@@ -310,28 +318,66 @@
                             </div>
                         <% } %>
                     </div>
-                    <div class="dashboard-grid" style="margin-bottom:0.5rem;">
-                        <% // RED 3: Inverter Arrow Flag %>
-                        <% const variable = 'inverter_arrow_flag';
-                             const meta = solarVars[variable] || {};
-                             const name = meta.name || variable.replace(/_/g, ' ');
-                             const value = latestData[variable] !== undefined && latestData[variable] !== null ? latestData[variable] : '';
-                             const unit = meta.unit || '';
-                             const description = meta.description || '';
-                        %>
-                        <div class="dashboard-card">
-                            <h3 class="card-title">
-                                <%= name %>
-                                <% if (description) { %>
-                                    <button class="info-btn" onclick="showTooltip(event, '<%- name.replace(/'/g, "\\'") %>', '<%- variable %>')" title="Info">i</button>
-                                <% } %>
-                            </h3>
-                            <div class="card-value" id="<%= variable.replace(/_/g, '-') %>">
-                                <%= value %>
-                                <% if (unit) { %><span class="card-unit"><%= unit %></span><% } %>
-                            </div>
-                        </div>
-                    </div>
+                                        <div class="dashboard-grid" style="margin-bottom:0.5rem; grid-template-columns: 1fr;">
+                                                <% // RED 3: Inverter Arrow Flag - prikaz svih bitova/bit-parova %>
+                                                <% const variable = 'inverter_arrow_flag';
+                                                     const meta = solarVars[variable] || {};
+                                                     const name = meta.name || variable.replace(/_/g, ' ');
+                                                     const value = latestData[variable] !== undefined && latestData[variable] !== null ? latestData[variable] : '';
+                                                     const arrowMeta = solarVars['arrow_flag'] || {};
+                                                                                 // Pretvori broj u 10-bitni binarni string (najmanje 10 bitova)
+                                                                                 const bin = value !== '' ? Number(value).toString(2).padStart(10, '0') : '';
+                                                        // Mapiraj svaki bit/bit-par na ime i vrijednost
+                                                        const arrowRows = [];
+                                                        if (bin) {
+                                                            for (let i = 0; i <= 5; i++) {
+                                                                const bitVal = bin[9-i]; // MSB je lijevo
+                                                                const bitMeta = arrowMeta[String(i)];
+                                                                if (bitMeta) {
+                                                                    const label = bitMeta.name;
+                                                                    const val = bitMeta.values[bitVal] || bitVal;
+                                                                    arrowRows.push({ label, val });
+                                                                }
+                                                            }
+                                                            // 6n7 (bits 6 i 7)
+                                                            const bits6n7 = bin.slice(2,4); // bit 6 = bin[3], bit 7 = bin[2]
+                                                            const meta6n7 = arrowMeta['6n7'];
+                                                            if (meta6n7) {
+                                                                const label = meta6n7.name;
+                                                                const val = meta6n7.values[bits6n7] || bits6n7;
+                                                                arrowRows.push({ label, val });
+                                                            }
+                                                            // 8n9 (bits 8 i 9)
+                                                            const bits8n9 = bin.slice(0,2); // bit 8 = bin[1], bit 9 = bin[0]
+                                                            const meta8n9 = arrowMeta['8n9'];
+                                                            if (meta8n9) {
+                                                                const label = meta8n9.name;
+                                                                const val = meta8n9.values[bits8n9] || bits8n9;
+                                                                arrowRows.push({ label, val });
+                                                            }
+                                                        }
+                                                %>
+                                                <div class="dashboard-card arrow-flag-mobile" style="min-width:340px; max-width:600px; width:100%;">
+                                                        <h3 class="card-title" style="margin-bottom:0.7em;">
+                                                                <%= name %>
+                                                        </h3>
+                                                        <div class="card-value" id="<%= variable.replace(/_/g, '-') %>" style="display:flex; flex-direction:column; align-items:flex-start; gap:0.3em; font-size:1.1rem;">
+                                                                <% if (arrowRows.length > 0) { %>
+                                                                    <% arrowRows.forEach(function(row, idx) { %>
+                                                                        <div style="width:100%;display:flex;justify-content:space-between;align-items:center;gap:1em;">
+                                                                            <span style="opacity:0.8;"><%= row.label %></span>
+                                                                            <span style="font-weight:600;"><%= row.val %></span>
+                                                                        </div>
+                                                                        <% if (idx < arrowRows.length - 1) { %>
+                                                                            <hr style="width:100%;border:none;border-top:1px solid rgba(255,255,255,0.18);margin:2px 0 2px 0;">
+                                                                        <% } %>
+                                                                    <% }); %>
+                                                                <% } else { %>
+                                                                    <span style="font-style:italic;opacity:0.5;">No data</span>
+                                                                <% } %>
+                                                        </div>
+                                                </div>
+                                        </div>
                     <hr class="dashboard-divider">
                     <!-- ENERGIJA: Generated -->
                     <div class="dashboard-section-title">Energy Generated</div>

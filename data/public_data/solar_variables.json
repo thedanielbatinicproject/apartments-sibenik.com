@@ -236,13 +236,13 @@
 	"inverter_warnings2": {
 	},
 	"arrow_flag":{
-		"0": {"name":"PV flag", "values":{"0":"Connected", "1":"Not connected"}},
-		"1": {"name": "Load flag", "values":{"0":"Connected", "1":"Not connected"}},
-		"2": {"name": "Battery flag", "values":{"0":"Connected", "1":"Not connected"}},
-		"3": {"name": "Grid flag", "values":{"0":"Connected", "1":"Not connected"}},
-		"4": {"name": "PV to Machine", "values":{"0":"Disconnect", "1":"Connected PV to machine"}},
-		"5": {"name": "Machine-to-Load-Arrow", "values":{"0":"Disconnect", "1":"Machine-to-Load"}},
-		"6": {"name": "Machine-Batt-Arrow", "values":{"00":"Disconnect", "01":"Machine-to-Batt", "10":"Batt-to-Machine", "11":"Connect"}},
-		"7": {"name": "Machine-Grid-Arrow", "values":{"00":"Disconnect", "01":"Machine-to-Grid", "10":"Grid-to-Machine", "11":"Connect"}}
+		"0": {"name":"PV flag", "values":{"0":"Disconected", "1":"Connected"}},
+		"1": {"name": "Load flag", "values":{"0":"Disconected", "1":"Connected"}},
+		"2": {"name": "Battery flag", "values":{"0":"Disconected", "1":"Connected"}},
+		"3": {"name": "Grid flag", "values":{"0":"Disconected", "1":"Connected"}},
+		"4": {"name": "PV to Machine", "values":{"0":"Disconnected", "1":"PV connected to machine"}},
+		"5": {"name": "Machine to Load", "values":{"0":"Disconnected", "1":"Machine connected to Load"}},
+		"6n7": {"name": "Machine to Battery", "values":{"00":"Disconnected", "01":"Machine connected to Battery", "10":"Battery connected to Machine", "11":"Connected"}},
+		"8n9": {"name": "Machine to Grid", "values":{"00":"Disconnected", "01":"Machine connected to Grid", "10":"Grid connected to Machine", "11":"Connected"}}
 	}
 }
