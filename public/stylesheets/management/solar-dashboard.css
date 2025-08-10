@@ -1,3 +1,81 @@
+/* Info button in each card */
+.info-btn {
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: #fff;
+  font-size: 1rem;
+  border-radius: 50%;
+  width: 1.7em;
+  height: 1.7em;
+  margin-left: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: background 0.2s, color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+.info-btn:hover, .info-btn:focus {
+  background: rgba(124,58,237,0.25);
+  color: #a78bfa;
+  outline: none;
+}
+
+/* Info tooltip styles */
+.info-tooltip {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  min-width: 260px;
+  max-width: 90vw;
+  background: rgba(30, 30, 40, 0.98);
+  color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  padding: 22px 24px 18px 24px;
+  font-size: 1rem;
+  transition: opacity 0.2s, top 0.2s, left 0.2s;
+  pointer-events: auto;
+}
+.info-tooltip .tooltip-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.3rem;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+.info-tooltip .tooltip-close:hover {
+  opacity: 1;
+}
+.info-tooltip .tooltip-title {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  color: #a78bfa;
+}
+.info-tooltip #tooltipDescription {
+  font-size: 1rem;
+  color: #fff;
+  opacity: 0.95;
+}
+
+@media (max-width: 600px) {
+  .info-tooltip {
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    min-width: 80vw;
+    max-width: 95vw;
+    padding: 18px 10px 14px 16px;
+    font-size: 0.98rem;
+  }
+}
 /* Management Dashboard Styles */
 .management-container {
   max-width: 1400px;

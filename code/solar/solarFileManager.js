@@ -103,8 +103,17 @@ async function saveSolarData(incomingData) {
 
   // Save to file
   try {
+    await logToFile(`[PRE-SAVE] Attempting to write to solars_public.json. Data length: ${existingData.length}`);
+    await logToFile(`[PRE-SAVE] Data to write: ${JSON.stringify(existingData, null, 2)}`);
     await fs.writeFile(publicDataPath, JSON.stringify(existingData, null, 2));
     await logToFile(`[SAVE] Record saved. Total records: ${existingData.length}`);
+    // Immediately read back and log file content for verification
+    try {
+      const verifyData = await fs.readFile(publicDataPath, 'utf8');
+      await logToFile(`[POST-SAVE] File content after write: ${verifyData}`);
+    } catch (verifyErr) {
+      await logToFile(`[POST-SAVE] ERROR reading file after write: ${verifyErr.toString()}`);
+    }
   } catch (e) {
     await logToFile('fs.writeFile ERROR: ' + e.toString());
     throw e;

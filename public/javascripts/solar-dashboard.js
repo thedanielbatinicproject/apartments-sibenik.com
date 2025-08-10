@@ -289,7 +289,8 @@ function exportJsonData() {
     button.textContent = 'Exporting...';
     const now = new Date();
     const dateString = `${String(now.getDate()).padStart(2,'0')}.${String(now.getMonth()+1).padStart(2,'0')}.${now.getFullYear()}`;
-    const filename = `APARTMENT-SOLAR-EXPORT-${dateString}.json`;
+    const timeString = `${String(now.getHours()).padStart(2,'0')}h${String(now.getMinutes()).padStart(2,'0')}m${String(now.getSeconds()).padStart(2,'0')}s`;
+    const filename = `SOLAR-EXPORT-${dateString}-${timeString}.json`;
     fetch('/api/export-solar-data', { method: 'GET', headers: { 'Content-Type': 'application/json' } })
     .then(r => { if (!r.ok) throw new Error('Export failed'); return r.blob(); })
     .then(blob => {
