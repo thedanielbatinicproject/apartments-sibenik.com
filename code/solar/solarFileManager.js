@@ -39,13 +39,12 @@ async function saveSolarData(incomingData) {
 
   await logToFile('--- saveSolarData called ---');
   await logToFile('incomingData: ' + JSON.stringify(incomingData));
-  await logToFile('completeRealtimeData: ' + JSON.stringify(completeRealtimeData));
 
   // Read existing data
   let existingData = [];
   try {
     const data = await fs.readFile(publicDataPath, 'utf8');
-    await logToFile('Read solars_public.json: ' + data);
+    await logToFile('Read solars_public.json: ');
     existingData = JSON.parse(data);
     await logToFile('existingData parsed: ' + JSON.stringify(existingData));
   } catch (err) {

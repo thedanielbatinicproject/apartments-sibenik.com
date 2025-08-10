@@ -107,18 +107,22 @@ router.post('/backyard-management', async (req, res) => {
     
     if (typeof solarData.relay1 !== 'undefined') {
       relayStates.relay1 = solarData.relay1;
+      delete solarData.relay1;
       hasRelayData = true;
     }
     if (typeof solarData.relay2 !== 'undefined') {
       relayStates.relay2 = solarData.relay2;
+      delete solarData.relay2;
       hasRelayData = true;
     }
     if (typeof solarData.relay3 !== 'undefined') {
       relayStates.relay3 = solarData.relay3;
+      delete solarData.relay3;
       hasRelayData = true;
     }
     if (typeof solarData.relay4 !== 'undefined') {
       relayStates.relay4 = solarData.relay4;
+      delete solarData.relay4;
       hasRelayData = true;
     }
 

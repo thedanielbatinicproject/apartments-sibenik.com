@@ -6,12 +6,12 @@
  * Create delta record from new data and last data
  */
 function createDeltaRecord(newData, lastData) {
-  // RULE 1: If Error_message_1 > 0 or Warning_message_1 > 0, save entire object
-  if (newData.Error_message_1 > 0 || newData.Warning_message_1 > 0) {
+  // RULE 1: If error_message_1 > 0 or warning_message_1 > 0, save entire object
+  if (newData.error_message_1 > 0 || newData.warning_message_1 > 0) {
     return { 
       type: 'full', 
       data: newData, 
-      reason: `Error=${newData.Error_message_1}, Warning=${newData.Warning_message_1}` 
+      reason: `Error=${newData.error_message_1}, Warning=${newData.warning_message_1}` 
     };
   }
 
@@ -31,20 +31,40 @@ function createDeltaRecord(newData, lastData) {
   };
 
   const significantFields = [
-    // New Arduino format variable names
-    'Battery_voltage_V', 'Inverter_voltage_V', 'Grid_voltage_V', 'Bus_voltage_V',
-    'Control_current_A', 'Inverter_current_A', 'Grid_current_A', 'Load_current_A',
-    'P_Inverter_W', 'P_Grid_W', 'P_Load_W', 'Load_percent',
-    'S_Inverter_VA', 'S_Grid_VA', 'S_Load_VA',
-    'Q_Inverter_var', 'Q_Grid_var', 'Q_Load_var',
-    'Inverter_freq_Hz', 'Grid_freq_Hz',
-    'AC_radiator_temp_C', 'Transformer_temp_C', 'DC_radiator_temp_C',
-    'Inverter_relay_state', 'Grid_relay_state', 'Load_relay_state', 
-    'N_Line_relay_state', 'DC_relay_state', 'Earth_relay_state',
-    'Error_message_1', 'Error_message_2', 'Error_message_3',
-    'Warning_message_1', 'Warning_message_2',
-    'Machine_type_high', 'Batt_power_W', 'Batt_current_A',
-    'relay1', 'relay2', 'relay3', 'relay4'
+    "pv_charger_voltage",
+    "pv_charger_power",
+    "pv_charger_radiator_temp",
+    "pv_relay",
+    "pv_charger_accumulated_day",
+    "pv_charger_accumulated_hour",
+    "pv_charger_accumulated_minute",
+    "charger_total_produced_energy",
+    "inverter_work_state",
+    "pv_charger_battery_voltage",
+    "inverter_battery_voltage",
+    "inverter_voltage",
+    "inverter_bus_voltage",
+    "inverter_current",
+    "inverter_load_current",
+    "inverter_power",
+    "inverter_load_power",
+    "inverter_system_load",
+    "inverter_ac_radiator_temp",
+    "inverter_transformer_temp",
+    "inverter_dc_radiator_temp",
+    "discharger_total_mwh",
+    "discharger_total_kwh",
+    "inverter_battery_power",
+    "inverter_battery_current",
+    "pv_charger_workstate",
+    "error_message_1",
+    "error_message_2",
+    "warning_message_1",
+    "inverter_arrow_flag",
+    "load_percent",
+    "charger_error_message",
+    "charger_warning_message"
+    // timestamp, local_time, _type se ne uspoređuju jer su meta podaci
   ];
 
   let changesFound = 0;
