@@ -128,9 +128,9 @@ function extractChartData(records) {
   
   for (const record of records) {
     timePoints.push(record.timestamp);
-    busVoltage.push(parseFloat(record.Bus_voltage_V) || 0);
-    batteryVoltage.push(parseFloat(record.Battery_voltage_V) || 0);
-    inverterPower.push(parseFloat(record.P_Inverter_W) || 0);
+    busVoltage.push(parseFloat(record.inverter_bus_voltage) || 0);
+    batteryVoltage.push(parseFloat(record.inverter_battery_voltage) || 0);
+    inverterPower.push(parseFloat(record.inverter_power) || 0);
   }
   
   return {

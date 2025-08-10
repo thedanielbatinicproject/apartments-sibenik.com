@@ -236,68 +236,242 @@
         </div>
 
         <% if (latestData) { %>
-        <div class="dashboard-grid">
-            <% 
-            const newVariables = [
-                'pv_charger_voltage',
-                'pv_charger_power',
-                'pv_charger_radiator_temp',
-                'pv_relay',
-                'pv_charger_accumulated_day',
-                'pv_charger_accumulated_hour',
-                'pv_charger_accumulated_minute',
-                'charger_total_produced_energy',
-                'inverter_work_state',
-                'pv_charger_battery_voltage',
-                'inverter_battery_voltage',
-                'inverter_voltage',
-                'inverter_bus_voltage',
-                'inverter_current',
-                'inverter_load_current',
-                'inverter_power',
-                'inverter_load_power',
-                'inverter_system_load',
-                'inverter_ac_radiator_temp',
-                'inverter_transformer_temp',
-                'inverter_dc_radiator_temp',
-                'inverter_battery_current',
-                'pv_charger_workstate',
-                'discharger_total_mwh',
-                'discharger_total_kwh',
-                'inverter_battery_power',
-                'error_message_1',
-                'error_message_2',
-                'warning_message_1',
-                'inverter_arrow_flag',
-                'load_percent',
-                'charger_error_message',
-                'charger_warning_message'
-            ];
-            const solarVars = solarVariables || {};
-            for (let i = 0; i < newVariables.length; i++) {
-                const variable = newVariables[i];
-                const meta = solarVars[variable] || {};
-                const name = meta.name || variable.replace(/_/g, ' ');
-                const value = latestData[variable] !== undefined && latestData[variable] !== null ? latestData[variable] : '';
-                const unit = meta.unit || '';
-                const description = meta.description || '';
-            %>
-                <div class="dashboard-card">
-                    <h3 class="card-title">
-                        <%= name %>
-                        <% if (description) { %>
-                            <button class="info-btn" onclick="showTooltip(event, '<%- name.replace(/'/g, "\\'") %>', '<%- variable %>')" title="Info">i</button>
+                <div class="dashboard-section">
+                    <!-- RED 1: PV kartice -->
+                    <div class="dashboard-grid">
+                        <% const solarVars = solarVariables || {};
+                             const pvCards = [
+                                 'pv_charger_voltage',
+                                 'pv_charger_radiator_temp',
+                                 'pv_charger_battery_voltage',
+                                 'pv_relay',
+                                 'pv_charger_power',
+                                 'pv_charger_workstate'
+                             ];
+                             for (const variable of pvCards) {
+                                 const meta = solarVars[variable] || {};
+                                 const name = meta.name || variable.replace(/_/g, ' ');
+                                 const value = latestData[variable] !== undefined && latestData[variable] !== null ? latestData[variable] : '';
+                                 const unit = meta.unit || '';
+                                 const description = meta.description || '';
+                        %>
+                            <div class="dashboard-card">
+                                <h3 class="card-title">
+                                    <%= name %>
+                                    <% if (description) { %>
+                                        <button class="info-btn" onclick="showTooltip(event, '<%- name.replace(/'/g, "\\'") %>', '<%- variable %>')" title="Info">i</button>
+                                    <% } %>
+                                </h3>
+                                <div class="card-value" id="<%= variable.replace(/_/g, '-') %>">
+                                    <%= value %>
+                                    <% if (unit) { %><span class="card-unit"><%= unit %></span><% } %>
+                                </div>
+                            </div>
                         <% } %>
-                    </h3>
-                    <div class="card-value" id="<%= variable.replace(/_/g, '-') %>">
-                        <%= value %>
-                        <% if (unit) { %>
-                            <span class="card-unit"><%= unit %></span>
+                    </div>
+                    <hr class="dashboard-divider">
+                    <!-- RED 2: Inverter kartice -->
+                    <div class="dashboard-grid">
+                        <% const inverterCards = [
+                            'inverter_battery_voltage',
+                            'inverter_voltage',
+                            'inverter_bus_voltage',
+                            'inverter_ac_radiator_temp',
+                            'inverter_dc_radiator_temp',
+                            'inverter_battery_current',
+                            'inverter_current',
+                            'inverter_load_current',
+                            'load_percent',
+                            'inverter_power',
+                            'inverter_battery_power',
+                            'inverter_load_power',
+                            'inverter_system_load',
+                            'inverter_transformer_temp',
+                            'inverter_work_state'
+                        ];
+                        for (const variable of inverterCards) {
+                            const meta = solarVars[variable] || {};
+                            const name = meta.name || variable.replace(/_/g, ' ');
+                            const value = latestData[variable] !== undefined && latestData[variable] !== null ? latestData[variable] : '';
+                            const unit = meta.unit || '';
+                            const description = meta.description || '';
+                        %>
+                            <div class="dashboard-card">
+                                <h3 class="card-title">
+                                    <%= name %>
+                                    <% if (description) { %>
+                                        <button class="info-btn" onclick="showTooltip(event, '<%- name.replace(/'/g, "\\'") %>', '<%- variable %>')" title="Info">i</button>
+                                    <% } %>
+                                </h3>
+                                <div class="card-value" id="<%= variable.replace(/_/g, '-') %>">
+                                    <%= value %>
+                                    <% if (unit) { %><span class="card-unit"><%= unit %></span><% } %>
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+                    <div class="dashboard-grid" style="margin-bottom:0.5rem;">
+                        <% // RED 3: Inverter Arrow Flag %>
+                        <% const variable = 'inverter_arrow_flag';
+                             const meta = solarVars[variable] || {};
+                             const name = meta.name || variable.replace(/_/g, ' ');
+                             const value = latestData[variable] !== undefined && latestData[variable] !== null ? latestData[variable] : '';
+                             const unit = meta.unit || '';
+                             const description = meta.description || '';
+                        %>
+                        <div class="dashboard-card">
+                            <h3 class="card-title">
+                                <%= name %>
+                                <% if (description) { %>
+                                    <button class="info-btn" onclick="showTooltip(event, '<%- name.replace(/'/g, "\\'") %>', '<%- variable %>')" title="Info">i</button>
+                                <% } %>
+                            </h3>
+                            <div class="card-value" id="<%= variable.replace(/_/g, '-') %>">
+                                <%= value %>
+                                <% if (unit) { %><span class="card-unit"><%= unit %></span><% } %>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="dashboard-divider">
+                    <!-- ENERGIJA: Generated -->
+                    <div class="dashboard-section-title">Energy Generated</div>
+                    <div class="dashboard-grid">
+                        <% // Charger Accumulated
+                             const day = Number(latestData['pv_charger_accumulated_day']) || 0;
+                             const hour = Number(latestData['pv_charger_accumulated_hour']) || 0;
+                             const minute = Number(latestData['pv_charger_accumulated_minute']) || 0;
+                             const totalSeconds = day * 24 * 3600 + hour * 3600 + minute * 60;
+                             const h = Math.floor(totalSeconds / 3600);
+                             const m = Math.floor((totalSeconds % 3600) / 60);
+                             const s = totalSeconds % 60;
+                             const chargerAccumulatedStr = `${h}h ${m}m ${s}s`;
+                        %>
+                        <div class="dashboard-card">
+                            <h3 class="card-title">
+                                Charger Accumulated
+                                <% if (solarVars['pv_charger_accumulated_day'] && solarVars['pv_charger_accumulated_day'].description) { %>
+                                    <button class="info-btn" onclick="showTooltip(event, 'Charger Accumulated', 'pv_charger_accumulated_day')" title="Info">i</button>
+                                <% } %>
+                            </h3>
+                            <div class="card-value" id="charger-accumulated">
+                                <%= chargerAccumulatedStr %>
+                                <span class="card-unit"></span>
+                            </div>
+                        </div>
+                        <% // Charger Total Produced Energy %>
+                        <% const variable2 = 'charger_total_produced_energy';
+                             const meta2 = solarVars[variable2] || {};
+                             const name2 = meta2.name || variable2.replace(/_/g, ' ');
+                             const value2 = latestData[variable2] !== undefined && latestData[variable2] !== null ? latestData[variable2] : '';
+                             const unit2 = meta2.unit || '';
+                             const description2 = meta2.description || '';
+                        %>
+                        <div class="dashboard-card">
+                            <h3 class="card-title">
+                                <%= name2 %>
+                                <% if (description2) { %>
+                                    <button class="info-btn" onclick="showTooltip(event, '<%- name2.replace(/'/g, "\\'") %>', '<%- variable2 %>')" title="Info">i</button>
+                                <% } %>
+                            </h3>
+                            <div class="card-value" id="<%= variable2.replace(/_/g, '-') %>">
+                                <%= value2 %>
+                                <% if (unit2) { %><span class="card-unit"><%= unit2 %></span><% } %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dashboard-section-title">Energy Used</div>
+                    <div class="dashboard-grid">
+                        <% // Discharger Total MWh
+                             const variable3 = 'discharger_total_mwh';
+                             const meta3 = solarVars[variable3] || {};
+                             const name3 = meta3.name || variable3.replace(/_/g, ' ');
+                             const value3 = latestData[variable3] !== undefined && latestData[variable3] !== null ? latestData[variable3] : '';
+                             const unit3 = meta3.unit || '';
+                             const description3 = meta3.description || '';
+                        %>
+                        <div class="dashboard-card">
+                            <h3 class="card-title">
+                                <%= name3 %>
+                                <% if (description3) { %>
+                                    <button class="info-btn" onclick="showTooltip(event, '<%- name3.replace(/'/g, "\\'") %>', '<%- variable3 %>')" title="Info">i</button>
+                                <% } %>
+                            </h3>
+                            <div class="card-value" id="<%= variable3.replace(/_/g, '-') %>">
+                                <%= value3 %>
+                                <% if (unit3) { %><span class="card-unit"><%= unit3 %></span><% } %>
+                            </div>
+                        </div>
+                        <% // Discharger Total kWh
+                             const variable4 = 'discharger_total_kwh';
+                             const meta4 = solarVars[variable4] || {};
+                             const name4 = meta4.name || variable4.replace(/_/g, ' ');
+                             const value4 = latestData[variable4] !== undefined && latestData[variable4] !== null ? latestData[variable4] : '';
+                             const unit4 = meta4.unit || '';
+                             const description4 = meta4.description || '';
+                        %>
+                        <div class="dashboard-card">
+                            <h3 class="card-title">
+                                <%= name4 %>
+                                <% if (description4) { %>
+                                    <button class="info-btn" onclick="showTooltip(event, '<%- name4.replace(/'/g, "\\'") %>', '<%- variable4 %>')" title="Info">i</button>
+                                <% } %>
+                            </h3>
+                            <div class="card-value" id="<%= variable4.replace(/_/g, '-') %>">
+                                <%= value4 %>
+                                <% if (unit4) { %><span class="card-unit"><%= unit4 %></span><% } %>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="dashboard-divider">
+                    <div class="dashboard-section-title">Inverter Messages</div>
+                    <div class="dashboard-grid">
+                        <% const inverterMsg = ['error_message_1','error_message_2','warning_message_1'];
+                             for (const variable of inverterMsg) {
+                                 const meta = solarVars[variable] || {};
+                                 const name = meta.name || variable.replace(/_/g, ' ');
+                                 const value = latestData[variable] !== undefined && latestData[variable] !== null ? latestData[variable] : '';
+                                 const unit = meta.unit || '';
+                                 const description = meta.description || '';
+                        %>
+                            <div class="dashboard-card">
+                                <h3 class="card-title">
+                                    <%= name %>
+                                    <% if (description) { %>
+                                        <button class="info-btn" onclick="showTooltip(event, '<%- name.replace(/'/g, "\\'") %>', '<%- variable %>')" title="Info">i</button>
+                                    <% } %>
+                                </h3>
+                                <div class="card-value" id="<%= variable.replace(/_/g, '-') %>">
+                                    <%= value %>
+                                    <% if (unit) { %><span class="card-unit"><%= unit %></span><% } %>
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+                    <div class="dashboard-section-title">Charger Messages</div>
+                    <div class="dashboard-grid">
+                        <% const chargerMsg = ['charger_error_message','charger_warning_message'];
+                             for (const variable of chargerMsg) {
+                                 const meta = solarVars[variable] || {};
+                                 const name = meta.name || variable.replace(/_/g, ' ');
+                                 const value = latestData[variable] !== undefined && latestData[variable] !== null ? latestData[variable] : '';
+                                 const unit = meta.unit || '';
+                                 const description = meta.description || '';
+                        %>
+                            <div class="dashboard-card">
+                                <h3 class="card-title">
+                                    <%= name %>
+                                    <% if (description) { %>
+                                        <button class="info-btn" onclick="showTooltip(event, '<%- name.replace(/'/g, "\\'") %>', '<%- variable %>')" title="Info">i</button>
+                                    <% } %>
+                                </h3>
+                                <div class="card-value" id="<%= variable.replace(/_/g, '-') %>">
+                                    <%= value %>
+                                    <% if (unit) { %><span class="card-unit"><%= unit %></span><% } %>
+                                </div>
+                            </div>
                         <% } %>
                     </div>
                 </div>
-            <% } %>
-        </div>
         <% } else { %>
         <div class="dashboard-card">
             <h3 class="card-title">No Data Available</h3>
@@ -334,9 +508,9 @@
 
         <!-- Data History Table -->
         <div class="data-history">
-            <h2 class="history-title">Recent Data History (<%= totalRecords %> total records)</h2>
-            <div class="history-table-container">
-                <table class="history-table">
+            <h2 class="history-title" id="historyTitle">Recent Data History (<%= totalRecords %> total records)</h2>
+            <div class="history-table-container" style="overflow-x: auto; max-width: 100vw;">
+                <table class="history-table" style="min-width: 600px;">
                     <thead>
                         <tr>
                             <th>Time</th>
@@ -344,7 +518,7 @@
                             <th>Battery Voltage [V]</th>
                             <th>Inverter Power [W]</th>
                             <th>Load Power [W]</th>
-                            <th>Grid Power [W]</th>
+                            <th>PV Power [W]</th>
                         </tr>
                     </thead>
                     <tbody id="historyTableBody">
@@ -353,11 +527,11 @@
                             <% solarData.slice(-displayCount).reverse().forEach((record, index) => { %>
                             <tr>
                                 <td><%= new Date(record.timestamp).toLocaleString() %></td>
-                                <td><%= record.Bus_voltage_V || '0' %></td>
-                                <td><%= record.Battery_voltage_V || '0' %></td>
-                                <td><%= record.P_Inverter_W || '0' %></td>
-                                <td><%= record.P_Load_W || '0' %></td>
-                                <td><%= record.P_Grid_W || '0' %></td>
+                                <td><%= record.inverter_bus_voltage || '0' %></td>
+                                <td><%= record.inverter_battery_voltage || '0' %></td>
+                                <td><%= record.inverter_power || '0' %></td>
+                                <td><%= record.inverter_load_power || '0' %></td>
+                                <td><%= record.pv_charger_power || '0' %></td>
                             </tr>
                             <% }); %>
                         <% } %>
@@ -372,7 +546,6 @@
             <% if (totalRecords > 10) { %>
             <button class="load-more-btn" id="loadMoreBtn" onclick="loadMoreData()">
                 Load More Data
-                    }
 
             </button>
             <% } %>

@@ -132,19 +132,24 @@
 	"error_message_1": {
 		"name": "Error Message 1",
 		"unit": "",
-		"description": "Error message 1"
+		"description": "Error message 1.<br>Codes:<br>0: Fan is locked when inverter is off<br>1: Inverter transformer over temperature<br>2: Battery voltage is too high<br>3: Battery voltage is too low<br>4: Output short circuited<br>5: Inverter output voltage is high<br>6: Overload time out<br>7: Inverter bus voltage is too high<br>8: Bus soft start failed<br>9: Main relay failed<br>10: Inverter output voltage sensor error<br>11: Inverter grid voltage sensor error<br>12: Inverter output current sensor error<br>13: Inverter grid current sensor error<br>14: Inverter load current sensor error<br>15: Inverter grid over current error"
 	},
 	"error_message_2": {
 		"name": "Error Message 2",
 		"unit": "",
-		"description": "Error message 2"
+		"description": "Error message 2.<br>Codes:<br>0: Inverter radiator over temperature<br>1: Solar charger battery voltage class error<br>2: Solar charger current sensor error<br>3: Solar charger current is uncontrollable<br>4: Inverter grid voltage is low<br>5: Inverter grid voltage is high<br>6: Inverter grid under frequency<br>7: Inverter grid over frequency<br>8: Inverter over current protection error<br>9: Inverter bus voltage is too low<br>10: Inverter soft start failed<br>11: Over DC voltage in AC output<br>12: Battery connection is open<br>13: Inverter control current sensor error<br>14: Inverter output voltage is too low"
 	},
-	"warning_message_1": {
-		"name": "Warning Message 1",
-		"unit": "",
-		"description": "Warning message 1"
-	},
-	"inverter_arrow_flag": {
+		"warning_message_1": {
+			"name": "Warning Message 1",
+			"unit": "",
+			"description": "Warning message 1.<br>Codes:<br>0: Fan is locked when inverter is on<br>1: Fan 2 is locked when inverter is on<br>2: Battery is over-charged<br>3: Low battery<br>4: Inverter overload<br>5: Output power derating<br>6: Solar charger stopped due to low battery<br>7: Solar charger stopped due to high PV voltage<br>8: Solar charger stopped due to over load<br>9: Solar charger stopped due to over temperature<br>10: PV charger stopped due to communication error"
+		},
+		"warning_message_2": {
+			"name": "Warning Message 2",
+			"unit": "",
+			"description": "Warning message 2.<br>All codes reserved."
+		},
+		"inverter_arrow_flag": {
 		"name": "Inverter Arrow Flag",
 		"unit": "",
 		"description": "Inverter arrow flag"
@@ -157,11 +162,87 @@
 	"charger_error_message": {
 		"name": "Charger Error Message",
 		"unit": "",
-		"description": "Charger error message"
+		"description": "Charger error message.<br>Codes:<br>0: Hardware protection<br>1: Over current<br>2: Current sensor error<br>3: Over temperature<br>4: PV voltage is too high<br>5: PV voltage is too low<br>6: Battery voltage is too high<br>7: Battery voltage is too low<br>8: Current is uncontrollable<br>9: Parameter error."
 	},
 	"charger_warning_message": {
 		"name": "Charger Warning Message",
 		"unit": "",
-		"description": "Charger warning message"
+		"description": "Charger warning message.<br>Codes:<br>0: Fan error."
+	},
+	"charger_errors": {
+		"0" : "Charger hardware protection error.",
+		"1" : "Over current in charger",
+		"2" : "Current Sensor error in charger.",
+		"3" : "Over temperature in charger.",
+		"4" : "PV voltage is too high in charger.",
+		"5" : "PC voltage is too low in charger.",
+		"6" : "Battery voltage is too high in charger.",
+		"7" : "Battery voltage is too low in charger.",
+		"8" : "Current is uncontrollable in charger.",
+		"9" : "Parameter error in charger."
+	},
+	"inverter_errors1": {
+		"0":"Fan locked when inverter is off.",
+		"1": "Inverter transformer is too hot.",
+		"2": "Battery voltage is too high for inverter.",
+		"3": "Battery voltage is too low for inverter.",
+		"4": "Output short circuit detected in inverter.",
+		"5": "Inverter output voltage is too high.",
+		"6": "Inverter was overloaded for too long, overload timeout!",
+		"7": "Inverter bus voltage is too high.",
+		"8": "Bus soft start failed in inverter.",
+		"9": "Inverter main relay failed.",
+		"10": "Inverter output voltage sensor error.",
+		"11": "Inverter grid voltage sensor error.",
+		"12": "Inverter output current sensor error.",
+		"13": "Inverter grid current sensor error.",
+		"14": "Inverter load current sensor error.",
+		"15": "Inverter grid over current error."
+	},
+	"inverter_errors2": {
+		"0": "Inverter radiator is over temperature.",
+		"1": "Solar charger battery voltage class error.",
+		"2": "Solar charger current sensor error.",
+		"3": "Solar charger current is uncontrollable.",
+		"4": "Inverter grid voltage is too low.",
+		"5": "Inverter grid voltage is too high.",
+		"6": "Inverter grid is on too low frequency.",
+		"7": "Inverter grid is on too high frequency",
+		"8": "Inverter over current protection error.",
+		"9": "Inverter bus voltage is too low.",
+		"10": "Inverter soft start failed.",
+		"11": "Over DC voltage in AC output!",
+		"12": "Battery connection is open!",
+		"13": "Inverter control current sensor error.",
+		"14": "Inverter output voltage is too low."
+
+	},
+	"charger_warnings": {
+		"0" : "Fan error in charger"
+	},
+	"inverter_warnings1": {
+		"0": "Fan is locked when inverter is on.",
+		"1": "Fan 2 is locked when inverter is on.",
+		"2": "Battery is over-charged.",
+		"3": "Low battery.",
+		"4": "Inverter overload.",
+		"5": "Output power derating.",
+		"6": "Solar charger stopped due to low battery.",
+		"7": "Solar charger stopped due to high PV voltage.",
+		"8": "Solar charger stopped due to over load.",
+		"9": "Solar charger stopped due to over temperature.",
+		"10": "PV charger stopped due to communication error."
+	},
+	"inverter_warnings2": {
+	},
+	"arrow_flag":{
+		"0": {"name":"PV flag", "values":{"0":"Connected", "1":"Not connected"}},
+		"1": {"name": "Load flag", "values":{"0":"Connected", "1":"Not connected"}},
+		"2": {"name": "Battery flag", "values":{"0":"Connected", "1":"Not connected"}},
+		"3": {"name": "Grid flag", "values":{"0":"Connected", "1":"Not connected"}},
+		"4": {"name": "PV to Machine", "values":{"0":"Disconnect", "1":"Connected PV to machine"}},
+		"5": {"name": "Machine-to-Load-Arrow", "values":{"0":"Disconnect", "1":"Machine-to-Load"}},
+		"6": {"name": "Machine-Batt-Arrow", "values":{"00":"Disconnect", "01":"Machine-to-Batt", "10":"Batt-to-Machine", "11":"Connect"}},
+		"7": {"name": "Machine-Grid-Arrow", "values":{"00":"Disconnect", "01":"Machine-to-Grid", "10":"Grid-to-Machine", "11":"Connect"}}
 	}
 }

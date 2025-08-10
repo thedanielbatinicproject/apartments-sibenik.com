@@ -237,37 +237,6 @@ router.get('/solar/chart-data', requireAPIKey, async (req, res) => {
   }
 });
 
-// Get latest solar data
-router.get('/backyard-management', requireAPIKey, async (req, res) => {
-  try {
-    const solarData = await readSolarDataWithCache();
-    
-    if (solarData.length === 0) {
-      return res.json(createAPIResponse(false, null, 'No solar data available'));
-    }
-
-    // Get latest record and reconstruct if needed
-    const latestRecord = solarData[solarData.length - 1];
-    let latestData;
-    
-    if (latestRecord._type === 'delta') {
-      const reconstructed = await reconstructDeltaDataWithHistory([latestRecord], solarData);
-      latestData = reconstructed[0];
-    } else {
-      latestData = latestRecord;
-    }
-
-    res.json(createAPIResponse(true, { 
-      latestData,
-      totalRecords: solarData.length,
-      timestamp: new Date().toISOString()
-    }));
-
-  } catch (error) {
-    return handleError(req, res, error, '500', 'LATEST DATA ERROR');
-  }
-});
-
 // Export solar data
 router.get('/export-solar-data', async (req, res) => {
   try {

@@ -1,4 +1,33 @@
-// Optimized Solar Dashboard JS
+// Vrati popis aktivnih bitova za binarni flag broj
+function getActiveBits(decimalValue) {
+    if (typeof decimalValue !== 'number' || isNaN(decimalValue)) return '';
+    const bits = decimalValue.toString(2).split('').reverse();
+    const active = [];
+    for (let i = 0; i < bits.length; i++) {
+        if (bits[i] === '1') active.push(i);
+    }
+    return active.join(', ');
+}
+
+// Polja koja su binarni flagovi
+const BINARY_FLAG_FIELDS = [
+    'error_message_1',
+    'error_message_2',
+    'warning_message_1',
+    'charger_error_message',
+    'charger_warning_message'
+];
+// Auto-select 12h chart range after full page load
+window.addEventListener('DOMContentLoaded', function() {
+    loadAllCharts('12h');
+});
+
+// --- DASHBOARD LIVE UPDATE ---
+function updateDashboard(data) {
+    // Ovdje možeš dodati i ostale update logike ako treba
+    updateBinaryFlagFields(data);
+}
+window.updateDashboard = updateDashboard;
 // All core functionalities, no duplicates, global functions for HTML onclick
 
 let pvVoltageChart = null;
@@ -7,7 +36,7 @@ let chargePowerChart = null;
 let displayedRecords = 10;
 let totalAvailableRecords = 0;
 let lastKnownDashboardValues = {};
-let lastKnownChartValues = { Bus_voltage_V: null, Battery_voltage_V: null, P_Inverter_W: null };
+let lastKnownChartValues = { inverter_bus_voltage: null, inverter_battery_voltage: null, inverter_power: null };
 let lastKnownTableValues = {};
 
 // --- TOOLTIP ---
@@ -29,7 +58,7 @@ async function showTooltip(event, title, variableName) {
             headers: { 'x-api-key': window.API_SECRET }
         });
         const data = await response.json();
-        descElement.textContent = (data.success && data.description) ? data.description : 'No description available';
+    descElement.innerHTML = (data.success && data.description) ? data.description : 'No description available';
     } catch {
         descElement.textContent = 'Error loading description';
     }
@@ -37,6 +66,10 @@ async function showTooltip(event, title, variableName) {
 function hideTooltip() {
     const tooltip = document.getElementById('infoTooltip');
     if (tooltip) tooltip.style.display = 'none';
+}
+function formatNumber(n) {
+    if (n >= 1000) return (n / 1000).toFixed(1).replace('.0', '') + 'K';
+    return n;
 }
 
 // --- TABLE ---
@@ -52,18 +85,25 @@ function loadMoreData() {
     .then(r => r.json())
     .then(data => {
         if (data.success && data.data.length > 0) {
-            data.data.forEach(record => {
+            data.data.slice().reverse().forEach(record => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${new Date(record.timestamp).toLocaleString()}</td>
-                    <td>${record.Bus_voltage_V ?? '-'}</td>
-                    <td>${record.Battery_voltage_V ?? '-'}</td>
-                    <td>${record.P_Inverter_W ?? '-'}</td>
-                    <td>${record.P_Load_W ?? '-'}</td>
-                    <td>${record.P_Grid_W ?? '-'}</td>`;
+                    <td>${record.inverter_bus_voltage ?? '-'}</td>
+                    <td>${record.inverter_battery_voltage ?? '-'}</td>
+                    <td>${record.inverter_power ?? '-'}</td>
+                    <td>${record.inverter_load_power ?? '-'}</td>
+                    <td>${record.pv_charger_power ?? '-'}</td>`;
                 tbody.appendChild(row);
             });
             displayedRecords += data.data.length;
+                        // Update history title with formatted number
+                        if (typeof data.totalRecords !== 'undefined') {
+                                const title = document.getElementById('historyTitle');
+                                if (title) {
+                                        title.textContent = `Recent Data History (${formatNumber(data.totalRecords)} total records)`;
+                                }
+                        }
             if (!data.hasMore || data.data.length < 10) button.style.display = 'none';
             else { button.disabled = false; button.textContent = 'Load More Data'; }
         } else button.style.display = 'none';
@@ -358,7 +398,15 @@ function initializeLastKnownDashboardValues(latestDataFromServer) {
             const elementId = variable.toLowerCase().replace(/_/g, '-');
             const element = document.getElementById(elementId);
             if (element && (!element.textContent || element.textContent.trim() === '')) {
-                element.textContent = latestDataFromServer[variable];
+                let value = latestDataFromServer[variable];
+                if (BINARY_FLAG_FIELDS.includes(variable)) {
+                    const n = Number(value);
+                    if (!isNaN(n)) {
+                        const bits = getActiveBits(n);
+                        value = bits || '0';
+                    }
+                }
+                element.textContent = value;
             }
         }
     });
@@ -417,7 +465,33 @@ document.addEventListener('DOMContentLoaded', function() {
         return res.json();
     })
     .then(result => {
-        if (result.success && result.data) initializeLastKnownDashboardValues(result.data);
+        if (result.success && result.data) {
+            initializeLastKnownDashboardValues(result.data);
+            updateBinaryFlagFields(result.data);
+        }
     })
     .catch(err => console.error('Error fetching latest data:', err));
 });
+
+// Funkcija koja uvijek prepisuje vrijednosti za binarne flagove na dashboardu
+function updateBinaryFlagFields(data) {
+    if (!data) return;
+    BINARY_FLAG_FIELDS.forEach(variable => {
+        const elementId = variable.replace(/_/g, '-');
+        const el = document.getElementById(elementId);
+        const n = Number(data[variable]);
+        const binaryStr = !isNaN(n) ? n.toString(2) : '';
+        const bits = getActiveBits(n);
+        if (el) {
+            if (!isNaN(n)) {
+                if (n === 0 || bits === '') {
+                    el.innerHTML = '<span style="font-style:italic;opacity:0.5;">No messages</span>';
+                } else {
+                    el.textContent = bits;
+                }
+            } else {
+                el.innerHTML = '<span style="font-style:italic;opacity:0.5;">No messages</span>';
+            }
+        }
+    });
+}
