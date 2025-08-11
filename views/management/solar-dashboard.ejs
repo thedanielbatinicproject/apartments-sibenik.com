@@ -274,6 +274,7 @@
                                     <%= value %>
                                     <% if (unit) { %><span class="card-unit"><%= unit %></span><% } %>
                                 </div>
+                                <div class="dashboard-alerts-container" id="<%= variable.replace(/_/g, '-') %>-alerts"></div>
                             </div>
                         <% } %>
                     </div>
@@ -493,6 +494,7 @@
                             </div>
                         <% } %>
                     </div>
+                    <div class="dashboard-alerts-container" id="inverter-messages-alerts"></div>
                     <div class="dashboard-section-title">Charger Messages</div>
                     <div class="dashboard-grid">
                         <% const chargerMsg = ['charger_error_message','charger_warning_message'];
@@ -517,6 +519,7 @@
                             </div>
                         <% } %>
                     </div>
+                    <div class="dashboard-alerts-container" id="charger-messages-alerts"></div>
                 </div>
         <% } else { %>
         <div class="dashboard-card">

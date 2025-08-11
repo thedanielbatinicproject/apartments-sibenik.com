@@ -1,3 +1,41 @@
+/* --- ALERT BOXES U STILU DASHBOARD KARTICA --- */
+.dashboard-alert-box {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.20);
+  border-radius: 20px;
+  box-shadow: 0 1px 6px 0 rgba(30,40,80,0.06);
+  backdrop-filter: blur(10px);
+  color: rgba(255,255,255,0.92);
+  font-size: 1.04rem;
+  font-weight: 500;
+  padding: 0.7rem 1.1rem;
+  margin: 0.18rem 0 0.18rem 0;
+  transition: box-shadow 0.2s;
+}
+.dashboard-alert-error {
+  border-left: 3px solid #f87171;
+}
+.dashboard-alert-warning {
+  border-left: 3px solid #ffe066;
+}
+.dashboard-alert-code {
+  background: rgba(248,113,113,0.18);
+  color: #f87171;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 0.18em 0.7em;
+  font-size: 1em;
+  margin-right: 0.6em;
+  display: inline-block;
+  letter-spacing: 0.01em;
+}
+.dashboard-alert-warning .dashboard-alert-code {
+  background: rgba(255,224,102,0.18);
+  color: #bfa100;
+}
 /* Dashboard section divider and titles */
 .dashboard-divider {
   border: none;

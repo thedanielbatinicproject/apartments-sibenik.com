@@ -1,3 +1,115 @@
+// --- ALERT BOXES ---
+async function showDashboardAlerts(latestData) {
+    // Inverter alert container
+    const inverterContainer = document.getElementById('inverter-messages-alerts');
+    if (inverterContainer) inverterContainer.innerHTML = '';
+    // Charger alert container
+    const chargerContainer = document.getElementById('charger-messages-alerts');
+    if (chargerContainer) chargerContainer.innerHTML = '';
+
+    // --- INVERTER ---
+    const inverterVars = [
+        { variable: 'error_message_1', dictKey: 'inverter_errors1', type: 'error' },
+        { variable: 'error_message_2', dictKey: 'inverter_errors2', type: 'error' },
+        { variable: 'warning_message_1', dictKey: 'inverter_warnings1', type: 'warning' }
+    ];
+    let inverterAlerts = [];
+    for (const { variable, dictKey, type } of inverterVars) {
+        const value = latestData[variable];
+        if (!value || value === 0) continue;
+        const n = Number(value);
+        if (isNaN(n)) continue;
+        // Fetch mapping via API
+        let dict = {};
+        try {
+            const resp = await fetch(`/management/api/variable-description/${dictKey}`);
+            const data = await resp.json();
+            if (data && data.codes) dict = data.codes;
+            else if (data && data.mapping) dict = data.mapping;
+        } catch {}
+        console.debug(`[${variable}] value:`, value, '| dictKey:', dictKey, '| dict:', dict);
+        const bits = n.toString(2).split('').reverse();
+        bits.forEach((bit, idx) => {
+            if (bit === '1') {
+                const msg = dict[String(idx)] || `Nepoznat kod: ${idx}`;
+                if (!dict.hasOwnProperty(String(idx))) {
+                    console.warn(`[${variable}] Nepoznat kod:`, idx, '| Dostupni kodovi:', Object.keys(dict));
+                }
+                inverterAlerts.push({ type, code: idx, message: msg });
+            }
+        });
+    }
+    if (inverterContainer && inverterAlerts.length > 0) {
+        inverterAlerts.forEach(alert => {
+            const box = document.createElement('div');
+            box.className = `dashboard-alert-box dashboard-alert-${alert.type}`;
+            box.innerHTML = `<span class="dashboard-alert-code">${alert.code}</span> ${alert.message}`;
+            inverterContainer.appendChild(box);
+        });
+    }
+
+    // --- CHARGER ---
+    const chargerVars = [
+        { variable: 'charger_error_message', dictKey: 'charger_errors', type: 'error' },
+        { variable: 'charger_warning_message', dictKey: 'charger_warnings', type: 'warning' }
+    ];
+    let chargerAlerts = [];
+    for (const { variable, dictKey, type } of chargerVars) {
+        const value = latestData[variable];
+        if (!value || value === 0) continue;
+        const n = Number(value);
+        if (isNaN(n)) continue;
+        // Fetch mapping via API
+        let dict = {};
+        try {
+            const resp = await fetch(`/management/api/variable-description/${dictKey}`);
+            const data = await resp.json();
+            if (data && data.codes) dict = data.codes;
+            else if (data && data.mapping) dict = data.mapping;
+        } catch {}
+        console.debug(`[${variable}] value:`, value, '| dictKey:', dictKey, '| dict:', dict);
+        const bits = n.toString(2).split('').reverse();
+        bits.forEach((bit, idx) => {
+            if (bit === '1') {
+                const msg = dict[String(idx)] || `Nepoznat kod: ${idx}`;
+                if (!dict.hasOwnProperty(String(idx))) {
+                    console.warn(`[${variable}] Nepoznat kod:`, idx, '| Dostupni kodovi:', Object.keys(dict));
+                }
+                chargerAlerts.push({ type, code: idx, message: msg });
+            }
+        });
+    }
+    if (chargerContainer && chargerAlerts.length > 0) {
+        chargerAlerts.forEach(alert => {
+            const box = document.createElement('div');
+            box.className = `dashboard-alert-box dashboard-alert-${alert.type}`;
+            box.innerHTML = `<span class="dashboard-alert-code">${alert.code}</span> ${alert.message}`;
+            chargerContainer.appendChild(box);
+        });
+    }
+}
+// Funkcija koja uvijek prepisuje vrijednosti za binarne flagove na dashboardu
+function updateBinaryFlagFields(data) {
+    if (!data) return;
+    BINARY_FLAG_FIELDS.forEach(variable => {
+        const elementId = variable.replace(/_/g, '-');
+        const el = document.getElementById(elementId);
+        const n = Number(data[variable]);
+        const binaryStr = !isNaN(n) ? n.toString(2) : '';
+        const bits = getActiveBits(n);
+        if (el) {
+            if (!isNaN(n)) {
+                if (n === 0 || bits === '') {
+                    el.innerHTML = '<span style="font-style:italic;opacity:0.5;">No messages</span>';
+                } else {
+                    el.textContent = bits;
+                }
+            } else {
+                el.innerHTML = '<span style="font-style:italic;opacity:0.5;">No messages</span>';
+            }
+        }
+    });
+}
 // Vrati popis aktivnih bitova za binarni flag broj
 function getActiveBits(decimalValue) {
     if (typeof decimalValue !== 'number' || isNaN(decimalValue)) return '';
@@ -24,8 +136,8 @@ window.addEventListener('DOMContentLoaded', function() {
 
 // --- DASHBOARD LIVE UPDATE ---
 function updateDashboard(data) {
-    // Ovdje možeš dodati i ostale update logike ako treba
     updateBinaryFlagFields(data);
+    showDashboardAlerts(data);
 }
 window.updateDashboard = updateDashboard;
 // All core functionalities, no duplicates, global functions for HTML onclick
@@ -460,38 +572,81 @@ document.addEventListener('DOMContentLoaded', function() {
     fetch('/management/api/solar-data/latest', {
         headers: { 'x-api-key': window.API_SECRET }
     })
-    .then(async res => {
-        if (!res.ok) throw new Error('Server error: ' + await res.text());
+    .then(res => {
+        if (!res.ok) throw new Error('Server error: ' + res.statusText);
         return res.json();
     })
     .then(result => {
         if (result.success && result.data) {
             initializeLastKnownDashboardValues(result.data);
             updateBinaryFlagFields(result.data);
+            showDashboardAlerts(result.data);
         }
     })
     .catch(err => console.error('Error fetching latest data:', err));
 });
-
-// Funkcija koja uvijek prepisuje vrijednosti za binarne flagove na dashboardu
-function updateBinaryFlagFields(data) {
-    if (!data) return;
-    BINARY_FLAG_FIELDS.forEach(variable => {
-        const elementId = variable.replace(/_/g, '-');
-        const el = document.getElementById(elementId);
-        const n = Number(data[variable]);
-        const binaryStr = !isNaN(n) ? n.toString(2) : '';
-        const bits = getActiveBits(n);
-        if (el) {
-            if (!isNaN(n)) {
-                if (n === 0 || bits === '') {
-                    el.innerHTML = '<span style="font-style:italic;opacity:0.5;">No messages</span>';
-                } else {
-                    el.textContent = bits;
-                }
-            } else {
-                el.innerHTML = '<span style="font-style:italic;opacity:0.5;">No messages</span>';
+// Minimalni CSS za alert boxove (ako već ne postoji)
+if (!document.getElementById('dashboard-alert-box-styles')) {
+    const style = document.createElement('style');
+    style.id = 'dashboard-alert-box-styles';
+    style.innerHTML = `
+        .dashboard-alerts-container {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+        }
+        .dashboard-alert-box {
+            width: 100%;
+            border-radius: 12px;
+            padding: 12px 18px;
+            font-size: 1rem;
+            font-weight: 500;
+            box-shadow: 0 2px 12px 0 rgba(0,0,0,0.08);
+            background: rgba(255,255,255,0.25);
+            border: 2px solid #e0e0e0;
+            backdrop-filter: blur(6px);
+            color: #222;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.2s;
+        }
+        .dashboard-alert-error {
+            border-color: #ff4d4f;
+            background: rgba(255,77,79,0.12);
+        }
+        .dashboard-alert-warning {
+            border-color: #faad14;
+            background: rgba(250,173,20,0.12);
+        }
+        .dashboard-alert-code {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #fff;
+            background: #ff4d4f;
+            border-radius: 6px;
+            padding: 2px 10px;
+            margin-right: 8px;
+            box-shadow: 0 1px 4px 0 rgba(0,0,0,0.08);
+            letter-spacing: 1px;
+            display: inline-block;
+        }
+        .dashboard-alert-warning .dashboard-alert-code {
+            background: #faad14;
+            color: #222;
+        }
+        @media (max-width: 600px) {
+            .dashboard-alert-box {
+                font-size: 0.95rem;
+                padding: 10px 8px;
             }
         }
-    });
+    `;
+    document.head.appendChild(style);
 }
+
+
+// ...existing code...

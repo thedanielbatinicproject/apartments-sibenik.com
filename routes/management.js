@@ -398,12 +398,28 @@ router.post('/api/relay-toggle/:relayNumber', requireAuth, async (req, res) => {
 router.get('/api/variable-description/:variableName', requireAuth, (req, res) => {
   try {
     const variableName = req.params.variableName;
-    const description = getVariableDescription(variableName);
-    res.json({ 
-      success: true, 
-      variable: variableName,
-      description: description 
-    });
+    // Simple cache for 60s
+    const now = Date.now();
+    if (!solarVariablesCache || now - solarVariablesCacheTime > 60000) {
+      try {
+        const raw = fsSync.readFileSync(SOLAR_VARIABLES_PATH, 'utf8');
+        solarVariablesCache = JSON.parse(raw);
+        solarVariablesCacheTime = now;
+      } catch (e) {
+        solarVariablesCache = {};
+      }
+    }
+    const variable = solarVariablesCache[variableName];
+    // Ako je obična varijabla s opisom
+    if (variable && variable.description) {
+      return res.json({ success: true, variable: variableName, description: variable.description });
+    }
+    // Inače vrati cijeli objekt kao codes (za mappinge)
+    if (variable && typeof variable === 'object' && !Array.isArray(variable)) {
+      return res.json({ success: true, variable: variableName, codes: variable });
+    }
+    // Ako ništa nije pronađeno
+    res.json({ success: false, variable: variableName, message: 'No description or codes found.' });
   } catch (error) {
     res.status(500).json({ 
       success: false, 
