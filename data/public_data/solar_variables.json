@@ -1,248 +1,246 @@
 {
 	"pv_charger_voltage": {
-		"name": "PV Charger Voltage",
+		"name": "PV napon punjača",
 		"unit": "V",
-		"description": "PV charger voltage"
+		"description": "Trenutni izlazni napon fotonaponskog punjača"
 	},
 	"pv_charger_power": {
-		"name": "PV Charger Power",
+		"name": "PV snaga punjača",
 		"unit": "W",
-		"description": "PV charger power"
+		"description": "Trenutna izlazna snaga fotonaponskog punjača"
 	},
 	"pv_charger_radiator_temp": {
-		"name": "PV Charger Radiator Temp",
+		"name": "Temperatura radijatora PV punjača",
 		"unit": "°C",
-		"description": "PV charger radiator temperature"
+		"description": "Temperatura rashladnog radijatora fotonaponskog punjača"
 	},
 	"pv_relay": {
-		"name": "PV Relay",
+		"name": "PV relej",
 		"unit": "",
-		"description": "PV relay state"
+		"description": "Stanje upravljačkog releja fotonaponskog sustava"
 	},
 	"pv_charger_accumulated_day": {
-		"name": "PV Charger Accumulated Day",
+		"name": "Dnevno akumulirano vrijeme rada PV punjača",
 		"unit": "",
-		"description": "Accumulated PV charger day"
+		"description": "Ukupno akumulirano vrijeme rada PV punjača za tekući dan"
 	},
 	"pv_charger_accumulated_hour": {
-		"name": "PV Charger Accumulated Hour",
+		"name": "Sati rada PV punjača",
 		"unit": "",
-		"description": "Accumulated PV charger hour"
+		"description": "Ukupan broj sati rada PV punjača"
 	},
 	"pv_charger_accumulated_minute": {
-		"name": "PV Charger Accumulated Minute",
+		"name": "Minute rada PV punjača",
 		"unit": "",
-		"description": "Accumulated PV charger minute"
+		"description": "Ukupan broj minuta rada PV punjača"
 	},
 	"charger_total_produced_energy": {
-		"name": "Charger Total Produced Energy",
+		"name": "Ukupno proizvedena energija punjača",
 		"unit": "kWh",
-		"description": "Total energy produced by charger"
+		"description": "Sveukupna količina energije proizvedena putem fotonaponskog punjača"
 	},
 	"inverter_work_state": {
-		"name": "Inverter Work State",
+		"name": "Radno stanje invertera",
 		"unit": "",
-		"description": "Inverter work state"
+		"description": "Trenutni način rada ili status invertera"
 	},
 	"pv_charger_battery_voltage": {
-		"name": "PV Charger Battery Voltage",
+		"name": "Napon baterije PV punjača",
 		"unit": "V",
-		"description": "PV charger battery voltage"
+		"description": "Trenutni napon baterije spojen na PV punjač"
 	},
 	"inverter_battery_voltage": {
-		"name": "Inverter Battery Voltage",
+		"name": "Napon baterije invertera",
 		"unit": "V",
-		"description": "Inverter battery voltage"
+		"description": "Trenutni napon baterije spojen na inverter"
 	},
 	"inverter_voltage": {
-		"name": "Inverter Voltage",
+		"name": "Izlazni napon invertera",
 		"unit": "V",
-		"description": "Inverter output voltage"
+		"description": "Trenutni izmjenični izlazni napon invertera"
 	},
 	"inverter_bus_voltage": {
-		"name": "Inverter Bus Voltage",
+		"name": "Napon sabirnice invertera",
 		"unit": "V",
-		"description": "Inverter bus voltage"
+		"description": "Trenutni napon DC sabirnice unutar invertera"
 	},
 	"inverter_current": {
-		"name": "Inverter Current",
+		"name": "Struja invertera",
 		"unit": "A",
-		"description": "Inverter current"
+		"description": "Ukupna struja koju inverter trenutno isporučuje"
 	},
 	"inverter_load_current": {
-		"name": "Inverter Load Current",
+		"name": "Struja opterećenja invertera",
 		"unit": "A",
-		"description": "Inverter load current"
+		"description": "Struja koju trošila trenutno povlače s invertera"
 	},
 	"inverter_power": {
-		"name": "Inverter Power",
+		"name": "Snaga invertera",
 		"unit": "W",
-		"description": "Inverter power"
+		"description": "Ukupna snaga koju inverter trenutno isporučuje"
 	},
 	"inverter_load_power": {
-		"name": "Inverter Load Power",
+		"name": "Snaga opterećenja invertera",
 		"unit": "W",
-		"description": "Inverter load power"
+		"description": "Trenutna snaga koju trošila koriste preko invertera"
 	},
 	"inverter_system_load": {
-		"name": "Inverter System Load",
+		"name": "Ukupno opterećenje sustava invertera",
 		"unit": "W",
-		"description": "Inverter system load"
+		"description": "Ukupna potrošnja snage svih trošila spojenih na inverter"
 	},
 	"inverter_ac_radiator_temp": {
-		"name": "Inverter AC Radiator Temp",
+		"name": "Temperatura AC radijatora invertera",
 		"unit": "°C",
-		"description": "Inverter AC radiator temperature"
+		"description": "Temperatura izmjeničnog rashladnog radijatora invertera"
 	},
 	"inverter_transformer_temp": {
-		"name": "Inverter Transformer Temp",
+		"name": "Temperatura transformatora invertera",
 		"unit": "°C",
-		"description": "Inverter transformer temperature"
+		"description": "Trenutna temperatura transformatora unutar invertera"
 	},
 	"inverter_dc_radiator_temp": {
-		"name": "Inverter DC Radiator Temp",
+		"name": "Temperatura DC radijatora invertera",
 		"unit": "°C",
-		"description": "Inverter DC radiator temperature"
+		"description": "Temperatura istosmjernog rashladnog radijatora invertera"
 	},
 	"inverter_battery_current": {
-		"name": "Inverter Battery Current",
+		"name": "Struja baterije invertera",
 		"unit": "A",
-		"description": "Inverter battery current"
+		"description": "Trenutna struja punjenja ili pražnjenja baterije invertera"
 	},
 	"pv_charger_workstate": {
-		"name": "PV Charger Workstate",
+		"name": "Radno stanje PV punjača",
 		"unit": "",
-		"description": "PV charger workstate"
+		"description": "Trenutni način rada ili status PV punjača"
 	},
 	"discharger_total_mwh": {
-		"name": "Discharger Total MWh",
+		"name": "Ukupno ispražnjena energija (MWh)",
 		"unit": "MWh",
-		"description": "Total discharged energy in MWh"
+		"description": "Sveukupna količina energije ispražnjena iz sustava u megavatsatima"
 	},
 	"discharger_total_kwh": {
-		"name": "Discharger Total kWh",
+		"name": "Ukupno ispražnjena energija (kWh)",
 		"unit": "kWh",
-		"description": "Total discharged energy in kWh"
+		"description": "Sveukupna količina energije ispražnjena iz sustava u kilovatsatima"
 	},
 	"inverter_battery_power": {
-		"name": "Inverter Battery Power",
+		"name": "Snaga baterije invertera",
 		"unit": "W",
-		"description": "Inverter battery power"
+		"description": "Trenutna snaga kojom se baterija invertera puni ili prazni"
 	},
 	"error_message_1": {
-		"name": "Error Message 1",
+		"name": "Kod inverter greške (1)",
 		"unit": "",
-		"description": "Error message 1.<br>Codes:<br>0: Fan is locked when inverter is off<br>1: Inverter transformer over temperature<br>2: Battery voltage is too high<br>3: Battery voltage is too low<br>4: Output short circuited<br>5: Inverter output voltage is high<br>6: Overload time out<br>7: Inverter bus voltage is too high<br>8: Bus soft start failed<br>9: Main relay failed<br>10: Inverter output voltage sensor error<br>11: Inverter grid voltage sensor error<br>12: Inverter output current sensor error<br>13: Inverter grid current sensor error<br>14: Inverter load current sensor error<br>15: Inverter grid over current error"
+		"description": "Poruka greške na inverteru. (1)<br>Kodovi:<br>0: Ventilator je blokiran dok je inverter isključen<br>1: Transformator invertera je pregrijan<br>2: Napon baterije je previsok<br>3: Napon baterije je prenizak<br>4: Kratki spoj na izlazu<br>5: Izlazni napon invertera je previsok<br>6: Preopterećenje – isteklo vrijeme<br>7: Napon sabirnice invertera je previsok<br>8: Neuspjelo meko pokretanje sabirnice<br>9: Glavni relej neispravan<br>10: Greška senzora izlaznog napona invertera<br>11: Greška senzora mrežnog napona invertera<br>12: Greška senzora izlazne struje invertera<br>13: Greška senzora mrežne struje invertera<br>14: Greška senzora struje opterećenja invertera<br>15: Greška prekomjerne mrežne struje invertera"
 	},
 	"error_message_2": {
-		"name": "Error Message 2",
+		"name": "Kod inverter greške (2)",
 		"unit": "",
-		"description": "Error message 2.<br>Codes:<br>0: Inverter radiator over temperature<br>1: Solar charger battery voltage class error<br>2: Solar charger current sensor error<br>3: Solar charger current is uncontrollable<br>4: Inverter grid voltage is low<br>5: Inverter grid voltage is high<br>6: Inverter grid under frequency<br>7: Inverter grid over frequency<br>8: Inverter over current protection error<br>9: Inverter bus voltage is too low<br>10: Inverter soft start failed<br>11: Over DC voltage in AC output<br>12: Battery connection is open<br>13: Inverter control current sensor error<br>14: Inverter output voltage is too low"
+		"description": "Poruka greške na inverteru. (2)<br>Kodovi:<br>0: Pregrijavanje radijatora invertera<br>1: Greška klase napona baterije solarnog punjača<br>2: Greška senzora struje solarnog punjača<br>3: Struja solarnog punjača je neukrotiva<br>4: Napon mreže invertera prenizak<br>5: Napon mreže invertera previsok<br>6: Frekvencija mreže preniska<br>7: Frekvencija mreže previsoka<br>8: Greška zaštite od prekomjerne struje invertera<br>9: Napon sabirnice invertera prenizak<br>10: Neuspjelo meko pokretanje invertera<br>11: Previsok DC napon na AC izlazu<br>12: Prekinuta veza baterije<br>13: Greška senzora kontrolne struje invertera<br>14: Izlazni napon invertera prenizak"
 	},
-		"warning_message_1": {
-			"name": "Warning Message 1",
-			"unit": "",
-			"description": "Warning message 1.<br>Codes:<br>0: Fan is locked when inverter is on<br>1: Fan 2 is locked when inverter is on<br>2: Battery is over-charged<br>3: Low battery<br>4: Inverter overload<br>5: Output power derating<br>6: Solar charger stopped due to low battery<br>7: Solar charger stopped due to high PV voltage<br>8: Solar charger stopped due to over load<br>9: Solar charger stopped due to over temperature<br>10: PV charger stopped due to communication error"
-		},
-		"warning_message_2": {
-			"name": "Warning Message 2",
-			"unit": "",
-			"description": "Warning message 2.<br>All codes reserved."
-		},
-		"inverter_arrow_flag": {
-		"name": "Inverter Arrow Flag",
+	"warning_message_1": {
+		"name": "Kod inverter upozorenja",
 		"unit": "",
-		"description": "Inverter arrow flag"
+		"description": "Poruka upozorenja na inverteru.<br>Kodovi:<br>0: Ventilator blokiran dok je inverter uključen<br>1: Ventilator 2 blokiran dok je inverter uključen<br>2: Baterija je prepunjena<br>3: Niska razina baterije<br>4: Preopterećenje invertera<br>5: Smanjenje izlazne snage<br>6: Solarni punjač zaustavljen zbog niske baterije<br>7: Solarni punjač zaustavljen zbog previsokog PV napona<br>8: Solarni punjač zaustavljen zbog preopterećenja<br>9: Solarni punjač zaustavljen zbog pregrijavanja<br>10: PV punjač zaustavljen zbog greške u komunikaciji"
+	},
+	"warning_message_2": {
+		"name": "Kod inverter upozorenja (2)",
+		"unit": "",
+		"description": "Poruka upozorenja na inverteru (2).<br>Svi kodovi rezervirani."
+	},
+	"inverter_arrow_flag": {
+		"name": "Zastavica strelice invertera",
+		"unit": "",
+		"description": "Status smjera toka energije u inverteru"
 	},
 	"load_percent": {
-		"name": "Load Percent",
+		"name": "Postotak opterećenja",
 		"unit": "%",
-		"description": "Load percent"
+		"description": "Postotak trenutne potrošnje u odnosu na ukupni kapacitet invertera"
 	},
 	"charger_error_message": {
-		"name": "Charger Error Message",
+		"name": "MPPT PUNJAČ - KOD GREŠKE",
 		"unit": "",
-		"description": "Charger error message.<br>Codes:<br>0: Hardware protection<br>1: Over current<br>2: Current sensor error<br>3: Over temperature<br>4: PV voltage is too high<br>5: PV voltage is too low<br>6: Battery voltage is too high<br>7: Battery voltage is too low<br>8: Current is uncontrollable<br>9: Parameter error."
+		"description": "Poruka greške punjača u MPPT kontorleru.<br>Kodovi:<br>0: Hardverska zaštita<br>1: Prekomjerna struja<br>2: Greška senzora struje<br>3: Pregrijavanje<br>4: PV napon previsok<br>5: PV napon prenizak<br>6: Napon baterije previsok<br>7: Napon baterije prenizak<br>8: Struja neukrotiva<br>9: Greška parametara"
 	},
 	"charger_warning_message": {
-		"name": "Charger Warning Message",
+		"name": "MPPT PUNJAČ - KOD UPOZORENJA",
 		"unit": "",
-		"description": "Charger warning message.<br>Codes:<br>0: Fan error."
+		"description": "Poruka upozorenja punjača u MPPT kontorleru.<br>Kodovi:<br>0: Greška ventilatora"
 	},
 	"charger_errors": {
-		"0" : "Charger hardware protection error.",
-		"1" : "Over current in charger",
-		"2" : "Current Sensor error in charger.",
-		"3" : "Over temperature in charger.",
-		"4" : "PV voltage is too high in charger.",
-		"5" : "PC voltage is too low in charger.",
-		"6" : "Battery voltage is too high in charger.",
-		"7" : "Battery voltage is too low in charger.",
-		"8" : "Current is uncontrollable in charger.",
-		"9" : "Parameter error in charger."
+		"0": "Greška hardverske zaštite punjača",
+		"1": "Prekomjerna struja u punjaču",
+		"2": "Greška senzora struje u punjaču",
+		"3": "Pregrijavanje u punjaču",
+		"4": "PV napon previsok u punjaču",
+		"5": "PV napon prenizak u punjaču",
+		"6": "Napon baterije previsok u punjaču",
+		"7": "Napon baterije prenizak u punjaču",
+		"8": "Struja neukrotiva u punjaču",
+		"9": "Greška parametara u punjaču"
 	},
 	"inverter_errors1": {
-		"0":"Fan locked when inverter is off.",
-		"1": "Inverter transformer is too hot.",
-		"2": "Battery voltage is too high for inverter.",
-		"3": "Battery voltage is too low for inverter.",
-		"4": "Output short circuit detected in inverter.",
-		"5": "Inverter output voltage is too high.",
-		"6": "Inverter was overloaded for too long, overload timeout!",
-		"7": "Inverter bus voltage is too high.",
-		"8": "Bus soft start failed in inverter.",
-		"9": "Inverter main relay failed.",
-		"10": "Inverter output voltage sensor error.",
-		"11": "Inverter grid voltage sensor error.",
-		"12": "Inverter output current sensor error.",
-		"13": "Inverter grid current sensor error.",
-		"14": "Inverter load current sensor error.",
-		"15": "Inverter grid over current error."
+		"0": "Ventilator blokiran dok je inverter isključen",
+		"1": "Transformator invertera je pregrijan",
+		"2": "Napon baterije previsok za inverter",
+		"3": "Napon baterije prenizak za inverter",
+		"4": "Otkriven kratki spoj na izlazu invertera",
+		"5": "Izlazni napon invertera previsok",
+		"6": "Preopterećenje invertera predugo trajalo, isteklo vrijeme!",
+		"7": "Napon sabirnice invertera previsok",
+		"8": "Neuspjelo meko pokretanje sabirnice invertera",
+		"9": "Glavni relej invertera neispravan",
+		"10": "Greška senzora izlaznog napona invertera",
+		"11": "Greška senzora mrežnog napona invertera",
+		"12": "Greška senzora izlazne struje invertera",
+		"13": "Greška senzora mrežne struje invertera",
+		"14": "Greška senzora struje opterećenja invertera",
+		"15": "Greška prekomjerne mrežne struje invertera"
 	},
 	"inverter_errors2": {
-		"0": "Inverter radiator is over temperature.",
-		"1": "Solar charger battery voltage class error.",
-		"2": "Solar charger current sensor error.",
-		"3": "Solar charger current is uncontrollable.",
-		"4": "Inverter grid voltage is too low.",
-		"5": "Inverter grid voltage is too high.",
-		"6": "Inverter grid is on too low frequency.",
-		"7": "Inverter grid is on too high frequency",
-		"8": "Inverter over current protection error.",
-		"9": "Inverter bus voltage is too low.",
-		"10": "Inverter soft start failed.",
-		"11": "Over DC voltage in AC output!",
-		"12": "Battery connection is open!",
-		"13": "Inverter control current sensor error.",
-		"14": "Inverter output voltage is too low."
-
+		"0": "Radijator invertera pregrijan",
+		"1": "Greška klase napona baterije solarnog punjača",
+		"2": "Greška senzora struje solarnog punjača",
+		"3": "Struja solarnog punjača neukrotiva",
+		"4": "Napon mreže invertera prenizak",
+		"5": "Napon mreže invertera previsok",
+		"6": "Frekvencija mreže preniska",
+		"7": "Frekvencija mreže previsoka",
+		"8": "Greška zaštite od prekomjerne struje invertera",
+		"9": "Napon sabirnice invertera prenizak",
+		"10": "Neuspjelo meko pokretanje invertera",
+		"11": "Previsok DC napon na AC izlazu",
+		"12": "Veza baterije prekinuta",
+		"13": "Greška senzora kontrolne struje invertera",
+		"14": "Izlazni napon invertera prenizak"
 	},
 	"charger_warnings": {
-		"0" : "Fan error in charger"
+		"0": "Greška ventilatora u punjaču"
 	},
 	"inverter_warnings1": {
-		"0": "Fan is locked when inverter is on.",
-		"1": "Fan 2 is locked when inverter is on.",
-		"2": "Battery is over-charged.",
-		"3": "Low battery.",
-		"4": "Inverter overload.",
-		"5": "Output power derating.",
-		"6": "Solar charger stopped due to low battery.",
-		"7": "Solar charger stopped due to high PV voltage.",
-		"8": "Solar charger stopped due to over load.",
-		"9": "Solar charger stopped due to over temperature.",
-		"10": "PV charger stopped due to communication error."
+		"0": "Ventilator blokiran dok je inverter uključen",
+		"1": "Ventilator 2 blokiran dok je inverter uključen",
+		"2": "Baterija prepunjena",
+		"3": "Niska razina baterije",
+		"4": "Preopterećenje invertera",
+		"5": "Smanjenje izlazne snage",
+		"6": "Solarni punjač zaustavljen zbog niske baterije",
+		"7": "Solarni punjač zaustavljen zbog previsokog PV napona",
+		"8": "Solarni punjač zaustavljen zbog preopterećenja",
+		"9": "Solarni punjač zaustavljen zbog pregrijavanja",
+		"10": "PV punjač zaustavljen zbog greške u komunikaciji"
 	},
-	"inverter_warnings2": {
-	},
-	"arrow_flag":{
-		"0": {"name":"PV flag", "values":{"0":"Disconected", "1":"Connected"}},
-		"1": {"name": "Load flag", "values":{"0":"Disconected", "1":"Connected"}},
-		"2": {"name": "Battery flag", "values":{"0":"Disconected", "1":"Connected"}},
-		"3": {"name": "Grid flag", "values":{"0":"Disconected", "1":"Connected"}},
-		"4": {"name": "PV to Machine", "values":{"0":"Disconnected", "1":"PV connected to machine"}},
-		"5": {"name": "Machine to Load", "values":{"0":"Disconnected", "1":"Machine connected to Load"}},
-		"6n7": {"name": "Machine to Battery", "values":{"00":"Disconnected", "01":"Machine connected to Battery", "10":"Battery connected to Machine", "11":"Connected"}},
-		"8n9": {"name": "Machine to Grid", "values":{"00":"Disconnected", "01":"Machine connected to Grid", "10":"Grid connected to Machine", "11":"Connected"}}
+	"inverter_warnings2": {},
+	"arrow_flag": {
+		"0": { "name": "Fotonaponske ćelije", "values": { "0": "Ne rade", "1": "U funkciji" } },
+		"1": { "name": "Opterećenje", "values": { "0": "Isključeno", "1": "Uključeno" } },
+		"2": { "name": "Baterija", "values": { "0": "Nije povezana", "1": "Povezana" } },
+		"3": { "name": "Gradska mreža", "values": { "0": "Nije povezana", "1": "Povezana" } },
+		"4": { "name": "Naponska ćelija prema opterećenju", "values": { "0": "Isključeno", "1": "Ćelija šalje snagu opterećenju" } },
+		"5": { "name": "Stroj prema opterećenju", "values": { "0": "Isključeno", "1": "Stroj povezan s opterećenjem" } },
+		"6n7": { "name": "Stroj prema bateriji", "values": { "00": "Isključeno", "01": "Stroj povezan s baterijom", "10": "Baterija povezana sa strojem", "11": "Povezano" } },
+		"8n9": { "name": "Stroj prema gradskoj mreži", "values": { "00": "Isključeno", "01": "Stroj povezan s gradskom mrežom", "10": "Gradska mreža povezana sa strojem", "11": "Povezano" } }
 	}
 }
