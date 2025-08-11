@@ -138,6 +138,105 @@ window.addEventListener('DOMContentLoaded', function() {
 function updateDashboard(data) {
     updateBinaryFlagFields(data);
     showDashboardAlerts(data);
+
+    // PV CHARGER WORKSTATE
+    const workstateMap = {
+        0: 'Inicijalizacija',
+        1: 'Mod za samotestiranje',
+        2: 'Običan način rada',
+        3: 'Zaustavljen'
+    };
+    const workstateEl = document.getElementById('pv-charger-workstate');
+    if (workstateEl) {
+        const val = Number(data['pv_charger_workstate']);
+        workstateEl.textContent = workstateMap[val] || val;
+        if (val === 3) {
+            workstateEl.style.color = '#ff3333';
+            workstateEl.style.fontWeight = 'bold';
+            workstateEl.style.fontStyle = 'normal';
+        } else {
+            workstateEl.style.color = '#22c55e';
+            workstateEl.style.fontWeight = '300';
+            workstateEl.style.fontStyle = 'italic';
+        }
+    }
+
+    // PV RELAY
+    const relayMap = { 0: 'Odspojen', 1: 'Spojen' };
+    const relayEl = document.getElementById('pv-relay');
+    if (relayEl) {
+        const val = Number(data['pv_relay']);
+        relayEl.textContent = relayMap[val] || val;
+    }
+
+    // INVERTER BATTERY VOLTAGE
+    const invBattEl = document.getElementById('inverter-battery-voltage');
+    if (invBattEl) {
+        const val = Number(data['inverter_battery_voltage']);
+        invBattEl.textContent = val;
+        if (val < 12 || val > 14) {
+            invBattEl.style.color = '#ff3333';
+            invBattEl.style.fontWeight = 'bold';
+        } else {
+            invBattEl.style.color = '';
+            invBattEl.style.fontWeight = '';
+        }
+    }
+
+    // INVERTER WORK STATE
+    const invWorkMap = {
+        0: 'Uključeno',
+        1: 'Samotestiranje',
+        2: 'Off Grid',
+        3: 'On Grid',
+        4: 'ByPass',
+        5: 'Zaustavljeno',
+        6: 'Punjenje iz gradske mreže'
+    };
+    const invWorkEl = document.getElementById('inverter-work-state');
+    if (invWorkEl) {
+        const val = Number(data['inverter_work_state']);
+        invWorkEl.textContent = invWorkMap[val] || val;
+    }
+
+    // ENERGY USED - formatiraj tisućice
+    const mwh = Number(data['discharger_total_mwh']) || 0;
+    const kwh = Number(data['discharger_total_kwh']) || 0;
+    const mwhToKwh = mwh * 1000;
+    const totalKwh = mwhToKwh + kwh;
+    function formatThousand(n) {
+        return n.toLocaleString('hr-HR').replace(/\./g, ',').replace(/\s/g, ' ');
+    }
+    const mwhEl = document.getElementById('energy-mwh');
+    const kwhEl = document.getElementById('energy-kwh');
+    const totalKwhEl = document.getElementById('energy-total-kwh');
+    if (mwhEl) mwhEl.textContent = formatThousand(mwh);
+    if (kwhEl) kwhEl.textContent = formatThousand(kwh);
+    if (totalKwhEl) totalKwhEl.textContent = formatThousand(totalKwh);
+
+    // INVERTER/CHARGER MESSAGES - boje
+    const errorIds = ['error-message-1', 'error-message-2', 'charger-error-message'];
+    const warningIds = ['warning-message-1', 'charger-warning-message'];
+    errorIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && Number(el.textContent) !== 0) {
+            el.style.color = '#ff3333';
+            el.style.fontWeight = 'bold';
+        } else if (el) {
+            el.style.color = '';
+            el.style.fontWeight = '';
+        }
+    });
+    warningIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && Number(el.textContent) !== 0) {
+            el.style.color = '#ff9900';
+            el.style.fontWeight = 'bold';
+        } else if (el) {
+            el.style.color = '';
+            el.style.fontWeight = '';
+        }
+    });
 }
 window.updateDashboard = updateDashboard;
 // All core functionalities, no duplicates, global functions for HTML onclick

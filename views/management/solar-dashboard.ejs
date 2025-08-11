@@ -267,11 +267,43 @@
                                 <h3 class="card-title">
                                     <%= name %>
                                     <% if (description) { %>
-                                        <button class="info-btn" onclick="showTooltip(event, '<%- name.replace(/'/g, "\\'") %>', '<%- variable %>')" title="Info">i</button>
+                                        <button class="info-btn" onclick="showTooltip(event, '<%= name %>', '<%= variable %>')" title="Info">i</button>
                                     <% } %>
                                 </h3>
-                                <div class="card-value" id="<%= variable.replace(/_/g, '-') %>">
-                                    <%= value %>
+                                                                                                                                                                                                <% let styleStr = '';
+                                                                                                                                                                                                     let workStateText = '';
+                                                                                                                                                                                                     if (variable === 'inverter_battery_voltage') {
+                                                                                                                                                                                                         let battVal = value;
+                                                                                                                                                                                                         if (typeof battVal === 'string') battVal = battVal.replace(',', '.');
+                                                                                                                                                                                                         battVal = parseFloat(battVal);
+                                                                                                                                                                                                         if (!isNaN(battVal) && (battVal < 12 || battVal > 14)) {
+                                                                                                                                                                                                             styleStr = 'color:#ff3333 !important;font-weight:bold !important;';
+                                                                                                                                                                                                         }
+                                                                                                                                                                                                     }
+                                                                                                                                                                                                     if (variable === 'inverter_work_state') {
+                                                                                                                                                                                                         if (value == 0) { workStateText = 'Uključeno'; }
+                                                                                                                                                                                                         else if (value == 1) { workStateText = 'Samotestiranje'; }
+                                                                                                                                                                                                         else if (value == 2) { workStateText = 'Off Grid'; }
+                                                                                                                                                                                                         else if (value == 3) { workStateText = 'On Grid'; }
+                                                                                                                                                                                                         else if (value == 4) { workStateText = 'ByPass'; }
+                                                                                                                                                                                                         else if (value == 5) { workStateText = 'Zaustavljeno'; }
+                                                                                                                                                                                                         else if (value == 6) { workStateText = 'Punjenje iz gradske mreže'; }
+                                                                                                                                                                                                         else { workStateText = '-'; }
+                                                                                                                                                                                                     }
+                                                                                                                                                                                                %>
+                                                                                                                                                                                                <div class="card-value" id="<%= variable.replace(/_/g, '-') %>"
+                                                                                                                                                                                                        data-solar-variable="<%= variable %>"
+                                                                                                                                                                                                        data-value="<%= value %>"
+                                                                                                                                                                                                        <% if (variable === 'inverter_battery_voltage' && styleStr) { %>style="<%= styleStr %>"<% } %>>
+                                    <% if (variable === 'pv_charger_workstate') { %>
+                                        <% if (value == 0) { %>Inicijalizacija<% } else if (value == 1) { %>Mod za samotestiranje<% } else if (value == 2) { %>Običan način rada<% } else if (value == 3) { %>Zaustavljen<% } else { %><%= value %><% } %>
+                                    <% } else if (variable === 'pv_relay') { %>
+                                        <% if (value == 0) { %>Odspojen<% } else if (value == 1) { %>Spojen<% } else { %><%= value %><% } %>
+                                    <% } else if (variable === 'inverter_work_state') { %>
+                                        <%= workStateText %>
+                                    <% } else { %>
+                                        <%= value %>
+                                    <% } %>
                                     <% if (unit) { %><span class="card-unit"><%= unit %></span><% } %>
                                 </div>
                                 <div class="dashboard-alerts-container" id="<%= variable.replace(/_/g, '-') %>-alerts"></div>
@@ -312,10 +344,41 @@
                                         <button class="info-btn" onclick="showTooltip(event, '<%- name.replace(/'/g, "\\'") %>', '<%- variable %>')" title="Info">i</button>
                                     <% } %>
                                 </h3>
-                                <div class="card-value" id="<%= variable.replace(/_/g, '-') %>">
-                                    <%= value %>
-                                    <% if (unit) { %><span class="card-unit"><%= unit %></span><% } %>
-                                </div>
+                                                                                                <% if (variable === 'inverter_battery_voltage') { %>
+                                                                                                    <% let voltage = parseFloat(value.toString().replace(',', '.'));
+                                                                                                         let styleStr = (voltage < 12 || voltage > 14) ? 'color: #ff3b3b !important; font-weight: bold !important;' : '';
+                                                                                                    %>
+                                                                                                    <div class="card-value" id="<%= variable.replace(/_/g, '-') %>"
+                                                                                                        data-solar-variable="<%= variable %>"
+                                                                                                        data-value="<%= value %>"
+                                                                                                        style="<%= styleStr %>">
+                                                                                                        <span style="<%= styleStr %>"><%= voltage %> V</span>
+                                                                                                    </div>
+                                                                                                <% } else if (variable === 'inverter_work_state') { %>
+                                                                                                    <% let workStateText = {
+                                                                                                                0: 'Uključeno',
+                                                                                                                1: 'Samotestiranje',
+                                                                                                                2: 'Off Grid',
+                                                                                                                3: 'On Grid',
+                                                                                                                4: 'ByPass',
+                                                                                                                5: 'Zaustavljeno',
+                                                                                                                6: 'Punjenje iz gradske mreže'
+                                                                                                            }[parseInt(value, 10)];
+                                                                                                    %>
+                                                                                                    <div class="card-value" id="<%= variable.replace(/_/g, '-') %>"
+                                                                                                        data-solar-variable="<%= variable %>"
+                                                                                                        data-value="<%= value %>"
+                                                                                                        style="font-weight: bold; color: #2af;">
+                                                                                                        <span><%= workStateText %></span>
+                                                                                                    </div>
+                                                                                                <% } else { %>
+                                                                    <div class="card-value" id="<%= variable.replace(/_/g, '-') %>"
+                                                                        data-solar-variable="<%= variable %>"
+                                                                        data-value="<%= value %>">
+                                                                        <%= value %>
+                                                                        <% if (unit) { %><span class="card-unit"><%= unit %></span><% } %>
+                                                                    </div>
+                                                                <% } %>
                             </div>
                         <% } %>
                     </div>
@@ -417,7 +480,7 @@
                             <h3 class="card-title">
                                 <%= name2 %>
                                 <% if (description2) { %>
-                                    <button class="info-btn" onclick="showTooltip(event, '<%- name2.replace(/'/g, "\\'") %>', '<%- variable2 %>')" title="Info">i</button>
+                                    <button class="info-btn" onclick="showTooltip(event, '<%= name2 %>', '<%= variable2 %>')" title="Info">i</button>
                                 <% } %>
                             </h3>
                             <div class="card-value" id="<%= variable2.replace(/_/g, '-') %>">
@@ -428,44 +491,16 @@
                     </div>
                     <div class="dashboard-section-title">Energy Used</div>
                     <div class="dashboard-grid">
-                        <% // Discharger Total MWh
-                             const variable3 = 'discharger_total_mwh';
-                             const meta3 = solarVars[variable3] || {};
-                             const name3 = meta3.name || variable3.replace(/_/g, ' ');
-                             const value3 = latestData[variable3] !== undefined && latestData[variable3] !== null ? latestData[variable3] : '';
-                             const unit3 = meta3.unit || '';
-                             const description3 = meta3.description || '';
+                        <% const mwh = Number(latestData['discharger_total_mwh']) || 0;
+                           const kwh = Number(latestData['discharger_total_kwh']) || 0;
+                           const mwhToKwh = mwh * 1000;
+                           const totalKwh = mwhToKwh + kwh;
+                           function formatThousand(n) { return n.toLocaleString('hr-HR').replace(/\./g, ',').replace(/\s/g, ' '); }
                         %>
-                        <div class="dashboard-card">
-                            <h3 class="card-title">
-                                <%= name3 %>
-                                <% if (description3) { %>
-                                    <button class="info-btn" onclick="showTooltip(event, '<%- name3.replace(/'/g, "\\'") %>', '<%- variable3 %>')" title="Info">i</button>
-                                <% } %>
-                            </h3>
-                            <div class="card-value" id="<%= variable3.replace(/_/g, '-') %>">
-                                <%= value3 %>
-                                <% if (unit3) { %><span class="card-unit"><%= unit3 %></span><% } %>
-                            </div>
-                        </div>
-                        <% // Discharger Total kWh
-                             const variable4 = 'discharger_total_kwh';
-                             const meta4 = solarVars[variable4] || {};
-                             const name4 = meta4.name || variable4.replace(/_/g, ' ');
-                             const value4 = latestData[variable4] !== undefined && latestData[variable4] !== null ? latestData[variable4] : '';
-                             const unit4 = meta4.unit || '';
-                             const description4 = meta4.description || '';
-                        %>
-                        <div class="dashboard-card">
-                            <h3 class="card-title">
-                                <%= name4 %>
-                                <% if (description4) { %>
-                                    <button class="info-btn" onclick="showTooltip(event, '<%- name4.replace(/'/g, "\\'") %>', '<%- variable4 %>')" title="Info">i</button>
-                                <% } %>
-                            </h3>
-                            <div class="card-value" id="<%= variable4.replace(/_/g, '-') %>">
-                                <%= value4 %>
-                                <% if (unit4) { %><span class="card-unit"><%= unit4 %></span><% } %>
+                        <div class="dashboard-card" style="min-width:320px;">
+                            <h3 class="card-title">Potrošena energija</h3>
+                            <div class="card-value" style="font-size:1.2rem;">
+                                <span style="opacity:0.8;">Ukupno:</span> <span id="energy-total-kwh"><%= formatThousand(totalKwh) %></span> kWh
                             </div>
                         </div>
                     </div>
@@ -484,10 +519,15 @@
                                 <h3 class="card-title">
                                     <%= name %>
                                     <% if (description) { %>
-                                        <button class="info-btn" onclick="showTooltip(event, '<%- name.replace(/'/g, "\\'") %>', '<%- variable %>')" title="Info">i</button>
+                                        <button class="info-btn" onclick="showTooltip(event, '<%= name %>', '<%= variable %>')" title="Info">i</button>
                                     <% } %>
                                 </h3>
-                                <div class="card-value" id="<%= variable.replace(/_/g, '-') %>">
+                                <div class="card-value" id="<%= variable.replace(/_/g, '-') %>"
+                                    <% if ((variable.startsWith('error_message') || variable.startsWith('charger_error_message')) && value != 0) { %>
+                                        style="color:#ff3333;font-weight:bold;"
+                                    <% } else if ((variable.startsWith('warning_message') || variable.startsWith('charger_warning_message')) && value != 0) { %>
+                                        style="color:#ff9900;font-weight:bold;"
+                                    <% } %>>
                                     <%= value %>
                                     <% if (unit) { %><span class="card-unit"><%= unit %></span><% } %>
                                 </div>
