@@ -308,13 +308,6 @@ function loadMoreData() {
                 tbody.appendChild(row);
             });
             displayedRecords += data.data.length;
-                        // Update history title with formatted number
-                        if (typeof data.totalRecords !== 'undefined') {
-                                const title = document.getElementById('historyTitle');
-                                if (title) {
-                                        title.textContent = `Recent Data History (${formatNumber(data.totalRecords)} total records)`;
-                                }
-                        }
             if (!data.hasMore || data.data.length < 10) button.style.display = 'none';
             else { button.disabled = false; button.textContent = 'Load More Data'; }
         } else button.style.display = 'none';
@@ -680,6 +673,16 @@ document.addEventListener('DOMContentLoaded', function() {
             initializeLastKnownDashboardValues(result.data);
             updateBinaryFlagFields(result.data);
             showDashboardAlerts(result.data);
+            const title = document.getElementById('historyTitle');
+            if (title) {
+                // Pronađi broj u tekstu
+                const match = title.textContent.match(/\((\d+) total records\)/);
+                if (match) {
+                    const num = Number(match[1]);
+                    const formatted = formatNumber(num); // koristi tvoju funkciju
+                    title.textContent = title.textContent.replace(match[1], formatted);
+                }
+            }
         }
     })
     .catch(err => console.error('Error fetching latest data:', err));
@@ -748,4 +751,3 @@ if (!document.getElementById('dashboard-alert-box-styles')) {
 }
 
 
-// ...existing code...

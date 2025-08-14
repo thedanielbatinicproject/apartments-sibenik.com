@@ -115,7 +115,7 @@ class ReviewUpvoteManager {
     const result = {};
     
     reviews.forEach((review) => {
-      const reviewId = review.id.toString(); // Use review.id instead of generating from index
+      const reviewId = review.id.toString(); // Originalno: koristi samo review.id
       result[reviewId] = {
         count: this.getUpvoteCount(reviewId),
         upvoted: this.hasUserUpvoted(userId, reviewId)

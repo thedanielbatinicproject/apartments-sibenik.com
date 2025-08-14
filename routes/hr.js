@@ -1,3 +1,4 @@
+// ...existing code...
 
 const express = require('express');
 const { fetchCalendars } = require('../code/calendar/calendarAPI');
@@ -45,12 +46,21 @@ router.get('/desktop/apartman-s-vrtom', async (req, res) => {
 router.get('/desktop/studio-apartman', async (req, res) => {
   try {
     const calendars = await fetchCalendars();
+    const reviews = await getCombinedReviews('2');
     const studioImages = generateGalleryImages('studio');
+    const userId = reviewUpvoteManager.getUserId(req, res);
+    const upvoteData = reviewUpvoteManager.getUserUpvoteData(
+      userId,
+      reviews.allReviews, // Koristimo sve recenzije za upvote data
+      '2'
+    );
     res.render('hr/studio-apartman', { 
       language: 'hr', 
       device: 'desktop',
-      calendar2: calendars.calendar2,
-      images: studioImages
+      calendar1: calendars.calendar1,
+      images: studioImages,
+      reviewsData: reviews,
+      upvoteData: upvoteData
     });
   } catch (err) {
     res.status(500).render('error', {

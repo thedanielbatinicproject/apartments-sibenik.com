@@ -118,5 +118,17 @@
     "checkOut": "2025-08-25",
     "message": null,
     "status": "pending"
+  },
+  {
+    "id": "1755173453648",
+    "timestamp": "2025-08-14T12:10:53.648Z",
+    "fullName": "Daniel Batinic",
+    "email": "danielbatinic6@gmail.com",
+    "phone": "+38512345678",
+    "apartment": "Studio Apartment",
+    "checkIn": "2025-08-20",
+    "checkOut": "2025-08-22",
+    "message": null,
+    "status": "pending"
   }
 ]

@@ -1,5 +1,34 @@
 const axios = require('axios');
 
+const path = require('path');
+const fs = require('fs');
+
+// Smart redirect for subpages like /hr/apartman-s-vrtom or /de/apartman-s-vrtom
+function handleSmartPageRedirect(req, res) {
+  // Get lang and page from route params
+  const lang = req.params.lang || 'hr';
+  const page = req.params.page;
+  const isMobile = req.useragent && req.useragent.isMobile;
+
+  // Build paths to EJS files
+  const desktopPath = path.join(__dirname, '..', '..', 'views', lang, `${page}.ejs`);
+  const mobilePath = path.join(__dirname, '..', '..', 'views', lang, `${page}.ejs`);
+
+  if (!page) return res.status(404).render('error', { message: 'Stranica nije pronađena.' });
+
+  if (isMobile && fs.existsSync(mobilePath)) {
+    return res.redirect(`/${lang}/mobile/${page}`);
+  } else if (!isMobile && fs.existsSync(desktopPath)) {
+    return res.redirect(`/${lang}/desktop/${page}`);
+  } else if (fs.existsSync(mobilePath)) {
+    return res.redirect(`/${lang}/mobile/${page}`);
+  } else if (fs.existsSync(desktopPath)) {
+    return res.redirect(`/${lang}/desktop/${page}`);
+  } else {
+    return res.status(404).render('error', { message: 'Stranica nije pronađena.' });
+  }
+}
+
 // Get user's location and redirect to appropriate language
 async function handleRootRedirect(req, res) {
   const clientIp = req.ip;
@@ -87,5 +116,6 @@ async function handleMobileRedirect(req, res) {
 module.exports = {
   handleRootRedirect,
   handleDesktopRedirect,
-  handleMobileRedirect
+  handleMobileRedirect,
+  handleSmartPageRedirect
 };
