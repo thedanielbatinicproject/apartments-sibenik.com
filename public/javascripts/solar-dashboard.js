@@ -365,7 +365,7 @@ function updateAllCharts(data) {
                         }
                     },
                     y: {
-                        min: 390, max: 410,
+                        min: 200, max: 450,
                         ticks: {
                             color: '#fff',
                         }
@@ -422,7 +422,7 @@ function updateAllCharts(data) {
                         }
                     },
                     y: {
-                        min: 5, max: 15,
+                        min: 8, max: 20,
                         ticks: {
                             color: '#fff',
                         }
@@ -479,7 +479,7 @@ function updateAllCharts(data) {
                         }
                     },
                     y: {
-                        min: 0, max: 1000,
+                        min: 0, max: 200,
                         ticks: {
                             color: '#fff',
                         }
@@ -511,6 +511,7 @@ function loadAllCharts(timeRange) {
     fetch(`/api/solar/chart-data?range=${timeRange}`, { headers: { 'x-api-key': window.API_SECRET } })
     .then(r => r.json())
     .then(data => {
+        console.log(data)
         if (data.success && data.data) updateAllCharts(data.data);
         else if (data.success && data.timePoints && data.busVoltage) {
             updateAllCharts({

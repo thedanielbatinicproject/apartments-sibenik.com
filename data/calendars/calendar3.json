@@ -40,5 +40,65 @@
     "naziv": "Airbnb (Not available)",
     "pocetak": "2026-08-07T22:00:00.000Z",
     "kraj": "2026-08-08T22:00:00.000Z"
+  },
+  {
+    "event_uuid": "717d1863-4f8e-404a-b3cb-5bfbcb0b3669",
+    "naziv": "Airbnb (Not available)",
+    "pocetak": "2025-08-08T22:00:00.000Z",
+    "kraj": "2025-08-19T22:00:00.000Z"
+  },
+  {
+    "event_uuid": "c99a8c5a-b700-46a6-be2d-05ba8227f1a2",
+    "naziv": "Airbnb (Not available)",
+    "pocetak": "2026-08-10T22:00:00.000Z",
+    "kraj": "2026-08-11T22:00:00.000Z"
+  },
+  {
+    "event_uuid": "e8e06c4c-29f7-4505-8f0d-cacf7c45b1f1",
+    "naziv": "Airbnb (Not available)",
+    "pocetak": "2025-08-23T22:00:00.000Z",
+    "kraj": "2025-09-02T22:00:00.000Z"
+  },
+  {
+    "event_uuid": "efac07fa-0f71-4887-a5d9-fab60f53f0dc",
+    "naziv": "Airbnb (Not available)",
+    "pocetak": "2025-08-09T22:00:00.000Z",
+    "kraj": "2025-08-19T22:00:00.000Z"
+  },
+  {
+    "event_uuid": "e2609a94-11c3-4965-826d-858a61c41615",
+    "naziv": "Airbnb (Not available)",
+    "pocetak": "2026-08-11T22:00:00.000Z",
+    "kraj": "2026-08-12T22:00:00.000Z"
+  },
+  {
+    "event_uuid": "1439b376-3a27-4180-a562-fa03db8bb5b8",
+    "naziv": "Airbnb (Not available)",
+    "pocetak": "2026-08-12T22:00:00.000Z",
+    "kraj": "2026-08-13T22:00:00.000Z"
+  },
+  {
+    "event_uuid": "23ecef54-f32a-4008-8332-060079cbaca7",
+    "naziv": "Airbnb (Not available)",
+    "pocetak": "2025-08-11T22:00:00.000Z",
+    "kraj": "2025-08-19T22:00:00.000Z"
+  },
+  {
+    "event_uuid": "065bd0d3-18ed-4dc9-8290-780564d091c9",
+    "naziv": "Airbnb (Not available)",
+    "pocetak": "2026-08-13T22:00:00.000Z",
+    "kraj": "2026-08-14T22:00:00.000Z"
+  },
+  {
+    "event_uuid": "e5e6104a-723f-4425-ad1e-080c56086ac1",
+    "naziv": "Airbnb (Not available)",
+    "pocetak": "2025-08-12T22:00:00.000Z",
+    "kraj": "2025-08-19T22:00:00.000Z"
+  },
+  {
+    "event_uuid": "aeaa7e16-3955-4f0e-afca-4ce935e1a4fc",
+    "naziv": "Airbnb (Not available)",
+    "pocetak": "2026-08-14T22:00:00.000Z",
+    "kraj": "2026-08-15T22:00:00.000Z"
   }
 ]
