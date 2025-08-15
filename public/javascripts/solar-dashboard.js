@@ -511,7 +511,6 @@ function loadAllCharts(timeRange) {
     fetch(`/api/solar/chart-data?range=${timeRange}`, { headers: { 'x-api-key': window.API_SECRET } })
     .then(r => r.json())
     .then(data => {
-        console.log(data)
         if (data.success && data.data) updateAllCharts(data.data);
         else if (data.success && data.timePoints && data.busVoltage) {
             updateAllCharts({
