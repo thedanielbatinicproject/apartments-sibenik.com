@@ -125,6 +125,7 @@ router.get('/solar/chart-data', requireAPIKey, async (req, res) => {
 
 // Get latest solar data
 router.get('/backyard-management', requireAPIKey, async (req, res) => {
+  console.log('[API] GET /backyard-management called');
   try {
     const solarData = await readSolarDataWithCache();
     

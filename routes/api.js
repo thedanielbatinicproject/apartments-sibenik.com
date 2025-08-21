@@ -54,6 +54,7 @@ router.post('/check-availability', require('../code/booking/reservationManager')
 
 // Solar data endpoint - GET: returns relay states for ESP32
 router.get('/backyard-management', async (req, res) => {
+  console.log('[API] GET /backyard-management called!!!! - api.js');
   try {
     // Validacija secret key-a
     const secretKey = req.query.secret_key || req.headers['x-secret-key'] || req.headers['secret_key'];

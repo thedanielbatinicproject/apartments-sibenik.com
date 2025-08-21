@@ -39236,5 +39236,36 @@
     "local_time": "15. 08. 2025. 15:13:17",
     "inverter_load_power": 20,
     "_type": "delta"
+  },
+  {
+    "timestamp": "2025-08-21T15:28:51.219Z",
+    "local_time": "21. 08. 2025. 17:28:51",
+    "inverter_battery_voltage": 12,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-08-21T15:34:02.160Z",
+    "local_time": "21. 08. 2025. 17:34:02",
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-08-21T15:38:06.305Z",
+    "local_time": "21. 08. 2025. 17:38:06",
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-08-21T15:42:12.344Z",
+    "local_time": "21. 08. 2025. 17:42:12",
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-08-21T15:42:41.224Z",
+    "local_time": "21. 08. 2025. 17:42:41",
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-08-21T16:14:38.670Z",
+    "local_time": "21. 08. 2025. 18:14:38",
+    "_type": "delta"
   }
 ]

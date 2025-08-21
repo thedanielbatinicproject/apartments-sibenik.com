@@ -15,6 +15,41 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
+
+//QUICK FIX FOR NOW
+app.get('/api/backyard-management', async (req, res) => {
+  console.log('[API] GET /backyard-management called!!!! - api.js');
+  try {
+    // Validacija secret key-a
+    const secretKey = req.query.secret_key || req.headers['x-secret-key'] || req.headers['secret_key'];
+    if (!secretKey || secretKey !== process.env.API_SECRET) {
+      return res.status(401).json({ error: 'Invalid secret key' });
+    }
+    const {getRelayStates} = require('./code/solar/relayStateManager');
+    // Get current relay states from dedicated file
+    const relayStatesData = getRelayStates();
+    
+    res.json({
+      success: true,
+      relayStates: {
+        relay1: relayStatesData.relay1,
+        relay2: relayStatesData.relay2,
+        relay3: relayStatesData.relay3,
+        relay4: relayStatesData.relay4
+      },
+      timestamp: relayStatesData.lastUpdate,
+      message: 'Current relay states retrieved'
+    });
+
+  } catch (error) {
+    console.error('[API] Error in GET backyard-management:', error);
+    return res.status(500).json({ 
+      error: 'Internal server error',
+      message: error.message || 'An error occurred while processing your request.'
+    });
+  }
+});
+
 // Make io accessible to routes
 app.set('io', io);
 
@@ -193,6 +228,7 @@ app.use("/", require("./routes/legacy"));
 
 // Error handling for unsupported routes
 app.use(handle404Error);
+
 
 const PORT = process.env.PORT || 3000;
 const localIPAddress = getLocalIPAddress();
