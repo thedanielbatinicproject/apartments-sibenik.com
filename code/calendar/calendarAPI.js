@@ -54,8 +54,8 @@ async function fetchIcalReservations(url) {
       .map((event) => ({
         event_uuid: uuidv4(),
         naziv: event.summary || 'Unnamed Event',
-        pocetak: event.start,
-        kraj: event.end,
+        pocetak: event.start.getDate() + 1,
+        kraj: event.end.getDate() + 1,
       }));
     
     console.log(`[CALENDAR API] Successfully parsed ${events.length} events from iCal`);
@@ -197,8 +197,6 @@ async function fetchCalendars(id) {
   const calendar1WithUUID = calendar1.map(event => {
     if (!event.event_uuid) {
       event.event_uuid = uuidv4();
-      event.pocetak.setDate(event.pocetak.getDate() + 1);
-      event.kraj.setDate(event.kraj.getDate() + 1);
     }
     return event;
   });
@@ -207,8 +205,6 @@ async function fetchCalendars(id) {
   const calendar2WithUUID = calendar2.map(event => {
     if (!event.event_uuid) {
       event.event_uuid = uuidv4();
-      event.pocetak.setDate(event.pocetak.getDate() + 1);
-      event.kraj.setDate(event.kraj.getDate() + 1);
     }
     return event;
   });
@@ -217,8 +213,6 @@ async function fetchCalendars(id) {
   const calendar3WithUUID = calendar3.map(event => {
     if (!event.event_uuid) {
       event.event_uuid = uuidv4();
-      event.pocetak.setDate(event.pocetak.getDate() + 1);
-      event.kraj.setDate(event.kraj.getDate() + 1);
     }
     return event;
   });
