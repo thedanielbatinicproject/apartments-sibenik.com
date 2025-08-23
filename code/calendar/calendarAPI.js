@@ -197,6 +197,8 @@ async function fetchCalendars(id) {
   const calendar1WithUUID = calendar1.map(event => {
     if (!event.event_uuid) {
       event.event_uuid = uuidv4();
+      event.pocetak += 1;
+      event.kraj += 1;
     }
     return event;
   });
@@ -205,6 +207,8 @@ async function fetchCalendars(id) {
   const calendar2WithUUID = calendar2.map(event => {
     if (!event.event_uuid) {
       event.event_uuid = uuidv4();
+      event.pocetak += 1;
+      event.kraj += 1;
     }
     return event;
   });
@@ -213,6 +217,8 @@ async function fetchCalendars(id) {
   const calendar3WithUUID = calendar3.map(event => {
     if (!event.event_uuid) {
       event.event_uuid = uuidv4();
+      event.pocetak += 1;
+      event.kraj += 1;
     }
     return event;
   });
