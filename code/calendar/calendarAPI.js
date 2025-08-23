@@ -54,8 +54,9 @@ async function fetchIcalReservations(url) {
       .map((event) => ({
         event_uuid: uuidv4(),
         naziv: event.summary || 'Unnamed Event',
-        pocetak: event.start.getDate() + 1,
-        kraj: event.end.getDate() + 1,
+        //add one day to event start and end
+        pocetak: new Date(event.start.getTime() + 24 * 60 * 60 * 1000),
+        kraj: new Date(event.end.getTime() + 24 * 60 * 60 * 1000),
       }));
     
     console.log(`[CALENDAR API] Successfully parsed ${events.length} events from iCal`);
