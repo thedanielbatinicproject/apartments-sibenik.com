@@ -7,6 +7,9 @@ const router = express.Router();
 
 // Root and redirect routes
 router.get('/', handleRootRedirect);
+router.get('/soba', (req, res) => {req.page = "soba";handleRootRedirect(req, res)});
+router.get('/studio', (req, res) => {req.page = "studio";handleRootRedirect(req, res)});
+router.get('/apartment', (req, res) => {req.page = "apartment";handleRootRedirect(req, res)});
 router.get('/desktop', handleDesktopRedirect);
 router.get('/mobile', handleMobileRedirect);
 router.get('/gallery', displayGallery);

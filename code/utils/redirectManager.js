@@ -14,7 +14,11 @@ function handleSmartPageRedirect(req, res) {
   const desktopPath = path.join(__dirname, '..', '..', 'views', lang, `${page}.ejs`);
   const mobilePath = path.join(__dirname, '..', '..', 'views', lang, `${page}.ejs`);
 
-  if (!page) return res.status(404).render('error', { message: 'Stranica nije pronađena.' });
+
+
+  if (!page) return res.status(404).render('error', { error: { 'error-message': 'The page you requested: ' + page + ' could not be found.',
+                                                                'error-code': '404', 
+                                                                'error-title': 'Page not found' } });
 
   if (isMobile && fs.existsSync(mobilePath)) {
     return res.redirect(`/${lang}/mobile/${page}`);
@@ -25,7 +29,7 @@ function handleSmartPageRedirect(req, res) {
   } else if (fs.existsSync(desktopPath)) {
     return res.redirect(`/${lang}/desktop/${page}`);
   } else {
-    return res.status(404).render('error', { message: 'Stranica nije pronađena.' });
+    return res.status(404).render('error', { error: { 'error-message': 'The page you requested: ' + page + ' could not be found.', 'error-code': '404', 'error-title': 'Page not found' } });
   }
 }
 
@@ -54,10 +58,27 @@ async function handleRootRedirect(req, res) {
   if (countryCode === "HR") lang = "hr";
   else if (countryCode === "DE") lang = "de";
 
+  
+
   const isMobile = req.useragent.isMobile;
   const device = isMobile ? "mobile" : "desktop";
+  if (req.page) {
+    if (req.page === 'soba'){
+        res.redirect(`/${lang}/${device}/soba`);
+    }
+    if (req.page === 'studio'){
+        res.redirect(`/${lang}/${device}/studio-apartman`);
+    }
+    if(req.page === 'apartment' || req.page === 'apartman'){
+        res.redirect(`/${lang}/${device}/apartman-s-vrtom`);
+    }
+
+  }
   res.redirect(`/${lang}/${device}`);
 }
+
+  
+
 
 // Handle desktop redirect
 async function handleDesktopRedirect(req, res) {
