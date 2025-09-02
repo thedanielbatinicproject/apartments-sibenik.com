@@ -11,25 +11,25 @@
     <div class="management-container">
         <div class="dashboard-header">
             <div class="header-main">
-                <h1 class="dashboard-title">Management Dashboard</h1>
-                <p class="dashboard-subtitle">Apartments Šibenik - Administrative Panel</p>
+                <h1 class="dashboard-title">Glavna upravljačka ploča</h1>
+                <p class="dashboard-subtitle">Apartments Šibenik - Administrativna ploča</p>
             </div>
-            <div class="user-info">
-                <span class="welcome-text">Welcome, <%= user.username %>!</span>
+            <div class="user-info" style="padding-top: 20px;">
+                <span class="welcome-text">Dobrodošli, <%= user.username %>!</span>
                 <% if (user.role === 'admin') { %>
                     <span class="admin-badge">Admin</span>
                 <% } %>
-                <form action="/management/logout" method="POST" style="display: inline;">
-                    <button type="submit" class="btn-danger">Logout</button>
+                <form action="/management/logout" method="POST" style="display: inline;padding-left: 10px;">
+                    <button type="submit" class="btn-danger">Odjavi se</button>
                 </form>
             </div>
         </div>
 
         <div class="dashboard-grid">
             <div class="dashboard-card">
-                <h3 class="card-title">🌞 Solar Dashboard</h3>
+                <h3 class="card-title">🌞 Solarna elektrana</h3>
                 <p style="color: rgba(255,255,255,0.8); margin-bottom: 1rem;">
-                    Monitor solar panel performance, battery status, and environmental data in real-time.
+                    Nadzirite uživo podatke sa solara u dvorištu.
                 </p>
                 <a href="/management/solar-dashboard" style="
                     display: inline-block;
@@ -43,14 +43,14 @@
                     transition: all 0.3s ease;
                 " onmouseover="this.style.background='rgba(74, 222, 128, 0.3)'" 
                    onmouseout="this.style.background='rgba(74, 222, 128, 0.2)'">
-                    View Solar Dashboard
+                    Otvori Dashboard
                 </a>
             </div>
 
             <div class="dashboard-card">
-                <h3 class="card-title">⭐ Reviews</h3>
+                <h3 class="card-title">⭐ Recenzije</h3>
                 <p style="color: rgba(255,255,255,0.8); margin-bottom: 1rem;">
-                    Add, edit or remove reviews from web page.
+                    Dodajte, uredite ili izbrišite recenzije na web stranici.
                 </p>
                 <a href="/management/reviews" style="
                     display: inline-block;
@@ -64,37 +64,51 @@
                     transition: all 0.3s ease;
                 " onmouseover="this.style.background='rgba(251, 191, 36, 0.3)'" 
                    onmouseout="this.style.background='rgba(251, 191, 36, 0.2)'">
-                    Manage Reviews
+                    Uredi recenzije
                 </a>
             </div>
 
             <div class="dashboard-card">
-                <h3 class="card-title">📊 Analytics</h3>
+                <h3 class="card-title">📊 Računi</h3>
                 <p style="color: rgba(255,255,255,0.8); margin-bottom: 1rem;">
-                    View detailed analytics and reports for all systems.
+                    Generirajte, izbrišite ili pregledajte račune.
                 </p>
-                <div class="card-status status-offline">Coming Soon</div>
+                <a href="/management/invoices" style="
+                    display: inline-block;
+                    padding: 0.8rem 1.5rem;
+                    background: rgba(104, 251, 36, 0.2);
+                    color: #87ff4f;
+                    text-decoration: none;
+                    border-radius: 12px;
+                    border: 1px solid rgba(104, 251, 36, 0.3);
+                    font-weight: 600;
+                    transition: all 0.3s ease;
+                    box-shadow: #87ff4f 0 4px 8px;
+                " onmouseover="this.style.background='rgba(104, 251, 36, 0.3)'" 
+                   onmouseout="this.style.background='rgba(104, 251, 36, 0.2)'">
+                    Portal sa računima
+                </a>
             </div>
 
             <div class="dashboard-card">
-                <h3 class="card-title">🏠 Property Management</h3>
+                <h3 class="card-title">🏠 Upravljanje sa jedinicama</h3>
                 <p style="color: rgba(255,255,255,0.8); margin-bottom: 1rem;">
-                    Manage apartment bookings, calendars, and reservations.
+                    Upravljajte sa rezervacijama, kalendarima i samim jedinicama.
                 </p>
-                <div class="card-status status-offline">Coming Soon</div>
+                <div class="card-status status-offline">Dolazi uskoro</div>
             </div>
 
             <% if (user.role === 'admin') { %>
             <div class="dashboard-card">
-                <h3 class="card-title">👥 User Management</h3>
+                <h3 class="card-title">👥 Uređivanje računa</h3>
                 <p style="color: rgba(255,255,255,0.8); margin-bottom: 1rem;">
-                    Add, remove, and manage system users and their permissions.
+                    Dodajte, uklonite i upravljajte korisnicima sistema i njihovim dozvolama.
                 </p>
                 <button onclick="openUserManagement()" style="
                     display: inline-block;
                     padding: 0.8rem 1.5rem;
                     background: rgba(139, 92, 246, 0.2);
-                    color: #8b5cf6;
+                    color: #c8b9ea;
                     border: 1px solid rgba(139, 92, 246, 0.3);
                     border-radius: 12px;
                     font-weight: 600;
@@ -102,23 +116,23 @@
                     transition: all 0.3s ease;
                 " onmouseover="this.style.background='rgba(139, 92, 246, 0.3)'" 
                    onmouseout="this.style.background='rgba(139, 92, 246, 0.2)'">
-                    Manage Users
+                    Uredi korisnike
                 </button>
             </div>
-            <% } %>
-
+            
             <div class="dashboard-card">
-                <h3 class="card-title">⚙️ Settings</h3>
+                <h3 class="card-title">⚙️ Postavke</h3>
                 <p style="color: rgba(255,255,255,0.8); margin-bottom: 1rem;">
-                    Configure system settings and user preferences.
+                    Konfigurirajte postavke sustava i korisničke preferencije.
                 </p>
-                <div class="card-status status-offline">Coming Soon</div>
+                <div class="card-status status-offline">Dolazi uskoro</div>
             </div>
+            <% } %>
         </div>
 
         <!-- Relay Control Section -->
         <div class="relay-controls-section">
-            <h2 class="relay-controls-title">⚡ Relay Controls</h2>
+            <h2 class="relay-controls-title">⚡ Upravljanje prekidačima</h2>
             <div class="relay-grid">
                 <% for (let i = 1; i <= 4; i++) { %>
                     <% 
@@ -145,23 +159,23 @@
         <div id="userManagementModal" class="modal" style="display: none;">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2>User Management</h2>
+                    <h2>Upravljanje računima</h2>
                     <span class="close" onclick="closeUserManagement()">&times;</span>
                 </div>
                 <div class="modal-body">
                     <div class="user-actions">
-                        <button onclick="showAddUserForm()" class="btn-primary">Add New User</button>
-                        <button onclick="loadUsers()" class="btn-secondary">Refresh List</button>
+                        <button onclick="showAddUserForm()" class="btn-primary">Dodaj novog korisnika</button>
+                        <button onclick="loadUsers()" class="btn-secondary">Osvježi popis</button>
                     </div>
                     
                     <div id="addUserForm" style="display: none;">
-                        <h3>Add New User</h3>
+                        <h3>Dodaj novog korisnika</h3>
                         <form id="newUserForm">
                             <input type="text" id="newUserName" placeholder="Full Name" required>
                             <input type="text" id="newUserUsername" placeholder="Username" required>
                             <input type="password" id="newUserPassword" placeholder="Password" required>
-                            <button type="submit" class="btn-primary">Create User</button>
-                            <button type="button" onclick="hideAddUserForm()" class="btn-secondary">Cancel</button>
+                            <button type="submit" class="btn-primary">Kreiraj korisnika</button>
+                            <button type="button" onclick="hideAddUserForm()" class="btn-secondary">Odustani</button>
                         </form>
                     </div>
                     
@@ -195,258 +209,97 @@
         </div>
 
         <script>
-            // Custom Alert Functions
-            function showCustomAlert(message) {
-                document.getElementById('alertMessage').textContent = message;
-                document.getElementById('customAlert').style.display = 'block';
-            }
-
-            function closeCustomAlert() {
-                document.getElementById('customAlert').style.display = 'none';
-            }
-
-            // Custom Confirm Functions
-            let confirmCallback = null;
-
-            function showCustomConfirm(message, callback) {
-                document.getElementById('confirmMessage').textContent = message;
-                document.getElementById('customConfirm').style.display = 'block';
-                confirmCallback = callback;
-            }
-
-            function confirmAction() {
-                document.getElementById('customConfirm').style.display = 'none';
-                if (confirmCallback) {
-                    confirmCallback();
-                    confirmCallback = null;
-                }
-            }
-
-            function closeCustomConfirm() {
-                document.getElementById('customConfirm').style.display = 'none';
-                confirmCallback = null;
-            }
-
-            // Close modal when clicking outside
-            window.onclick = function(event) {
-                const alertModal = document.getElementById('customAlert');
-                const confirmModal = document.getElementById('customConfirm');
-                if (event.target === alertModal) {
-                    closeCustomAlert();
-                }
-                if (event.target === confirmModal) {
-                    closeCustomConfirm();
-                }
-            }
-
-            <% if (user.role === 'admin') { %>
-            function openUserManagement() {
-                document.getElementById('userManagementModal').style.display = 'block';
-                loadUsers();
-            }
-
-            function closeUserManagement() {
-                document.getElementById('userManagementModal').style.display = 'none';
-            }
-
-            function showAddUserForm() {
-                document.getElementById('addUserForm').style.display = 'block';
-            }
-
-            function hideAddUserForm() {
-                document.getElementById('addUserForm').style.display = 'none';
-                document.getElementById('newUserForm').reset();
-            }
-
-            async function loadUsers() {
-                try {
-                    const response = await fetch('/management/api/users');
-                    const result = await response.json();
-                    
-                    if (result.success) {
-                        displayUsers(result.users);
-                    } else {
-                        showCustomAlert('Error loading users: ' + result.message);
-                    }
-                } catch (error) {
-                    showCustomAlert('Error loading users: ' + error.message);
-                }
-            }
-
-            function displayUsers(users) {
-                const usersList = document.getElementById('usersList');
-                usersList.innerHTML = '<h3>Current Users</h3>';
-                
-                users.forEach(user => {
-                    const userDiv = document.createElement('div');
-                    userDiv.className = 'user-item';
-                    userDiv.innerHTML = `
-                        <div class="user-info">
-                            <strong>${user.name}</strong> (${user.username})
-                            <span class="user-role">${user.role}</span>
-                        </div>
-                        ${user.username !== 'admin' ? 
-                            `<button onclick="removeUser('${user.uuid}')" class="btn-danger">Remove</button>` : 
-                            '<span class="protected-user">Protected</span>'
-                        }
-                    `;
-                    usersList.appendChild(userDiv);
-                });
-            }
-
-            document.getElementById('newUserForm').addEventListener('submit', async function(e) {
-                e.preventDefault();
-                
-                const name = document.getElementById('newUserName').value;
-                const username = document.getElementById('newUserUsername').value;
-                const password = document.getElementById('newUserPassword').value;
-                
-                try {
-                    const response = await fetch('/management/api/users', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ name, username, password })
-                    });
-                    
-                    const result = await response.json();
-                    
-                    if (result.success) {
-                        showCustomAlert('User created successfully!');
-                        hideAddUserForm();
-                        loadUsers();
-                    } else {
-                        showCustomAlert('Error: ' + result.message);
-                    }
-                } catch (error) {
-                    showCustomAlert('Error creating user: ' + error.message);
-                }
-            });
-
-            async function removeUser(userUuid) {
-                showCustomConfirm('Are you sure you want to remove this user?', async function() {
-                    try {
-                        const response = await fetch(`/management/api/users/${userUuid}`, {
-                            method: 'DELETE'
-                        });
-                        
-                        const result = await response.json();
-                        
-                        if (result.success) {
-                            showCustomAlert('User removed successfully!');
-                            loadUsers();
-                        } else {
-                            showCustomAlert('Error: ' + result.message);
-                        }
-                    } catch (error) {
-                        showCustomAlert('Error removing user: ' + error.message);
-                    }
-                });
-            }
-            <% } %>
-
-            // Relay Management Functions
-            let relayStates = {
-                relay1: <%= relayStates.relay1 %>,
-                relay2: <%= relayStates.relay2 %>,
-                relay3: <%= relayStates.relay3 %>,
-                relay4: <%= relayStates.relay4 %>
+            // Make current user available to JavaScript
+            window.currentUser = {
+                uuid: '<%= user.uuid %>',
+                username: '<%= user.username %>',
+                role: '<%= user.role %>'
             };
-
-            async function toggleRelay(relayNumber) {
-                try {
-                    const relayCard = document.querySelector(`[data-relay="${relayNumber}"]`);
-                    
-                    // Add loading state
-                    relayCard.classList.add('loading');
-                    
-                    const response = await fetch(`/management/api/relay-toggle/${relayNumber}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    });
-                    
-                    const result = await response.json();
-                    
-                    if (result.success) {
-                        // Update local state
-                        relayStates = result.relayStates;
-                        updateRelayUI();
-                    }
-                } catch (error) {
-                    console.error('Error toggling relay:', error.message);
-                } finally {
-                    // Remove loading state
-                    const relayCard = document.querySelector(`[data-relay="${relayNumber}"]`);
-                    if (relayCard) {
-                        relayCard.classList.remove('loading');
-                    }
-                }
-            }
-
-            function updateRelayUI() {
-                for (let i = 1; i <= 4; i++) {
-                    const relayKey = `relay${i}`;
-                    const relayCard = document.querySelector(`[data-relay="${i}"]`);
-                    const statusText = relayCard.querySelector('.relay-status-text');
-                    const actionText = relayCard.querySelector('.relay-action-text');
-                    const isOn = relayStates[relayKey];
-                    
-                    // Update card classes
-                    relayCard.classList.remove('powered-on', 'powered-off');
-                    relayCard.classList.add(isOn ? 'powered-on' : 'powered-off');
-                    
-                    // Update text content
-                    statusText.textContent = isOn ? 'Powered ON' : 'Powered OFF';
-                    actionText.textContent = isOn ? 'Press to TURN OFF' : 'Press to TURN ON';
-                }
-            }
-
-            // Load current relay states from server
-            async function loadRelayStates() {
-                try {
-                    console.log('Loading relay states from server...');
-                    const response = await fetch('/management/api/relay-states');
-                    const result = await response.json();
-                    
-                    if (result.success) {
-                        relayStates = result.relayStates;
-                        updateRelayUI();
-                        console.log('Relay states loaded from server:', relayStates);
-                    } else {
-                        console.error('Failed to load relay states:', result.message);
-                    }
-                } catch (error) {
-                    console.error('Error loading relay states:', error);
-                }
-            }
-
-            // Socket.IO connection for real-time updates
-            const socket = io();
-            
-            socket.on('connect', function() {
-                console.log('Socket.IO connected');
-                // Load current states when connected
-                loadRelayStates();
-            });
-            
-            socket.on('relayStatesUpdate', function(data) {
-                relayStates = data;
-                updateRelayUI();
-                console.log('Relay states updated via Socket.IO:', data);
-            });
-            
-            socket.on('disconnect', function() {
-                console.log('Socket.IO disconnected');
-            });
-            
-            // Load relay states when page loads
-            document.addEventListener('DOMContentLoaded', function() {
-                loadRelayStates();
-            });
         </script>
+        <script src="/javascripts/userManagement.js"></script>
+        
+        <style>
+            /* Additional styles for change password modal */
+            .user-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 1rem;
+                margin: 0.5rem 0;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 8px;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+            
+            .user-actions {
+                display: flex;
+                gap: 0.5rem;
+                align-items: center;
+            }
+            
+            .btn-warning {
+                background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(245, 158, 11, 0.2) 100%);
+                color: #fbbf24;
+                border: 1px solid rgba(251, 191, 36, 0.3);
+                padding: 0.5rem 1rem;
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 0.9rem;
+                transition: all 0.3s ease;
+                backdrop-filter: blur(10px);
+            }
+            
+            .btn-warning:hover {
+                background: linear-gradient(135deg, rgba(251, 191, 36, 0.3) 0%, rgba(245, 158, 11, 0.3) 100%);
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(251, 191, 36, 0.25);
+            }
+            
+            #changePasswordModal .modal-content {
+                max-width: 500px;
+            }
+            
+            .form-group {
+                margin-bottom: 1rem;
+            }
+            
+            .form-group label {
+                display: block;
+                margin-bottom: 0.5rem;
+                color: #fff;
+                font-weight: 600;
+            }
+            
+            .form-group input {
+                width: 100%;
+                padding: 0.75rem;
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                border-radius: 8px;
+                background: rgba(255, 255, 255, 0.1);
+                color: #fff;
+                font-size: 1rem;
+                backdrop-filter: blur(10px);
+                box-sizing: border-box;
+            }
+            
+            .form-group input:focus {
+                outline: none;
+                border-color: rgba(74, 222, 128, 0.5);
+                box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.2);
+            }
+            
+            .form-group input::placeholder {
+                color: rgba(255, 255, 255, 0.5);
+            }
+            
+            .form-actions {
+                display: flex;
+                gap: 1rem;
+                justify-content: flex-end;
+                margin-top: 1.5rem;
+            }
+        </style>
     </div>
 </body>
 </html>

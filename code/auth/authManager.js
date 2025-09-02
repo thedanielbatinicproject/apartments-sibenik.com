@@ -322,6 +322,103 @@ class AuthManager {
       users: userList
     };
   }
+
+  // Change user password
+  changePassword(targetUserUuid, newPassword, sessionId, currentPassword = null) {
+    const session = this.validateSession(sessionId);
+    if (!session) {
+      return {
+        success: false,
+        message: 'Unauthorized: Invalid session'
+      };
+    }
+
+    const users = this.loadUserDatabase();
+    const targetUser = users[targetUserUuid];
+    
+    if (!targetUser) {
+      return {
+        success: false,
+        message: 'User not found'
+      };
+    }
+
+    // Check permissions
+    const isAdmin = session.role === 'admin';
+    const isOwnPassword = session.userUuid === targetUserUuid;
+
+    if (!isAdmin && !isOwnPassword) {
+      return {
+        success: false,
+        message: 'Unauthorized: You can only change your own password'
+      };
+    }
+
+    // If user is changing their own password, verify current password
+    if (isOwnPassword && !isAdmin) {
+      if (!currentPassword) {
+        return {
+          success: false,
+          message: 'Current password is required'
+        };
+      }
+      
+      if (!this.verifyPassword(currentPassword, targetUser.password)) {
+        return {
+          success: false,
+          message: 'Current password is incorrect'
+        };
+      }
+    }
+
+    // Admin changing their own password also needs current password
+    if (isAdmin && isOwnPassword) {
+      if (!currentPassword) {
+        return {
+          success: false,
+          message: 'Current password is required when changing your own password'
+        };
+      }
+      
+      if (!this.verifyPassword(currentPassword, targetUser.password)) {
+        return {
+          success: false,
+          message: 'Current password is incorrect'
+        };
+      }
+    }
+
+    // Validate new password
+    if (!newPassword || newPassword.length < 6) {
+      return {
+        success: false,
+        message: 'New password must be at least 6 characters long'
+      };
+    }
+
+    // Update password
+    targetUser.password = this.hashPassword(newPassword);
+    targetUser.passwordChangedAt = new Date().toISOString();
+    targetUser.passwordChangedBy = session.username;
+
+    this.saveUserDatabase(users);
+
+    // If changing own password, invalidate other sessions for security
+    if (isOwnPassword) {
+      const loggedUsers = this.loadLoggedUsers();
+      Object.keys(loggedUsers).forEach(sid => {
+        if (loggedUsers[sid].userUuid === targetUserUuid && sid !== sessionId) {
+          delete loggedUsers[sid];
+        }
+      });
+      this.saveLoggedUsers(loggedUsers);
+    }
+
+    return {
+      success: true,
+      message: 'Password changed successfully'
+    };
+  }
 }
 
 module.exports = new AuthManager();

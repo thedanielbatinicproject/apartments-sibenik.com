@@ -217,11 +217,11 @@ app.use("/en", require("./routes/en"));
 // Management routes
 app.use("/management", require("./routes/management"));
 
-// Main routes (root, desktop, mobile, gallery, header)
-app.use("/", require("./routes/main"));
-
 // API routes with /api prefix
 app.use("/api", require("./routes/api"));
+
+// Main routes (root, desktop, mobile, gallery, header)
+app.use("/", require("./routes/main"));
 
 // Legacy routes for backward compatibility
 app.use("/", require("./routes/legacy"));

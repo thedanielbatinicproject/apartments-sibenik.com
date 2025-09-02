@@ -10,51 +10,93 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
                 /* Modern glassy button styles for Load More and Export */
+        .load-more-btn, .export-btn {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            padding: 14px 32px;
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            margin: 0 8px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .load-more-btn::before, .export-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                120deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent
+            );
+            transition: 0.6s ease;
+        }
+
+        .load-more-btn:hover::before, .export-btn:hover::before {
+            left: 100%;
+        }
+
         .load-more-btn {
-            background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
-            color: white;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 14px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            box-shadow: 0 8px 32px rgba(124, 58, 237, 0.15);
-            backdrop-filter: blur(10px);
-            transition: all 0.2s cubic-bezier(.4,0,.2,1);
-            border: 1px solid rgba(255,255,255,0.18);
-            margin: 0 8px;
+            background: linear-gradient(
+                135deg,
+                rgba(167, 139, 250, 0.15) 0%,
+                rgba(124, 58, 237, 0.15) 100%
+            );
+            border-color: rgba(167, 139, 250, 0.3);
         }
+
         .load-more-btn:hover {
-            background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
-            box-shadow: 0 12px 40px rgba(124, 58, 237, 0.25);
-            transform: translateY(-2px) scale(1.03);
+            background: linear-gradient(
+                135deg,
+                rgba(167, 139, 250, 0.25) 0%,
+                rgba(124, 58, 237, 0.25) 100%
+            );
+            box-shadow: 0 16px 48px rgba(124, 58, 237, 0.3);
+            transform: translateY(-3px);
+            border-color: rgba(167, 139, 250, 0.5);
         }
-        .load-more-btn:active {
-            transform: scale(0.98);
-        }
+
         .export-btn {
-            background: linear-gradient(135deg, #22c55e 0%, #4ade80 100%);
-            color: white;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 14px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            box-shadow: 0 8px 32px rgba(34, 197, 94, 0.15);
-            backdrop-filter: blur(10px);
-            transition: all 0.2s cubic-bezier(.4,0,.2,1);
-            border: 1px solid rgba(255,255,255,0.18);
-            margin: 0 8px;
+            background: linear-gradient(
+                135deg,
+                rgba(34, 197, 94, 0.15) 0%,
+                rgba(74, 222, 128, 0.15) 100%
+            );
+            border-color: rgba(34, 197, 94, 0.3);
         }
+
         .export-btn:hover {
-            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
-            box-shadow: 0 12px 40px rgba(34, 197, 94, 0.25);
-            transform: translateY(-2px) scale(1.03);
+            background: linear-gradient(
+                135deg,
+                rgba(34, 197, 94, 0.25) 0%,
+                rgba(74, 222, 128, 0.25) 100%
+            );
+            box-shadow: 0 16px 48px rgba(34, 197, 94, 0.3);
+            transform: translateY(-3px);
+            border-color: rgba(34, 197, 94, 0.5);
         }
-        .export-btn:active {
-            transform: scale(0.98);
+
+        .load-more-btn:active, .export-btn:active {
+            transform: scale(0.97) translateY(-1px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .load-more-btn:focus, .export-btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.3);
         }
 
                 /* Chart button styles */
@@ -235,11 +277,12 @@
 <body>
     <div class="management-container">
         <div class="dashboard-header">
-            <h1 class="dashboard-title">Solar Management Dashboard</h1>
-            <p class="dashboard-subtitle">Real-time monitoring of MPPT solar charge controller</p>
+            <input class="load-more-btn" type="button" onclick="location.href='/management';" value="Nazad na upravljačku ploču" />
+            <h1 class="dashboard-title">Nadzorna ploča za solare</h1>
+            <p class="dashboard-subtitle">Praćenje u stvarnom vremenu MPPT solarnih regulatora punjenja</p>
             <div class="live-indicator">
                 <div class="live-dot"></div>
-                <span>Live Data</span>
+                <span>Podatci uživo</span>
             </div>
         </div>
 
@@ -570,12 +613,12 @@
 
         <!-- Chart Section -->
         <div class="chart-section">
-            <h2>Data Visualization</h2>
+            <h2>Vizualizacije podataka</h2>
             <div class="chart-controls">
-                <button class="chart-btn" onclick="loadAllCharts('1h')">1 Hour</button>
-                <button class="chart-btn active" onclick="loadAllCharts('6h')">6 Hours</button>
-                <button class="chart-btn" onclick="loadAllCharts('12h')">12 Hours</button>
-                <button class="chart-btn" onclick="loadAllCharts('24h')">24 Hours</button>
+                <button class="chart-btn" onclick="loadAllCharts('1h')">1 sat</button>
+                <button class="chart-btn active" onclick="loadAllCharts('6h')">6 sati</button>
+                <button class="chart-btn" onclick="loadAllCharts('12h')">12 sati</button>
+                <button class="chart-btn" onclick="loadAllCharts('24h')">24 sata</button>
             </div>
             
             <!-- Three separate charts -->
@@ -585,11 +628,11 @@
                     <canvas id="pvVoltageChart"></canvas>
                 </div>
                 <div class="chart-container">
-                    <h3 class="chart-subtitle">Battery Voltage [V]</h3>
+                    <h3 class="chart-subtitle">Napon baterije [V]</h3>
                     <canvas id="batteryVoltageChart"></canvas>
                 </div>
                 <div class="chart-container">
-                    <h3 class="chart-subtitle">Inverter Power [W]</h3>
+                    <h3 class="chart-subtitle">Snaga invertera [W]</h3>
                     <canvas id="chargePowerChart"></canvas>
                 </div>
             </div>
@@ -597,17 +640,17 @@
 
         <!-- Data History Table -->
         <div class="data-history">
-            <h2 class="history-title" id="historyTitle">Recent Data History (<%= totalRecords %> total records)</h2>
+            <h2 class="history-title" id="historyTitle">Nedavni zapisi na serveru (<%= totalRecords %> total records)</h2>
             <div class="history-table-container" style="overflow-x: auto; max-width: 100vw;">
                 <table class="history-table" style="min-width: 600px;">
                     <thead>
                         <tr>
-                            <th>Time</th>
+                            <th>Vrijeme</th>
                             <th>Bus Voltage [V]</th>
                             <th>Battery Voltage [V]</th>
-                            <th>Inverter Power [W]</th>
-                            <th>Load Power [W]</th>
-                            <th>PV Power [W]</th>
+                            <th>Snaga invertera [W]</th>
+                            <th>Snaga koja se vuče [W]</th>
+                            <th>Znaga PV čelija [W]</th>
                         </tr>
                     </thead>
                     <tbody id="historyTableBody">
@@ -634,12 +677,11 @@
         <div style="text-align: center; margin-top: 20px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
             <% if (totalRecords > 10) { %>
             <button class="load-more-btn" id="loadMoreBtn" onclick="loadMoreData()">
-                Load More Data
-
+                Učitaj još podataka
             </button>
             <% } %>
             <button class="export-btn" id="exportBtn" onclick="exportJsonData()">
-                EXPORT JSON DATA
+                EXPORT JSON PODATAKA
             </button>
         </div>
         

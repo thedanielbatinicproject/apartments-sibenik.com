@@ -319,6 +319,28 @@ router.get('/api/users', requireAuth, requireAdmin, async (req, res) => {
   res.json(result);
 });
 
+// Change user password
+router.put('/api/users/:userUuid/password', requireAuth, async (req, res) => {
+  const { userUuid } = req.params;
+  const { newPassword, currentPassword } = req.body;
+  
+  if (!newPassword) {
+    return res.status(400).json({
+      success: false,
+      message: 'New password is required'
+    });
+  }
+  
+  const result = authManager.changePassword(
+    userUuid, 
+    newPassword, 
+    req.cookies.management_auth, 
+    currentPassword
+  );
+  
+  res.json(result);
+});
+
 // Relay Management API Routes
 router.get('/api/relay-states', requireAuth, async (req, res) => {
   try {
