@@ -358,4 +358,4 @@ This project is available for **non-commercial use only**.
 
 **Featuring Advanced Solar Monitoring & Smart Management Systems**
 
-[Live Demo](https://test.apartments-sibenik.com) • [Contact](mailto:daniel.batinic@fer.hr) • [GitHub](https://github.com/thedanielbatinicproject/apartments-sibenik.com)
+[Live Demo](https://apartments-sibenik.com) • [Contact](mailto:daniel.batinic@fer.hr) • [GitHub](https://github.com/thedanielbatinicproject/apartments-sibenik.com)
