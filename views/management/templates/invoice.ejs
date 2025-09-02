@@ -195,7 +195,7 @@
             <span class="footer-title-separator"> / </span>
             <span class="footer-title-en">Notes</span>
         </div>
-        <div style="margin-bottom: 8px; font-weight: bold;">Ovaj račun je valjan bez potpisa i bez pečata.</div>
+        <div style="margin-bottom: 8px; font-weight: bold;">Ovaj račun je valjan bez potpisa i bez pečata. / This invoice is valid without a signature and stamp.</div>
         <% if (company.constants.disclaimer1) { %>
         <div style="margin-bottom: 8px;"><%= company.constants.disclaimer1 %></div>
         <% } %>
@@ -203,12 +203,12 @@
         <div style="margin-bottom: 8px;"><%= company.constants.disclaimer2 %></div>
         <% } %>
         <div style="margin-top: 15px; font-style: italic;">
-            Račun je izdao i ovjera: <%= company.companyInfo.owner %> /  <span style="font-style: italic;">Invoice issued and verified by: <%= company.companyInfo.owner %></span>
+            Račun je izdao i ovjerio: <%= company.companyInfo.owner %> /  <span style="font-style: italic;">Invoice issued and verified by: <%= company.companyInfo.owner %></span>
         </div>
         
         <% if (invoice.uid) { %>
         <div class="invoice-uid-footer">
-            <div class="uid-code">Invoice UID: <%= invoice.uid %></div>
+            <div class="uid-code">Invoice UID: <span class="uid-bold"><%= invoice.uid %></span></div>
             <div class="uid-verification">Ovaj račun možete verificirati na: apartments-sibenik.com/check-invoice</div>
             <div class="uid-verification-en">This invoice can be verified at: apartments-sibenik.com/check-invoice</div>
         </div>

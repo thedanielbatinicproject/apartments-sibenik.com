@@ -154,5 +154,53 @@
     "naziv": "Airbnb (Not available)",
     "pocetak": "2025-09-07T22:00:00.000Z",
     "kraj": "2025-09-10T22:00:00.000Z"
+  },
+  {
+    "event_uuid": "cb3e7918-77c9-457d-a532-d0118513bf85",
+    "naziv": "Reserved",
+    "pocetak": "2025-08-31T22:00:00.000Z",
+    "kraj": "2025-09-04T22:00:00.000Z"
+  },
+  {
+    "event_uuid": "49e03304-8867-4bb2-9960-886aec3ef499",
+    "naziv": "Reserved",
+    "pocetak": "2025-09-04T22:00:00.000Z",
+    "kraj": "2025-09-06T22:00:00.000Z"
+  },
+  {
+    "event_uuid": "c641bbad-f578-4456-855c-8e138c6712dd",
+    "naziv": "Reserved",
+    "pocetak": "2025-10-10T22:00:00.000Z",
+    "kraj": "2025-10-11T22:00:00.000Z"
+  },
+  {
+    "event_uuid": "20f2baad-b433-459c-a182-761114070b09",
+    "naziv": "Airbnb (Not available)",
+    "pocetak": "2025-09-06T22:00:00.000Z",
+    "kraj": "2025-09-07T22:00:00.000Z"
+  },
+  {
+    "event_uuid": "9fe86d6d-f92a-453c-8fee-fac8119c5e85",
+    "naziv": "Airbnb (Not available)",
+    "pocetak": "2025-09-08T22:00:00.000Z",
+    "kraj": "2025-09-11T22:00:00.000Z"
+  },
+  {
+    "event_uuid": "71f470d3-5865-4b93-8acf-59abb44db5ca",
+    "naziv": "Airbnb (Not available)",
+    "pocetak": "2025-09-26T22:00:00.000Z",
+    "kraj": "2025-09-30T22:00:00.000Z"
+  },
+  {
+    "event_uuid": "f7706494-eead-441d-aed0-a54cdbe0ef94",
+    "naziv": "Airbnb (Not available)",
+    "pocetak": "2025-10-25T22:00:00.000Z",
+    "kraj": "2025-10-26T22:00:00.000Z"
+  },
+  {
+    "event_uuid": "a1427902-daad-4079-a364-f2db73ee7f74",
+    "naziv": "Airbnb (Not available)",
+    "pocetak": "2026-09-02T22:00:00.000Z",
+    "kraj": "2026-09-03T22:00:00.000Z"
   }
 ]

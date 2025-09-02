@@ -112942,5 +112942,200 @@
     "local_time": "02. 09. 2025. 14:46:03",
     "inverter_bus_voltage": 432.7,
     "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:17:32.457Z",
+    "local_time": "02. 09. 2025. 20:17:32",
+    "pv_charger_voltage": 0,
+    "pv_charger_radiator_temp": 30,
+    "inverter_battery_voltage": 12.8,
+    "inverter_bus_voltage": 406.9,
+    "inverter_ac_radiator_temp": 48,
+    "inverter_dc_radiator_temp": 37,
+    "inverter_battery_current": 1,
+    "inverter_arrow_flag": 166,
+    "charger_error_message": 32,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:18:25.886Z",
+    "local_time": "02. 09. 2025. 20:18:25",
+    "inverter_ac_radiator_temp": 47,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:19:19.297Z",
+    "local_time": "02. 09. 2025. 20:19:19",
+    "inverter_ac_radiator_temp": 48,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:21:11.094Z",
+    "local_time": "02. 09. 2025. 20:21:11",
+    "inverter_bus_voltage": 406.7,
+    "inverter_ac_radiator_temp": 47,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:22:04.864Z",
+    "local_time": "02. 09. 2025. 20:22:04",
+    "inverter_ac_radiator_temp": 48,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:22:58.410Z",
+    "local_time": "02. 09. 2025. 20:22:58",
+    "inverter_bus_voltage": 406.6,
+    "inverter_ac_radiator_temp": 47,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:23:51.765Z",
+    "local_time": "02. 09. 2025. 20:23:51",
+    "inverter_ac_radiator_temp": 48,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:24:45.162Z",
+    "local_time": "02. 09. 2025. 20:24:45",
+    "inverter_bus_voltage": 406.5,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:25:38.576Z",
+    "local_time": "02. 09. 2025. 20:25:38",
+    "inverter_ac_radiator_temp": 47,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:26:32.123Z",
+    "local_time": "02. 09. 2025. 20:26:32",
+    "pv_charger_radiator_temp": 29,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:27:25.562Z",
+    "local_time": "02. 09. 2025. 20:27:25",
+    "inverter_bus_voltage": 406.4,
+    "inverter_ac_radiator_temp": 48,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:28:18.914Z",
+    "local_time": "02. 09. 2025. 20:28:18",
+    "inverter_ac_radiator_temp": 47,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:29:12.318Z",
+    "local_time": "02. 09. 2025. 20:29:12",
+    "inverter_bus_voltage": 406.3,
+    "inverter_ac_radiator_temp": 48,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:30:05.762Z",
+    "local_time": "02. 09. 2025. 20:30:05",
+    "inverter_ac_radiator_temp": 47,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:30:59.163Z",
+    "local_time": "02. 09. 2025. 20:30:59",
+    "inverter_bus_voltage": 406.2,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:31:52.628Z",
+    "local_time": "02. 09. 2025. 20:31:52",
+    "inverter_ac_radiator_temp": 48,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:33:39.312Z",
+    "local_time": "02. 09. 2025. 20:33:39",
+    "inverter_bus_voltage": 406.1,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:34:32.690Z",
+    "local_time": "02. 09. 2025. 20:34:32",
+    "inverter_bus_voltage": 406,
+    "inverter_ac_radiator_temp": 47,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:35:25.994Z",
+    "local_time": "02. 09. 2025. 20:35:25",
+    "inverter_ac_radiator_temp": 48,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:36:19.366Z",
+    "local_time": "02. 09. 2025. 20:36:19",
+    "inverter_bus_voltage": 405.9,
+    "inverter_ac_radiator_temp": 47,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:37:12.762Z",
+    "local_time": "02. 09. 2025. 20:37:12",
+    "inverter_ac_radiator_temp": 48,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:38:06.115Z",
+    "local_time": "02. 09. 2025. 20:38:06",
+    "inverter_bus_voltage": 406,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:38:59.389Z",
+    "local_time": "02. 09. 2025. 20:38:59",
+    "inverter_battery_voltage": 12.7,
+    "inverter_bus_voltage": 405.8,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:39:52.801Z",
+    "local_time": "02. 09. 2025. 20:39:52",
+    "inverter_ac_radiator_temp": 47,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:41:39.496Z",
+    "local_time": "02. 09. 2025. 20:41:39",
+    "inverter_bus_voltage": 405.7,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:43:26.290Z",
+    "local_time": "02. 09. 2025. 20:43:26",
+    "inverter_bus_voltage": 405.6,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:44:19.647Z",
+    "local_time": "02. 09. 2025. 20:44:19",
+    "inverter_bus_voltage": 405.5,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:45:12.982Z",
+    "local_time": "02. 09. 2025. 20:45:12",
+    "inverter_bus_voltage": 405.6,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:46:06.468Z",
+    "local_time": "02. 09. 2025. 20:46:06",
+    "inverter_bus_voltage": 405.5,
+    "_type": "delta"
+  },
+  {
+    "timestamp": "2025-09-02T18:46:59.826Z",
+    "local_time": "02. 09. 2025. 20:46:59",
+    "inverter_bus_voltage": 405.4,
+    "_type": "delta"
   }
 ]
