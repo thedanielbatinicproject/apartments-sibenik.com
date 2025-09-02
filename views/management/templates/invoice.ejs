@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Račun <%= invoice.invoiceNumber %> - <%= company.companyName %></title>
+    <link rel="stylesheet" href="/stylesheets/management/single-invoice.css">
+    <script>
+        // Set print preferences
+        window.addEventListener('beforeprint', function() {
+            // Try to set A4 paper size
+            if (window.chrome) {
+                // Chrome specific print settings
+                document.body.style.setProperty('--print-size', 'A4');
+            }
+        });
+        
+        // Custom print function with settings
+        function printInvoice() {
+            // Focus window for better print dialog control
+            window.focus();
+            
+            // Print with A4 settings
+            window.print();
+        }
+    </script>
+</head>
+<body>
+    <!-- Sticky Action Buttons -->
+    <div class="action-buttons">
+        <button class="action-btn print-btn" onclick="printInvoice()">
+            🖨️ Ispiši račun
+        </button>
+        <% if (isGuest) { %>
+            <div class="action-btn found-btn">
+                ✓ INVOICE FOUND
+            </div>
+        <% } else { %>
+            <a href="/management/invoices" class="action-btn back-btn">
+                ← Povratak
+            </a>
+        <% } %>
+    </div>
+    
+    <!-- Invoice Container for Print Scaling -->
+    <div class="invoice-container">
+    
+    <!-- Invoice Header with Blue Background -->
+    <div class="invoice-header">
+        <div class="header-left">
+            <div class="invoice-title">RAČUN</div>
+            <div class="invoice-title-en">INVOICE</div>
+        </div>
+        <div class="header-center">
+            <img class="company-logo" src="/images/logo.png" alt="<%= company.companyName %> Logo" onerror="this.style.display='none'">
+            <div class="company-name"><%= company.companyName %></div>
+        </div>
+        <div class="header-right">
+            <div class="invoice-number-en">BROJ/NO.</div>
+            <div class="invoice-number"><%= invoice.invoiceNumber %></div>
+            <div class="invoice-date-en">DATUM/DATE</div>
+            <div class="invoice-date"><%= new Date(invoice.issueDate).toLocaleDateString('hr-HR') %></div>
+        </div>
+    </div>
+    
+    <!-- Owner and Guest Information -->
+    <div class="info-section">
+        <div class="owner-info">
+            <div class="info-title">IZNAJMLJIVAČ</div>
+            <div class="info-title-en">OWNER</div>
+            <div class="info-content">
+                <strong><%= company.companyInfo.owner %></strong><br>
+                <% if (company.companyInfo.oib) { %>OIB/VAT-ID: <%= company.companyInfo.oib %><br><% } %>
+                <%= company.companyInfo.address %><br>
+                <%= company.companyInfo.city %>, <%= company.companyInfo.country %><br>
+                <% if (company.companyInfo.phone) { %>Tel: <%= company.companyInfo.phone %><br><% } %>
+                <% if (company.companyInfo.email) { %>Email: <%= company.companyInfo.email %><% } %>
+            </div>
+        </div>
+        
+        <div class="guest-info">
+            <div class="info-title">GOST</div>
+            <div class="info-title-en">GUEST</div>
+            <div class="info-content">
+                <strong><%= invoice.guestName %></strong><br>
+                <span class="info-title-en">Država/Country:</span> <%= invoice.guestCountry %><br>
+                <span class="info-title-en">Dolazak/Check-in:</span> <%= new Date(invoice.checkInDate).toLocaleDateString('hr-HR') %><br>
+                <span class="info-title-en">Odlazak/Check-out:</span> <%= new Date(invoice.checkOutDate).toLocaleDateString('hr-HR') %><br>
+                <span class="info-title-en">Osobe/Guests:</span> <%= invoice.guestCount %><br>
+                <span class="info-title-en">Djeca/Children:</span> <%= invoice.childrenCount %>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Services Table -->
+    <div class="services-section">
+        <div class="services-title">VRSTA USLUGE</div>
+        <div class="services-title-en">SERVICE</div>
+        
+        <table class="services-table">
+            <thead>
+                <tr>
+                    <th>
+                        <span class="header-main">SMJEŠTAJNA JEDINICA</span>
+                        <span class="header-en">ACCOMMODATION UNIT</span>
+                    </th>
+                    <th class="text-center">
+                        <span class="header-main">BR. NOĆENJA</span>
+                        <span class="header-en">QUANTITY</span>
+                    </th>
+                    <th class="text-right">
+                        <span class="header-main">JEDINIČNA CIJENA</span>
+                        <span class="header-en">UNIT PRICE</span>
+                    </th>
+                    <th class="text-right">
+                        <span class="header-main">UKUPNO</span>
+                        <span class="header-en">AMOUNT</span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <%= invoice.serviceType %><br>
+                        <span class="info-title-en"><%= invoice.serviceCategory %> (Jedinica br. <%= invoice.roomNumber %>)</span>
+                    </td>
+                    <td class="text-center"><%= invoice.quantity %></td>
+                    <td class="text-center">
+                        <% 
+                        let unitPrice = 0;
+                        if (invoice.price !== undefined && invoice.price !== null && parseFloat(invoice.price) > 0) {
+                            unitPrice = parseFloat(invoice.price);
+                        } else if (invoice.totalPrice && invoice.quantity && parseFloat(invoice.quantity) > 0) {
+                            unitPrice = parseFloat(invoice.totalPrice) / parseFloat(invoice.quantity);
+                        }
+                        %>
+                        <%= unitPrice.toFixed(2) %> €
+                    </td>
+                    <td class="text-right"><%= parseFloat(invoice.totalPrice).toFixed(2) %> €</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Totals and Payment Section -->
+    <div class="totals-payment-section">
+        <!-- Payment Method (Left) -->
+        <% if (invoice.paymentMethod) { %>
+        <div class="payment-section-left">
+            <div class="payment-title">NAČIN PLAĆANJA</div>
+            <div class="payment-title-en">PAYMENT METHOD</div>
+            <div class="payment-method"><%= invoice.paymentMethod %></div>
+            <% if (invoice.paymentMethod === 'Uplata na račun' && company.companyInfo.iban) { %>
+            <p style="margin-top: 10px;"><strong>IBAN:</strong> <%= company.companyInfo.iban %></p>
+            <% } %>
+        </div>
+        <% } else { %>
+        <div class="payment-section-left">
+            <!-- Empty space if no payment method -->
+        </div>
+        <% } %>
+
+        <!-- Totals (Right) -->
+        <div class="totals">
+            <div class="total-row">
+                <span class="total-label">
+                    UKUPNO
+                    <span class="total-label-en">NET AMOUNT</span>
+                </span>
+                <span><%= parseFloat(invoice.totalPrice).toFixed(2) %> €</span>
+            </div>
+            <% if (parseFloat(invoice.discount) > 0) { %>
+            <div class="total-row">
+                <span class="total-label">
+                    POPUST
+                    <span class="total-label-en">DISCOUNT</span>
+                </span>
+                <span>-<%= parseFloat(invoice.discount).toFixed(2) %> €</span>
+            </div>
+            <% } %>
+            <div class="total-row final">
+                <span class="total-label">
+                    PLAĆENO
+                    <span class="total-label-en">PAID</span>
+                </span>
+                <span><%= parseFloat(invoice.finalPrice).toFixed(2) %> €</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer/Disclaimers -->
+    <div class="footer-section">
+        <div class="footer-titles-inline">
+            <span class="footer-title">Napomene</span>
+            <span class="footer-title-separator"> / </span>
+            <span class="footer-title-en">Notes</span>
+        </div>
+        <div style="margin-bottom: 8px; font-weight: bold;">Ovaj račun je valjan bez potpisa i bez pečata.</div>
+        <% if (company.constants.disclaimer1) { %>
+        <div style="margin-bottom: 8px;"><%= company.constants.disclaimer1 %></div>
+        <% } %>
+        <% if (company.constants.disclaimer2) { %>
+        <div style="margin-bottom: 8px;"><%= company.constants.disclaimer2 %></div>
+        <% } %>
+        <div style="margin-top: 15px; font-style: italic;">
+            Račun je izdao i ovjera: <%= company.companyInfo.owner %> /  <span style="font-style: italic;">Invoice issued and verified by: <%= company.companyInfo.owner %></span>
+        </div>
+        
+        <% if (invoice.uid) { %>
+        <div class="invoice-uid-footer">
+            <div class="uid-code">Invoice UID: <%= invoice.uid %></div>
+            <div class="uid-verification">Ovaj račun možete verificirati na: apartments-sibenik.com/check-invoice</div>
+            <div class="uid-verification-en">This invoice can be verified at: apartments-sibenik.com/check-invoice</div>
+        </div>
+        <% } %>
+    </div>
+    
+    </div> <!-- End of invoice-container -->
+</body>
+</html>

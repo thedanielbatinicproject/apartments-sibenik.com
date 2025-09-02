@@ -37,6 +37,8 @@ function getVariableDescription(variableName) {
 }
 const authManager = require('../code/auth/authManager');
 const { readReviewsFromDB, writeReviewsToDB, addReview } = require('../code/reviews/reviewsAPI');
+const { getAvailableCompanies, getCompanyData, saveCompanyData, isValidCompanyId, getCompanyName, initializeCompanyData, getNextInvoiceNumber, addInvoice, updateInvoice, deleteInvoice, getInvoice } = require('../code/invoices/invoiceManager');
+const invoiceManager = require('../code/invoices/invoiceManager');
 const router = express.Router();
 
 // Function to synchronize upvotes from upvotes.json to reviews.json
@@ -939,6 +941,268 @@ router.post('/scheduler/stop', requireAuth, (req, res) => {
 
 router.get('/scheduler/status', requireAuth, (req, res) => {
   res.json(calendarScheduler.getStatus());
+});
+
+// Invoice management routes
+router.get('/invoices', requireAuth, async (req, res) => {
+  try {
+    let selectedCompany = null;
+    let selectedCompanyId = req.session.selectedCompanyId;
+
+    if (selectedCompanyId && isValidCompanyId(selectedCompanyId)) {
+      selectedCompany = await getCompanyData(selectedCompanyId);
+      
+      // Add UIDs to existing invoices that don't have them
+      await invoiceManager.addUIDsToExistingInvoices(selectedCompanyId);
+      
+      // Reload company data after UID update
+      selectedCompany = await getCompanyData(selectedCompanyId);
+    }
+
+    res.render('management/invoices', { 
+      title: 'Upravljanje računima - Apartments Šibenik',
+      user: req.user,
+      selectedCompany,
+      selectedCompanyId
+    });
+  } catch (error) {
+    console.error('Error loading invoices page:', error);
+    res.status(500).render('error', { 
+      title: 'Greška',
+      message: 'Greška prilikom učitavanja stranice računa'
+    });
+  }
+});
+
+// API route to select company
+router.post('/api/invoices/select-company', requireAuth, async (req, res) => {
+  try {
+    const { companyId } = req.body;
+
+    if (!companyId || !isValidCompanyId(companyId)) {
+      return res.status(400).json({ error: 'Invalid company ID' });
+    }
+
+    // Initialize company data if it doesn't exist
+    await initializeCompanyData(companyId);
+
+    // Get company data
+    const companyData = await getCompanyData(companyId);
+    if (!companyData) {
+      return res.status(404).json({ error: 'Company not found' });
+    }
+
+    // Save selection to session
+    req.session.selectedCompanyId = companyId;
+
+    res.json({ 
+      success: true,
+      companyId,
+      company: companyData
+    });
+  } catch (error) {
+    console.error('Error selecting company:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// API route to get selected company
+router.get('/api/invoices/selected-company', requireAuth, async (req, res) => {
+  try {
+    const selectedCompanyId = req.session.selectedCompanyId;
+
+    if (!selectedCompanyId || !isValidCompanyId(selectedCompanyId)) {
+      return res.json({ company: null, companyId: null });
+    }
+
+    const companyData = await getCompanyData(selectedCompanyId);
+    res.json({ 
+      company: companyData,
+      companyId: selectedCompanyId
+    });
+  } catch (error) {
+    console.error('Error getting selected company:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// API route to get invoices for selected company
+router.get('/api/invoices/list', requireAuth, async (req, res) => {
+  try {
+    const selectedCompanyId = req.session.selectedCompanyId;
+
+    if (!selectedCompanyId || !isValidCompanyId(selectedCompanyId)) {
+      return res.status(400).json({ error: 'No company selected' });
+    }
+
+    const companyData = await getCompanyData(selectedCompanyId);
+    if (!companyData) {
+      return res.status(404).json({ error: 'Company not found' });
+    }
+
+    res.json({ 
+      invoices: companyData.invoices,
+      company: companyData
+    });
+  } catch (error) {
+    console.error('Error getting invoices:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// API route to get next invoice number
+router.get('/api/invoices/next-number', requireAuth, async (req, res) => {
+  try {
+    const selectedCompanyId = req.session.selectedCompanyId;
+
+    if (!selectedCompanyId || !isValidCompanyId(selectedCompanyId)) {
+      return res.status(400).json({ error: 'No company selected' });
+    }
+
+    const nextNumber = await getNextInvoiceNumber(selectedCompanyId);
+    res.json({ invoiceNumber: nextNumber });
+  } catch (error) {
+    console.error('Error getting next invoice number:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// API route to create new invoice
+router.post('/api/invoices/create', requireAuth, async (req, res) => {
+  try {
+    const selectedCompanyId = req.session.selectedCompanyId;
+
+    if (!selectedCompanyId || !isValidCompanyId(selectedCompanyId)) {
+      return res.status(400).json({ error: 'No company selected' });
+    }
+
+    const success = await addInvoice(selectedCompanyId, req.body);
+    if (success) {
+      res.json({ success: true });
+    } else {
+      res.status(500).json({ error: 'Failed to create invoice' });
+    }
+  } catch (error) {
+    console.error('Error creating invoice:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// API route to update invoice
+router.put('/api/invoices/:invoiceId', requireAuth, async (req, res) => {
+  try {
+    const selectedCompanyId = req.session.selectedCompanyId;
+    const { invoiceId } = req.params;
+
+    if (!selectedCompanyId || !isValidCompanyId(selectedCompanyId)) {
+      return res.status(400).json({ error: 'No company selected' });
+    }
+
+    const success = await updateInvoice(selectedCompanyId, invoiceId, req.body);
+    if (success) {
+      res.json({ success: true });
+    } else {
+      res.status(500).json({ error: 'Failed to update invoice' });
+    }
+  } catch (error) {
+    console.error('Error updating invoice:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// API route to delete invoice
+router.delete('/api/invoices/:invoiceId', requireAuth, async (req, res) => {
+  try {
+    const selectedCompanyId = req.session.selectedCompanyId;
+    const { invoiceId } = req.params;
+
+    if (!selectedCompanyId || !isValidCompanyId(selectedCompanyId)) {
+      return res.status(400).json({ error: 'No company selected' });
+    }
+
+    const success = await deleteInvoice(selectedCompanyId, invoiceId);
+    if (success) {
+      res.json({ success: true });
+    } else {
+      res.status(500).json({ error: 'Failed to delete invoice' });
+    }
+  } catch (error) {
+    console.error('Error deleting invoice:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// API route to get single invoice
+router.get('/api/invoices/:invoiceId', requireAuth, async (req, res) => {
+  try {
+    const selectedCompanyId = req.session.selectedCompanyId;
+    const { invoiceId } = req.params;
+
+    if (!selectedCompanyId || !isValidCompanyId(selectedCompanyId)) {
+      return res.status(400).json({ error: 'No company selected' });
+    }
+
+    const invoice = await getInvoice(selectedCompanyId, invoiceId);
+    if (invoice) {
+      res.json({ invoice });
+    } else {
+      res.status(404).json({ error: 'Invoice not found' });
+    }
+  } catch (error) {
+    console.error('Error getting invoice:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Print invoice route
+router.get('/invoices/print', requireAuth, async (req, res) => {
+  try {
+    const { company: companyId, invoice: invoiceNumber } = req.query;
+
+    if (!companyId || !invoiceNumber) {
+      return res.status(400).render('error', { 
+        title: 'Greška',
+        message: 'Nedostaju parametri za ispis računa'
+      });
+    }
+
+    if (!isValidCompanyId(companyId)) {
+      return res.status(400).render('error', { 
+        title: 'Greška',
+        message: 'Neispravna firma'
+      });
+    }
+
+    const companyData = await getCompanyData(companyId);
+    if (!companyData) {
+      return res.status(404).render('error', { 
+        title: 'Greška',
+        message: 'Firma nije pronađena'
+      });
+    }
+
+    // Find invoice by invoice number
+    const invoice = companyData.invoices.find(inv => inv.invoiceNumber === invoiceNumber);
+    if (!invoice) {
+      return res.status(404).render('error', { 
+        title: 'Greška',
+        message: 'Račun nije pronađen'
+      });
+    }
+
+    res.render('management/templates/invoice', {
+      title: `Račun ${invoiceNumber} - ${companyData.companyName}`,
+      company: companyData,
+      invoice: invoice,
+      isGuest: false
+    });
+  } catch (error) {
+    console.error('Error printing invoice:', error);
+    res.status(500).render('error', { 
+      title: 'Greška',
+      message: 'Greška prilikom učitavanja računa'
+    });
+  }
 });
 
 module.exports = router;

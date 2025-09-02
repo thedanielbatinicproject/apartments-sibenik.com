@@ -1,0 +1,859 @@
+/* Invoices Management Dashboard CSS */
+
+/* Base styles inherit from solar-dashboard.css */
+
+.invoices-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+.invoices-header {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 20px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+}
+
+.invoices-title {
+  color: #ffffff;
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  letter-spacing: -0.5px;
+}
+
+.invoices-subtitle {
+  color: rgba(255,255,255,0.85);
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+}
+
+/* User info styles */
+.user-info {
+  color: white;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.welcome-text {
+  color: rgba(255,255,255,0.9);
+  font-weight: 500;
+}
+
+.admin-badge {
+  background: rgba(139, 92, 246, 0.2);
+  color: #8b5cf6;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  font-weight: 600;
+}
+
+.company-selector {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.company-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.5rem;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.9);
+  text-decoration: none;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  outline: none;
+}
+
+.company-btn:hover {
+  background: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.25);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+.company-btn.active {
+  background: rgba(74, 222, 128, 0.2);
+  border-color: rgba(74, 222, 128, 0.4);
+  color: #4ade80;
+  box-shadow: 0 0 20px rgba(74, 222, 128, 0.3);
+}
+
+.company-btn.active:hover {
+  background: rgba(74, 222, 128, 0.25);
+  box-shadow: 0 0 25px rgba(74, 222, 128, 0.4);
+}
+
+.main-dashboard {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 20px;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  min-height: 400px;
+}
+
+.dashboard-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.new-invoice-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.5rem;
+  background: rgba(74, 222, 128, 0.2);
+  color: #4ade80;
+  text-decoration: none;
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  outline: none;
+}
+
+.new-invoice-btn:hover {
+  background: rgba(74, 222, 128, 0.3);
+  box-shadow: 0 0 20px rgba(74, 222, 128, 0.3);
+}
+
+.invoices-table-container {
+  overflow-x: auto;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.invoices-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #ffffff;
+}
+
+.invoices-table th,
+.invoices-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.invoices-table th {
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.9);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.invoices-table tbody tr {
+  transition: background 0.2s ease;
+}
+
+.invoices-table tbody tr:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+.invoice-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.edit-btn {
+  padding: 0.4rem 0.8rem;
+  background: rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.edit-btn:hover {
+  background: rgba(251, 191, 36, 0.3);
+}
+
+.delete-btn {
+  padding: 0.4rem 0.8rem;
+  background: rgba(248, 113, 113, 0.2);
+  color: #f87171;
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.delete-btn:hover {
+  background: rgba(248, 113, 113, 0.3);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: rgba(255,255,255,0.7);
+}
+
+.empty-state h3 {
+  color: #ffffff;
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 20px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.modal-overlay.active .modal-content {
+  transform: scale(1);
+}
+
+.modal-header {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-title {
+  color: #ffffff;
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.7);
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-btn:hover {
+  color: #ffffff;
+}
+
+.modal-body {
+  padding: 2rem;
+  max-height: calc(90vh - 140px);
+  overflow-y: auto;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-grid.full-width {
+  grid-template-columns: 1fr;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  display: block;
+  color: rgba(255,255,255,0.9);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.form-input,
+.form-select {
+  width: 100%;
+  padding: 0.8rem;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.form-select {
+  background: rgba(255,255,255,0.08);
+  color: #ffffff;
+}
+
+.form-select option {
+  background: rgba(26, 32, 44, 0.95);
+  color: #ffffff;
+  padding: 0.5rem;
+}
+
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: rgba(74, 222, 128, 0.4);
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.2);
+}
+
+.form-input::placeholder {
+  color: rgba(255,255,255,0.5);
+}
+
+/* Number input controls - new bottom layout */
+.number-controls-bottom {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  justify-content: center;
+}
+
+.number-btn-bottom {
+  width: 40px;
+  height: 40px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  color: rgba(255,255,255,0.8);
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+}
+
+.number-btn-bottom:hover {
+  background: rgba(255,255,255,0.2);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.number-btn-bottom.increase {
+  background: rgba(74, 222, 128, 0.15);
+  border-color: rgba(74, 222, 128, 0.3);
+  color: #4ade80;
+}
+
+.number-btn-bottom.increase:hover {
+  background: rgba(74, 222, 128, 0.25);
+  box-shadow: 0 4px 15px rgba(74, 222, 128, 0.3);
+}
+
+.number-btn-bottom.decrease {
+  background: rgba(248, 113, 113, 0.15);
+  border-color: rgba(248, 113, 113, 0.3);
+  color: #f87171;
+}
+
+.number-btn-bottom.decrease:hover {
+  background: rgba(248, 113, 113, 0.25);
+  box-shadow: 0 4px 15px rgba(248, 113, 113, 0.3);
+}
+
+/* Legacy number controls - remove old styles */
+.number-input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.number-input-group .form-input {
+  padding-right: 50px;
+}
+
+.number-controls {
+  position: absolute;
+  right: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.number-btn {
+  width: 20px;
+  height: 18px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 3px;
+  color: rgba(255,255,255,0.8);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+}
+
+.number-btn:hover {
+  background: rgba(255,255,255,0.2);
+  color: #ffffff;
+}
+
+/* Currency input controls */
+.currency-input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.currency-input-group .form-input {
+  padding-right: 30px;
+}
+
+.currency-symbol {
+  position: absolute;
+  right: 10px;
+  color: rgba(255,255,255,0.7);
+  font-weight: 600;
+  pointer-events: none;
+}
+
+/* Form section dividers */
+.form-section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  margin: 1.5rem 0;
+}
+
+/* Print button styling */
+.print-btn {
+  padding: 0.5rem 1rem;
+  background: rgba(74, 222, 128, 0.2);
+  color: #4ade80;
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.print-btn:hover {
+  background: rgba(74, 222, 128, 0.3);
+  box-shadow: 0 0 15px rgba(74, 222, 128, 0.3);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.btn-secondary {
+  padding: 0.8rem 1.5rem;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.9);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+.btn-primary {
+  padding: 0.8rem 1.5rem;
+  background: rgba(74, 222, 128, 0.2);
+  color: #4ade80;
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.btn-primary:hover {
+  background: rgba(74, 222, 128, 0.3);
+  box-shadow: 0 0 15px rgba(74, 222, 128, 0.3);
+}
+
+.btn-warning {
+  padding: 0.8rem 1.5rem;
+  background: rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.btn-warning:hover {
+  background: rgba(251, 191, 36, 0.3);
+}
+
+/* Confirmation dialog */
+.confirm-dialog {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 15px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+.confirm-dialog .modal-header {
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  justify-content: center;
+}
+
+.confirm-dialog .modal-body {
+  padding: 2rem;
+}
+
+.confirm-text {
+  color: rgba(255,255,255,0.9);
+  font-size: 1rem;
+  margin-bottom: 2rem;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.dashboard-placeholder {
+  text-align: center;
+  color: rgba(255,255,255,0.7);
+  font-size: 1.1rem;
+  padding: 3rem 2rem;
+}
+
+.dashboard-placeholder h3 {
+  color: #ffffff;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.dashboard-placeholder p {
+  margin-bottom: 0.5rem;
+}
+
+/* Back button styling */
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.2rem;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.9);
+  text-decoration: none;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
+}
+
+.back-btn:hover {
+  background: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.25);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .invoices-container {
+    padding: 1rem;
+  }
+  
+  .invoices-header {
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .invoices-title {
+    font-size: 1.8rem;
+  }
+  
+  .invoices-subtitle {
+    font-size: 1rem;
+  }
+  
+  .company-selector {
+    flex-direction: column;
+  }
+  
+  .company-btn {
+    justify-content: center;
+    padding: 1rem;
+  }
+  
+  .main-dashboard {
+    padding: 1.5rem;
+  }
+  
+  .dashboard-placeholder {
+    padding: 2rem 1rem;
+  }
+  
+  .dashboard-placeholder h3 {
+    font-size: 1.3rem;
+  }
+  
+  .user-info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dashboard-actions {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+
+  .dashboard-actions h3 {
+    margin-bottom: 1rem;
+  }
+
+  .invoices-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .invoices-table {
+    min-width: 600px;
+  }
+
+  .invoices-table th,
+  .invoices-table td {
+    padding: 0.7rem 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  .invoice-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .edit-btn,
+  .delete-btn,
+  .print-btn {
+    font-size: 0.8rem;
+    padding: 0.6rem 1rem;
+    justify-content: center;
+    min-height: 40px;
+  }
+
+  .print-btn {
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+
+  .modal-content {
+    margin: 1rem;
+    max-height: calc(100vh - 2rem);
+  }
+
+  .modal-header {
+    padding: 1rem 1.5rem;
+  }
+
+  .modal-body {
+    padding: 1.5rem;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+
+  .form-grid.full-width {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .form-actions button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .confirm-dialog {
+    margin: 1rem;
+  }
+
+  .confirm-actions {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .confirm-actions button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .invoices-title {
+    font-size: 1.5rem;
+  }
+
+  .new-invoice-btn {
+    padding: 1rem;
+    font-size: 0.9rem;
+  }
+
+  .modal-content {
+    margin: 1rem;
+    max-height: calc(100vh - 2rem);
+  }
+
+  .modal-header {
+    padding: 1rem;
+  }
+
+  .modal-body {
+    padding: 1rem;
+  }
+
+  .modal-title {
+    font-size: 1.2rem;
+  }
+
+  .form-input,
+  .form-select {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+
+  .form-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .number-btn {
+    width: 25px;
+    height: 22px;
+    font-size: 14px;
+  }
+
+  .number-input-group .form-input {
+    padding-right: 60px;
+  }
+
+  .currency-input-group .form-input {
+    padding-right: 40px;
+  }
+
+  .currency-symbol {
+    right: 15px;
+    font-size: 1.1rem;
+  }
+}

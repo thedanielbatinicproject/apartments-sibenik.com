@@ -3,6 +3,7 @@ const { handleRootRedirect, handleDesktopRedirect, handleMobileRedirect } = requ
 const { handleHeaderTest } = require('../code/utils/headerTestManager');
 const { displayGallery } = require('../code/gallery/galleryRoutes');
 const { handleSmartPageRedirect } = require('../code/utils/redirectManager');
+const { handleCheckInvoice, processInvoiceCheck } = require('../code/utils/invoiceChecker');
 const router = express.Router();
 
 // Root and redirect routes
@@ -14,6 +15,11 @@ router.get('/desktop', handleDesktopRedirect);
 router.get('/mobile', handleMobileRedirect);
 router.get('/gallery', displayGallery);
 router.get('/header', handleHeaderTest);
+
+// Invoice checking routes
+router.get('/check-invoice', handleCheckInvoice);
+router.post('/check-invoice', processInvoiceCheck);
+
 router.get('/:lang/:page', handleSmartPageRedirect); // univerzalna ruta na kraj!
 
 module.exports = router;

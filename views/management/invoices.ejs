@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/management/solar-dashboard.css">
+    <link rel="stylesheet" href="/stylesheets/management/invoices.css">
+</head>
+<body>
+    <div class="invoices-container">
+        <!-- Back to main dashboard -->
+        <a href="/management" class="back-btn">
+            ← Nazad na glavnu ploču
+        </a>
+
+        <!-- Header section -->
+        <div class="invoices-header">
+            <div class="header-main">
+                <h1 class="invoices-title">Glavna upravljačka ploča za račune</h1>
+                <p class="invoices-subtitle">
+                    <% if (selectedCompany) { %>
+                        Trenutno odabrana firma: <%= selectedCompany.companyName %>
+                    <% } else { %>
+                        Molimo odaberite firmu za nastavak
+                    <% } %>
+                </p>
+            </div>
+            
+            <!-- User info -->
+            <div class="user-info" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.15);">
+                <span class="welcome-text">Dobrodošli, <%= user.username %>!</span>
+                <% if (user.role === 'admin') { %>
+                    <span class="admin-badge">Admin</span>
+                <% } %>
+                <form action="/management/logout" method="POST" style="display: inline; padding-left: 10px;">
+                    <button type="submit" class="btn-danger">Odjavi se</button>
+                </form>
+            </div>
+
+            <!-- Company selector -->
+            <div class="company-selector">
+                <button 
+                    type="button" 
+                    class="company-btn <%= selectedCompanyId === 'apartmani-ivica' ? 'active' : '' %>" 
+                    data-company="apartmani-ivica"
+                >
+                    Apartmani Ivica
+                </button>
+                <button 
+                    type="button" 
+                    class="company-btn <%= selectedCompanyId === 'apartmani-brigita' ? 'active' : '' %>" 
+                    data-company="apartmani-brigita"
+                >
+                    Apartmani Brigita
+                </button>
+            </div>
+        </div>
+
+        <!-- Main dashboard body -->
+        <div class="main-dashboard">
+            <% if (selectedCompany) { %>
+                <!-- Dashboard actions -->
+                <div class="dashboard-actions">
+                    <h3 style="color: #ffffff; margin: 0;">📊 Računi za <%= selectedCompany.companyName %></h3>
+                    <button class="new-invoice-btn" onclick="openInvoiceForm()">
+                        ➕ Novi račun
+                    </button>
+                </div>
+
+                <!-- Invoices table -->
+                <div class="invoices-table-container">
+                    <table class="invoices-table">
+                        <thead>
+                            <tr>
+                                <th>Broj računa</th>
+                                <th>Akcije</th>
+                                <th>Gost</th>
+                                <th>Broj noćenja</th>
+                                <th>Za naplatu</th>
+                            </tr>
+                        </thead>
+                        <tbody id="invoicesTableBody">
+                            <!-- Invoices will be loaded here via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Empty state (initially hidden) -->
+                <div id="emptyState" class="empty-state" style="display: none;">
+                    <h3>Nema računa</h3>
+                    <p>Trenutno nema kreiranih računa za ovu firmu.</p>
+                    <p>Kliknite "Novi račun +" da stvorite prvi račun.</p>
+                </div>
+            <% } else { %>
+                <div class="dashboard-placeholder">
+                    <h3>Odaberite firmu</h3>
+                    <p>Molimo odaberite jednu od dostupnih firmi za pristup nadzornoj ploči računa.</p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- Invoice Form Modal -->
+    <div id="invoiceModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle" class="modal-title">Novi račun</h2>
+                <button class="close-btn" onclick="closeInvoiceForm()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="invoiceForm">
+                    <input type="hidden" id="invoiceId" name="invoiceId">
+                    
+                    <!-- Company and Address Info -->
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Iznajmljivač</label>
+                            <input type="text" id="landlord" name="landlord" class="form-input" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Broj računa</label>
+                            <input type="text" id="invoiceNumber" name="invoiceNumber" class="form-input" required>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Adresa iznajmljivača</label>
+                            <input type="text" id="address1" name="address1" class="form-input" value="Slobodana Macure 13" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Grad iznajmljivača</label>
+                            <input type="text" id="address2" name="address2" class="form-input" value="22000 Šibenik" required>
+                        </div>
+                    </div>
+
+                    <div class="form-grid full-width">
+                        <div class="form-group">
+                            <label class="form-label">Država iznajmljivača</label>
+                            <input type="text" id="address3" name="address3" class="form-input" value="Croatia" required>
+                        </div>
+                    </div>
+
+                    <!-- Guest Info -->
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Ime gosta</label>
+                            <input type="text" id="guestName" name="guestName" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Država gosta</label>
+                            <input type="text" id="guestCountry" name="guestCountry" class="form-input" required>
+                        </div>
+                    </div>
+
+                    <!-- Dates -->
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Datum dolaska</label>
+                            <input type="date" id="checkInDate" name="checkInDate" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Datum odlaska</label>
+                            <input type="date" id="checkOutDate" name="checkOutDate" class="form-input" required>
+                        </div>
+                    </div>
+
+                    <!-- Guest Details -->
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Broj osoba</label>
+                            <input type="number" id="guestCount" name="guestCount" class="form-input" value="2" min="1" required>
+                            <div class="number-controls-bottom">
+                                <button type="button" class="number-btn-bottom decrease" onclick="decrementValue('guestCount')">−</button>
+                                <button type="button" class="number-btn-bottom increase" onclick="incrementValue('guestCount')">+</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Broj djece</label>
+                            <input type="number" id="childrenCount" name="childrenCount" class="form-input" value="0" min="0" required>
+                            <div class="number-controls-bottom">
+                                <button type="button" class="number-btn-bottom decrease" onclick="decrementValue('childrenCount')">−</button>
+                                <button type="button" class="number-btn-bottom increase" onclick="incrementValue('childrenCount')">+</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section-divider"></div>
+
+                    <div class="form-grid full-width">
+                        <div class="form-group">
+                            <label class="form-label">Ukupno dana</label>
+                            <input type="number" id="totalDays" name="totalDays" class="form-input" min="1" required>
+                            <div class="number-controls-bottom">
+                                <button type="button" class="number-btn-bottom decrease" onclick="decrementValue('totalDays')">−</button>
+                                <button type="button" class="number-btn-bottom increase" onclick="incrementValue('totalDays')">+</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section-divider"></div>
+
+                    <!-- Service Details -->
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Opis usluge</label>
+                            <select id="serviceType" name="serviceType" class="form-select" required>
+                                <option value="Soba">Soba</option>
+                                <option value="Studio">Studio</option>
+                                <option value="Apartman">Apartman</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Broj sobe</label>
+                            <input type="number" id="roomNumber" name="roomNumber" class="form-input" min="1" required>
+                        </div>
+                    </div>
+
+                    <div class="form-grid full-width">
+                        <div class="form-group">
+                            <label class="form-label">Vrsta usluge</label>
+                            <select id="serviceCategory" name="serviceCategory" class="form-select" required>
+                                <option value="noćenje">Noćenje</option>
+                                <option value="dnevni odmor">Dnevni odmor</option>
+                                <option value="ostalo">Ostalo</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Pricing -->
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Količina</label>
+                            <input type="number" id="quantity" name="quantity" class="form-input" min="1" required>
+                            <div class="number-controls-bottom">
+                                <button type="button" class="number-btn-bottom decrease" onclick="decrementValue('quantity')">−</button>
+                                <button type="button" class="number-btn-bottom increase" onclick="incrementValue('quantity')">+</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Cijena</label>
+                            <div class="currency-input-group">
+                                <input type="number" id="price" name="price" class="form-input" step="0.01" min="0" value="50" required>
+                                <span class="currency-symbol">€</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Broj dana</label>
+                            <input type="number" id="daysCount" name="daysCount" class="form-input" min="1" required>
+                            <div class="number-controls-bottom">
+                                <button type="button" class="number-btn-bottom decrease" onclick="decrementValue('daysCount')">−</button>
+                                <button type="button" class="number-btn-bottom increase" onclick="incrementValue('daysCount')">+</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Ukupna cijena</label>
+                            <div class="currency-input-group">
+                                <input type="number" id="totalPrice" name="totalPrice" class="form-input" step="0.01" min="0" readonly>
+                                <span class="currency-symbol">€</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Popust</label>
+                            <div class="currency-input-group">
+                                <input type="number" id="discount" name="discount" class="form-input" step="0.01" min="0" value="0" required>
+                                <span class="currency-symbol">€</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Cijena za naplatu</label>
+                            <div class="currency-input-group">
+                                <input type="number" id="finalPrice" name="finalPrice" class="form-input" step="0.01" min="0" readonly>
+                                <span class="currency-symbol">€</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section-divider"></div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Način plaćanja</label>
+                            <select id="paymentMethod" name="paymentMethod" class="form-select" required>
+                                <option value="Gotovina">Gotovina</option>
+                                <option value="Uplata na račun">Uplata na račun</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Datum računa</label>
+                            <input type="date" id="issueDate" name="issueDate" class="form-input" required>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="closeInvoiceForm()">Odustani</button>
+                        <button type="submit" id="submitBtn" class="btn-primary">Dodaj račun</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal-overlay">
+        <div class="confirm-dialog">
+            <div class="modal-header">
+                <h3 class="modal-title">Potvrda brisanja</h3>
+            </div>
+            <div class="modal-body">
+                <p class="confirm-text">Jeste li sigurni da želite obrisati ovaj račun? Ova akcija se ne može poništiti.</p>
+                <div class="confirm-actions">
+                    <button class="btn-secondary" onclick="closeDeleteModal()">Odustani</button>
+                    <button class="delete-btn" onclick="confirmDelete()">Obriši račun</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/javascripts/invoices-management.js"></script>
+</body>
+</html>

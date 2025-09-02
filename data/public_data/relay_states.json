@@ -1,7 +1,7 @@
 {
-  "relay1": false,
-  "relay2": false,
+  "relay1": true,
+  "relay2": true,
   "relay3": false,
   "relay4": false,
-  "lastUpdate": 1756820515818
+  "lastUpdate": 1756833311584
 }
