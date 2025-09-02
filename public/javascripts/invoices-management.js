@@ -65,14 +65,14 @@ class InvoicesManager {
             serviceType.addEventListener('change', () => this.updateRoomNumber());
         }
 
-        // Pricing calculation handlers
+        // Pricing calculation handlers - now totalPrice drives unit price
         const quantity = document.getElementById('quantity');
-        const price = document.getElementById('price');
+        const totalPrice = document.getElementById('totalPrice');
         const discount = document.getElementById('discount');
         
-        if (quantity) quantity.addEventListener('input', () => this.calculatePricing());
-        if (price) price.addEventListener('input', () => this.calculatePricing());
-        if (discount) discount.addEventListener('input', () => this.calculatePricing());
+        if (quantity) quantity.addEventListener('input', () => this.calculateUnitPrice());
+        if (totalPrice) totalPrice.addEventListener('input', () => this.calculateUnitPrice());
+        if (discount) discount.addEventListener('input', () => this.calculateFinalPrice());
 
         // Sync quantity with total days
         const totalDays = document.getElementById('totalDays');
@@ -82,7 +82,7 @@ class InvoicesManager {
                 const quantity = document.getElementById('quantity');
                 if (daysCount) daysCount.value = totalDays.value;
                 if (quantity) quantity.value = totalDays.value;
-                this.calculatePricing();
+                this.calculateUnitPrice();
             });
         }
     }
@@ -152,26 +152,44 @@ class InvoicesManager {
         }
     }
 
-    calculatePricing() {
+    calculateUnitPrice() {
         const quantity = document.getElementById('quantity');
         const price = document.getElementById('price');
+        const totalPrice = document.getElementById('totalPrice');
+
+        if (quantity && price && totalPrice) {
+            const quantityVal = parseFloat(quantity.value) || 1; // Avoid division by zero
+            const totalPriceVal = parseFloat(totalPrice.value) || 0;
+
+            // Calculate unit price = total price / quantity
+            const unitPrice = quantityVal > 0 ? totalPriceVal / quantityVal : 0;
+            price.value = unitPrice.toFixed(2);
+            
+            // Update final price after discount
+            this.calculateFinalPrice();
+            this.saveFormData(); // Save data after calculation
+        }
+    }
+
+    calculateFinalPrice() {
         const totalPrice = document.getElementById('totalPrice');
         const discount = document.getElementById('discount');
         const finalPrice = document.getElementById('finalPrice');
 
-        if (quantity && price && totalPrice && discount && finalPrice) {
-            const quantityVal = parseFloat(quantity.value) || 0;
-            const priceVal = parseFloat(price.value) || 0;
+        if (totalPrice && discount && finalPrice) {
+            const totalPriceVal = parseFloat(totalPrice.value) || 0;
             const discountVal = parseFloat(discount.value) || 0;
 
-            const total = quantityVal * priceVal;
-            const final = Math.max(0, total - discountVal);
-
-            totalPrice.value = total.toFixed(2);
+            const final = Math.max(0, totalPriceVal - discountVal);
             finalPrice.value = final.toFixed(2);
             
             this.saveFormData(); // Save data after calculation
         }
+    }
+
+    // Keep the old calculatePricing for backward compatibility 
+    calculatePricing() {
+        this.calculateUnitPrice();
     }
 
     saveFormData() {
@@ -459,6 +477,16 @@ class InvoicesManager {
             }
 
             this.setTodayDate();
+            
+            // Set default values for pricing
+            document.getElementById('quantity').value = '1';
+            document.getElementById('totalPrice').value = '50.00';
+            document.getElementById('discount').value = '0';
+            
+            // Calculate unit price based on defaults
+            setTimeout(() => {
+                this.calculateUnitPrice();
+            }, 100);
             
             // Load saved form data if available
             setTimeout(() => {
