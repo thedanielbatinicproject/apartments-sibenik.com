@@ -5,129 +5,87 @@
 [![Express.js](https://img.shields.io/badge/Express.js-4.x-lightgrey.svg)](https://expressjs.com/)
 [![Demo](https://img.shields.io/badge/Demo-Live-brightgreen.svg)](https://test.apartments-sibenik.com)
 
-**Professional apartment rental website for premium accommodations in Šibenik, Croatia - featuring advanced solar monitoring system and comprehensive management tools**
+Professional apartment rental website for premium accommodations in Šibenik, Croatia. Features advanced solar monitoring system with ESP32 integration, comprehensive booking management, and real-time data visualization.
 
-![Apartments Šibenik Screenshot](https://via.placeholder.com/800x400/0D47A1/FFFFFF?text=Apartments+%C5%A0ibenik)
+## Recent Updates
 
-## 🚀 Recent Major Updates & Improvements
+**Code Quality & Organization**
+- Complete codebase cleanup and restructuring
+- All comments translated to English for better maintainability  
+- CSS organized into logical folders (index/ and management/)
+- Feature-based code organization in /code directory
+- Removed test files and development artifacts
 
-### **Code Quality & Maintenance**
-- ✅ **Complete cleanup** - Removed all test files, mock data generators, and performance analysis tools
-- ✅ **Internationalization** - All Croatian code comments translated to English for better maintainability
-- ✅ **Emoji-free codebase** - Removed all emojis from code for professional standards
-- ✅ **Organized CSS structure** - Restructured stylesheets into `index/` and `management/` folders
-- ✅ **Organized code structure** - Restructured `/code` directory into logical feature-based folders
-- ✅ **Updated file references** - All imports and requires updated to match new folder structure
+**Solar Monitoring System**
+- Real-time solar data collection with ESP32 integration
+- Interactive dashboard with 30+ monitored variables
+- Delta compression for efficient data storage
+- Socket.IO real-time updates
+- Multi-timeframe analysis (1h, 6h, 12h, 24h views)
+- API security with authentication and rate limiting
+- Relay control system for remote device management
 
-### **Advanced Solar Monitoring System**
-- 🌞 **Real-time solar data collection** with ESP32 integration
-- 📊 **Solar dashboard** with live charts and historical data
-- 🔄 **Delta compression** for efficient data storage and transmission
-- ⚡ **Socket.IO integration** for real-time updates
-- 📈 **Multi-timeframe analysis** (1h, 12h, 24h views)
-- 🛡️ **API security** with authentication and rate limiting
+**Enhanced Review System**
+- Comprehensive review management with JSON database
+- Upvote system with persistent user tracking
+- Internal API with secret key authentication
+- Admin management portal with full CRUD operations
+- Unified Review ID system for consistent data handling
 
-### **Enhanced Review System**
-- 📝 **Comprehensive review management** with JSON database backend
-- 👍 **Upvote system** with real-time feedback and user tracking
-- 🔐 **Internal API** with secret key authentication for secure operations
-- 📊 **Admin management portal** with full CRUD operations
-- 🖼️ **Guest avatar support** with file upload and default fallback
-- ✨ **Unified Review ID System** - All review references use consistent unique IDs across the platform
+**Management Dashboard**
+- Dedicated management interface with authentication
+- Solar data visualization with interactive charts  
+- Calendar scheduler controls for automated sync
+- Review management with CRUD operations
+- System health monitoring and controls
 
-#### **🆔 Review ID System Documentation**
-**Important**: All reviews use unique, sequential integer IDs that remain consistent across all files and operations.
+## Core Features
 
-**File Structure & ID Usage:**
-- `data/private/reviews.json`: Master database with unique review IDs (1, 2, 3, 4, ...)
-- `data/public_data/upvotes.json`: Maps review ID → upvote count (`{"1": 6, "2": 0, "3": 2}`)
-- `data/user_data/user_upvotes.json`: Maps user ID → array of upvoted review IDs (`{"userId": ["1", "3", "5"]}`)
+**Multi-Language Rental Platform**
+- Responsive design optimized for all devices
+- Croatian, German, and English localization
+- Geolocation-based automatic language detection
+- Device-specific view optimization (mobile/desktop)
 
-**API Endpoints:**
-- `POST /api/reviews/{reviewId}/upvote` - Toggle upvote using review ID
-- Management endpoints automatically maintain ID consistency
+**Advanced Image Gallery**
+- Rotational thumbnail system with circular navigation
+- Touch and swipe support for mobile devices
+- Auto-slide with intelligent pause on user interaction
+- Smooth animations and adaptive layout
 
-**Frontend Integration:**
-- HTML elements use `data-review-id="{reviewId}"` attributes
-- JavaScript functions accept review IDs as parameters
-- Upvote system tracks by review ID, not array index
+**Smart Calendar Integration**
+- Real-time iCal synchronization from booking platforms (Airbnb, Booking.com)
+- Multi-property calendar management
+- Automated booking status updates
+- RESTful API endpoints for calendar data
+- Background scheduler with configurable intervals
 
-**⚠️ Critical Rules:**
-1. **Never use array indices** for review identification in APIs or upvote tracking
-2. **Always use review.id** when referencing reviews across files
-3. **Maintain ID consistency** when adding/editing reviews through management portal
-4. **Review IDs are immutable** - once assigned, they never change
-- ⭐ **Upvote functionality** with persistent user tracking
-- 🔒 **Cookie-based user identification** for anonymous voting
-- 📱 **Platform integration** (Airbnb & Booking.com reviews)
-- 💾 **Persistent data storage** for review interactions
+**Solar Monitoring System**
+- ESP32 hardware integration for real-time data collection
+- 30+ monitored variables including voltage, current, temperature
+- Interactive dashboard with multiple timeframe views
+- Delta compression reduces storage overhead by 60-80%
+- Socket.IO real-time data streaming
+- Relay control system for remote device management
+- API authentication and rate limiting
 
-### **Improved Management Interface**
-- 🖥️ **Dedicated management routes** (`/management`)
-- 📊 **Solar data visualization** with interactive charts
-- ⚙️ **Scheduler controls** for automated calendar updates
-- 🔐 **Basic authentication middleware** (development-ready)
+**Review & Rating System**
+- Multi-platform review aggregation
+- Anonymous upvote system with persistent tracking
+- Review management interface for administrators
+- Cookie-based user identification
+- Internal API for secure review operations
 
-## Features
-
-### **Core Rental Website Features**
-- **Glassmorphism UI** - Beautiful glass-like effects with backdrop blur
-- **Responsive Design** - Optimized for desktop, tablet, and mobile devices
-- **Multi-language Support** - Croatian, German, and English localization
-- **Device Detection** - Automatic mobile/desktop version selection
-
-### **Advanced Image Gallery**
-- **Rotational Thumbnail System** - Innovative circular thumbnail navigation
-- **Touch & Swipe Support** - Intuitive mobile interaction
-- **Auto-slide with Pause** - Smart auto-progression that pauses on user interaction
-- **Adaptive Layout** - Adjusts to parent container or standalone mode
-- **Smooth Animations** - Fluid transitions and hover effects
-
-### **Smart Calendar Integration**
-- **iCal Sync** - Real-time availability updates from iCal feeds (Airbnb, Booking.com, etc.)
-- **Multi-Calendar Support** - Manage multiple properties simultaneously
-- **Reservation Management** - Automatic booking status updates
-- **API Endpoints** - RESTful calendar data access
-- **Automated Scheduler** - Background sync with configurable intervals
-
-### **Solar Monitoring System** ⚡
-- **Real-time Data Collection** - Live solar panel performance monitoring
-- **ESP32 Integration** - Hardware-level data acquisition
-- **Interactive Charts** - Multiple timeframe views (1h, 12h, 24h)
-- **Delta Compression** - Efficient data storage with change tracking
-  - Only changed values are stored in delta records (marked with `_type: 'delta'`)
-  - Missing variables in delta records use last known values for reconstruction
-  - Automatically switches to full records when errors/warnings occur
-- **API Security** - Protected endpoints with authentication
-- **Socket.IO Updates** - Real-time data streaming to dashboards
-
-### **Review & Rating System** ⭐
-- **Multi-platform Reviews** - Aggregate from Airbnb and Booking.com
-- **Upvote System** - Guest interaction with anonymous tracking
-- **Persistent User Data** - Cookie-based user identification
-- **Review Management** - Truncation and display optimization
-
-### **Management Dashboard** 🖥️
-- **Enhanced Solar Dashboard** - Comprehensive monitoring interface with 30+ variables
-- **Variable Descriptions** - Interactive info tooltips for all solar metrics
-- **Responsive Design** - Optimized for desktop and mobile viewing
-- **Real-time Charts** - Multiple timeframe analysis (1h, 6h, 12h, 24h)
-- **Full-screen Layout** - Maximized data visualization space
-- **Horizontal Scrolling** - Mobile-optimized data table navigation
-- **API-secured Variables** - Protected endpoint for solar variable information
-- **Scheduler Control** - Start/stop automated calendar sync
-- **Data Visualization** - Charts and graphs for performance analysis
-- **Authentication Ready** - Basic auth middleware implementation
-
-### **Intelligent Routing**
-- **Geolocation-based Redirects** - Automatic language detection by visitor's location
-- **SEO-friendly URLs** - Clean, semantic URL structure
-- **Error Handling** - Graceful error pages in multiple languages
-- **Device-specific Views** - Tailored experiences for different devices
+**Management Dashboard**
+- Real-time solar monitoring with comprehensive metrics
+- Calendar sync scheduler management
+- Review system administration
+- API key protected endpoints
+- Session-based authentication
 
 ## Live Demo
 
-Experience the website live at: **[test.apartments-sibenik.com](https://test.apartments-sibenik.com)**
+Experience the website at: **[test.apartments-sibenik.com](https://test.apartments-sibenik.com)**
 
 ## Technology Stack
 
@@ -137,67 +95,50 @@ Experience the website live at: **[test.apartments-sibenik.com](https://test.apa
 | **Express.js** | Web Framework | 4.x |
 | **EJS** | Template Engine | 3.x |
 | **Socket.IO** | Real-time Communication | 4.x |
-| **Axios** | HTTP Client | 1.x |
-| **node-ical** | Calendar Processing | Latest |
-| **express-useragent** | Device Detection | Latest |
-| **express-session** | Session Management | Latest |
-| **uuid** | Unique ID Generation | Latest |
-| **dotenv** | Environment Variables | Latest |
+| **Chart.js** | Data Visualization | 4.x |
+| **ESP32** | IoT Data Collection | Hardware |
 
-### **Hardware Integration**
-| Component | Purpose | Communication |
-|-----------|---------|---------------|
-| **ESP32** | Solar Data Collection | WiFi/HTTP |
-| **Solar Panels** | Energy Generation | Analog Sensors |
-| **Temperature Sensors** | Environmental Monitoring | I2C/SPI |
+**Key Dependencies:**
+- **axios** - HTTP client for API requests
+- **bcrypt** - Password hashing and authentication
+- **express-session** - Session management
+- **express-validator** - Input validation
+- **nodemailer** - Email notifications
+- **node-ical** - Calendar processing
+- **multer** - File upload handling
+- **uuid** - Unique identifier generation
 
 ## Project Structure
 
 ```
 apartments-sibenik.com/
-├── code/                       # Core application logic (organized by feature)
-│   ├── auth/                   # Authentication & security
-│   │   └── apiAuthManager.js   # API authentication middleware
-│   ├── booking/                # Reservation & booking management
-│   │   ├── reservationManager.js   # Booking processing logic
-│   │   ├── validatorManager.js     # Form validation rules
-│   │   └── emailSenderManager.js   # Email notifications
-│   ├── calendar/               # Calendar integration & scheduling
-│   │   ├── calendarAPI.js      # Calendar synchronization
-│   │   ├── calendarRoutes.js   # Calendar route handlers
-│   │   └── calendarScheduler.js # Automated sync scheduler
-│   ├── gallery/                # Image gallery functionality
-│   │   ├── galleryHelper.js    # Gallery utilities
-│   │   └── galleryRoutes.js    # Gallery endpoints
-│   ├── reviews/                # Review & rating system
-│   │   ├── reviewsAPI.js       # Review system logic
-│   │   ├── reviewRoutes.js     # Review route handlers
-│   │   └── reviewUpvoteManager.js # Upvote functionality
-│   └── utils/                  # Utility functions & helpers
-│       ├── utils.js            # Core utility functions
-│       ├── redirectManager.js  # URL redirect logic
-│       ├── headerTestManager.js # Header testing utilities
-│       └── internalAPIClient.js # Internal API communication
-├── data/                       # Data storage
-│   ├── calendars/              # Calendar cache
-│   │   ├── calendar1.json      # Property 1 availability
-│   │   └── calendar2.json      # Property 2 availability
-│   ├── public_data/            # Public datasets
-│   │   ├── solars_public.json  # Solar monitoring data
-│   │   ├── solar_variables.json # Solar variable definitions
-│   │   └── upvotes.json        # Review upvotes
-│   ├── user_data/              # User-specific data
-│   │   └── user_upvotes.json   # User voting history
-│   ├── form_requests/          # Form submissions
-│   │   └── reservation_requests.json
-│   └── private/                # Private configuration
-│       └── solar_control.json  # Solar system controls
-├── https-auth/                 # SSL certificates
-│   ├── certificate.crt
-│   ├── private.key
-│   └── ca_bundle.crt
-├── public/                     # Static assets
-│   ├── images/
+├── code/                      # Feature-based application logic
+│   ├── auth/                  # Authentication & security
+│   ├── booking/               # Reservation management
+│   ├── calendar/              # Calendar sync & scheduling  
+│   ├── gallery/               # Image gallery system
+│   ├── reviews/               # Review & rating system
+│   ├── solar/                 # Solar monitoring & controls
+│   └── utils/                 # Shared utilities
+├── data/                      # Data storage
+│   ├── calendars/             # Calendar cache files
+│   ├── public_data/           # Solar & public datasets
+│   ├── private/               # Configuration & private data
+│   └── user_data/             # User interaction data
+├── public/                    # Static assets
+│   ├── images/                # Property photos & icons
+│   ├── javascripts/           # Client-side functionality
+│   └── stylesheets/           # Organized CSS (index/ & management/)
+├── routes/                    # Express route handlers
+│   ├── hr.js, de.js, en.js    # Language-specific routes
+│   ├── api.js                 # API endpoints
+│   └── management.js          # Admin interface
+├── views/                     # EJS templates
+│   ├── hr/, de/, en/          # Localized views
+│   ├── management/            # Admin templates
+│   └── modules/               # Reusable components
+└── https-auth/                # SSL certificates
+```
 │   │   ├── gallery/            # Property images
 │   │   │   ├── apartment/      # Apartment photos
 │   │   │   └── studio/         # Studio photos
@@ -300,224 +241,76 @@ npm start
 
 The application will be available at `http://localhost:3000`
 
-## Key Features Explained
-
-### **Solar Monitoring System** ⚡
-The integrated solar monitoring system provides comprehensive energy tracking:
-
-#### **Real-time Data Collection**
-- **ESP32 Integration**: Hardware-level data acquisition from solar panels
-- **Multiple Sensors**: Voltage, current, temperature, and power measurements
-- **WiFi Communication**: Wireless data transmission to the server
-- **Error Detection**: Automatic identification of system issues
-
-#### **Data Processing & Storage**
-- **Delta Compression**: Efficient storage by tracking only changes
-- **Automatic Cleanup**: Maintains last 500 records for optimal performance
-- **JSON Storage**: Human-readable data format for easy debugging
-- **Backup Systems**: Redundant data storage for reliability
-
-#### **Enhanced Dashboard Features**
-- **30+ Solar Variables**: Complete monitoring of all ESP32 sensor data
-- **Interactive Tooltips**: Click 'i' button for detailed variable descriptions
-- **Full-screen Design**: Dashboard spans entire viewport for maximum data visibility
-- **Responsive Grid**: 5 cards per row on desktop, 2 on mobile, 1 on small screens
-- **Glassy Modern UI**: Backdrop blur effects with rounded corners
-- **Mobile Scrolling**: Horizontal scroll for data tables on mobile devices
-- **Variable Definitions**: JSON-based variable descriptions with units and explanations
-- **API Protection**: Solar variables endpoint secured with secret key authentication
-- **Real-time Updates**: Socket.IO integration for live data streaming
-- **Multiple Chart Views**: 1h, 6h, 12h, and 24h data visualization options
-
-### **Advanced Review System** ⭐
-Comprehensive guest feedback management:
-
-#### **Multi-platform Integration**
-- **iCal Reviews**: Automatic synchronization with various booking platforms
-- **Booking.com Reviews**: Integration with Booking.com platform
-- **Manual Reviews**: Direct guest feedback submission
-- **Review Aggregation**: Combined scoring and display
-
-#### **Interactive Features**
-- **Upvote System**: Guests can vote on helpful reviews
-- **Anonymous Tracking**: Cookie-based user identification
-- **Persistent Storage**: Vote history maintained across sessions
-- **Spam Prevention**: Rate limiting and validation
-
-### **Rotational Gallery System**
-The gallery features a unique rotational thumbnail system where:
-- Active thumbnail is always centered and highlighted
-- Thumbnails rotate smoothly when navigating
-- Supports touch/swipe gestures on mobile
-- Auto-slide pauses for 20 seconds after user interaction
-- Adapts to both embedded and standalone modes
-
-### **Smart Calendar Integration**
-Advanced booking management system:
-
-#### **Automated Synchronization**
-- **Background Scheduler**: Configurable sync intervals
-- **iCal Processing**: Parse and convert calendar data
-- **Conflict Detection**: Identify booking overlaps
-- **Status Updates**: Real-time availability updates
-
-#### **API Endpoints**
-- **RESTful Design**: Clean, predictable URL structure
-- **JSON Responses**: Structured data for easy consumption
-- **Error Handling**: Comprehensive error responses
-- **Rate Limiting**: API protection and performance optimization
-
-### **Responsive Design Philosophy**
-- **Mobile-first approach** with progressive enhancement
-- **Viewport-based sizing** for optimal screen utilization
-- **Touch-optimized interactions** with appropriate target sizes
-- **Adaptive layouts** that work in any container
-
-### **Smart Internationalization**
-- **Automatic language detection** based on visitor's IP geolocation
-- **Fallback mechanisms** for unsupported regions
-- **Device-specific routing** (mobile/desktop versions)
-- **SEO-optimized URLs** for each language variant
-
-### **Management Dashboard** 🖥️
-Comprehensive administrative interface:
-
-#### **Solar Dashboard**
-- **Live Monitoring**: Real-time solar panel performance
-- **Historical Data**: Trend analysis and reporting
-- **System Controls**: Remote relay management
-- **Performance Analytics**: Efficiency metrics and alerts
-
-#### **Booking Management**
-- **Calendar Overview**: Multi-property availability
-- **Scheduler Controls**: Start/stop automatic sync
-- **Data Validation**: Booking conflict detection
-- **Manual Overrides**: Administrative booking controls
-
-#### **Security Features**
-- **Authentication Middleware**: Basic auth implementation
-- **API Key Protection**: Secure endpoint access
-- **Session Management**: User state persistence
-- **Input Validation**: XSS and injection prevention
-
 ## API Endpoints
 
-### **Public API**
+### Public API
 | Endpoint | Method | Description |
 |----------|--------|-------------|
 | `/` | GET | Root redirect with geolocation |
 | `/gallery` | GET | Standalone gallery view |
 | `/calendar/:id` | GET | Calendar display (1, 2, or 3) |
-| `/kalendar/:id` | GET | Calendar sync from iCal sources |
-| `/:lang/:device` | GET | Localized views |
+| `/:lang/:device` | GET | Localized views (hr/de/en) |
 
-### **Calendar API**
+### Calendar API
 | Endpoint | Method | Description |
 |----------|--------|-------------|
 | `/api/calendar/:id` | GET | Get calendar data |
-| `/api/calendar/:id/sync` | POST | Force calendar sync |
-| `/api/calendar/status` | GET | Get sync status |
+| `/api/update-calendar/:id` | GET | Force calendar sync |
+| `/kalendar/:id` | GET | Update from iCal sources |
 
-### **Solar Monitoring API** (Protected)
+### Solar Monitoring API (Protected)
 | Endpoint | Method | Description |
 |----------|--------|-------------|
-| `/api/solar-data` | POST | Submit solar data (ESP32) |
-| `/api/solar/chart-data?range=` | GET | Get chart data (1h/6h/12h/24h) |
-| `/api/solar/variables` | GET | Get solar variable definitions |
-| `/api/solar/history` | POST | Get paginated solar history data |
-| `/api/backyard-management` | GET | Get relay status |
+| `/api/backyard-management` | POST | Submit solar data (ESP32) |
+| `/api/solar/chart-data?range=` | GET | Chart data (1h/6h/12h/24h) |
+| `/api/solar/variables` | GET | Solar variable definitions |
 | `/api/relay/:id/toggle` | POST | Toggle relay control |
 
-> **Delta Compression**: Solar data uses intelligent delta compression where only changed values are stored. Records with errors/warnings always save as full records. The system automatically reconstructs missing values from the last known state when displaying data or charts.
-
-### **Review System API**
+### Review System API  
 | Endpoint | Method | Description |
 |----------|--------|-------------|
-| `/api/reviews/:unitId` | GET | Get unit reviews |
-| `/api/reviews/:unitId/upvote` | POST | Toggle review upvote |
-| `/api/reviews/stats` | GET | Get review statistics |
+| `/api/reviews/:id` | GET | Get unit reviews |
+| `/api/reviews/:reviewId/upvote` | POST | Toggle review upvote |
+| `/api/internal/reviews` | GET/POST | Internal review management |
 
-### **Management API** (Protected)
+### Management API (Protected)
 | Endpoint | Method | Description |
 |----------|--------|-------------|
 | `/management` | GET | Management dashboard |
 | `/management/solar-dashboard` | GET | Solar monitoring interface |
 | `/management/scheduler/start` | POST | Start calendar scheduler |
 | `/management/scheduler/stop` | POST | Stop calendar scheduler |
-| `/management/scheduler/status` | GET | Get scheduler status |
 
-## Recent Development History
+## Development
 
-### **Phase 1: Core Website (Initial Release)**
-- ✅ Multi-language support (HR/DE/EN)
-- ✅ Responsive design implementation
-- ✅ Advanced gallery system
-- ✅ Calendar integration with iCal sources
-- ✅ Geolocation-based routing
+### Key Technical Features
 
-### **Phase 2: Solar Monitoring Integration**
-- ✅ ESP32 hardware integration
-- ✅ Real-time data collection system
-- ✅ Interactive dashboard development
-- ✅ Socket.IO real-time updates
-- ✅ Delta compression for efficiency
+**Delta Compression System**
+- Solar data uses intelligent delta compression to reduce storage by 60-80%
+- Only changed values are stored in delta records (marked with `_type: 'delta'`)
+- Missing variables use last known values for reconstruction
+- Automatically switches to full records when errors/warnings occur
 
-### **Phase 3: Enhanced User Experience**
-- ✅ Review system with upvoting
-- ✅ Cookie-based user tracking
-- ✅ Multi-platform review aggregation
-- ✅ Advanced form validation
-- ✅ Email notification system
+**Review ID System**
+- All reviews use unique, sequential integer IDs for consistency
+- IDs remain immutable across all operations and files
+- Frontend uses `data-review-id` attributes for reliable identification
+- Upvote system tracks by review ID, never by array indices
 
-### **Phase 4: Management & Security**
-- ✅ Administrative dashboard
-- ✅ API authentication system
-- ✅ Scheduler management interface
-- ✅ Rate limiting and security
-- ✅ Session management
+**Real-time Communication**
+- Socket.IO integration for live solar data updates
+- Automatic client updates when new data arrives
+- Efficient data streaming for dashboard visualizations
 
-### **Phase 5: Code Quality & Organization**
-- ✅ Complete codebase cleanup
-- ✅ Croatian → English comment translation
-- ✅ CSS file reorganization (`index/` and `management/` folders)
-- ✅ Code directory restructuring (feature-based organization)
-- ✅ Removed test files and mock data
-- ✅ Professional code standards
-- ✅ Updated all import/require statements
+### Performance Optimizations
 
-### **Phase 6: Enhanced Solar Dashboard** ⚡
-- ✅ Solar variable definitions database (30+ variables)
-- ✅ Interactive variable descriptions with tooltips
-- ✅ Full-screen responsive dashboard design
-- ✅ Enhanced mobile experience with horizontal scrolling
-- ✅ Modern glassy UI with backdrop blur effects
-- ✅ Expanded chart visualization options (1h/6h/12h/24h)
-- ✅ API endpoint for solar variable information
-- ✅ Comprehensive data table with all sensor readings
-- ✅ Professional modern card layout (5 per row desktop, 2 mobile)
-- ✅ Complete solar monitoring system documentation
-
-## Performance Optimizations
-
-### **Data Handling**
-- **Delta Compression**: Reduces storage by 60-80%
 - **File Caching**: 5-minute cache for frequently accessed data
-- **Background Processing**: Non-blocking calendar sync
-- **Efficient Queries**: Optimized data filtering and processing
+- **Background Processing**: Non-blocking calendar sync operations
+- **Memory Management**: Automatic cleanup of old data records
+- **Compression**: Gzip compression for all responses
+- **Static Asset Caching**: Long-term browser caching for images and styles
 
-### **Frontend Performance**
-- **Lazy Loading**: Images loaded on demand
-- **CSS Minification**: Reduced stylesheet sizes
-- **JavaScript Optimization**: Modular component loading
-- **Responsive Images**: Device-appropriate image sizes
-
-### **Server Optimization**
-- **Memory Management**: Automatic cleanup of old data
-- **Connection Pooling**: Efficient database connections
-- **Compression**: Gzip compression for responses
-- **Static Asset Caching**: Long-term browser caching
-
-## Browser Support
+### Browser Support
 
 | Browser | Version | Support |
 |---------|---------|---------|
@@ -528,64 +321,29 @@ Comprehensive administrative interface:
 | Mobile Safari | 14+ | Full |
 | Chrome Mobile | 90+ | Full |
 
-## Hardware Requirements
-
-### **Server Requirements**
-- **CPU**: 2+ cores recommended
-- **RAM**: 4GB minimum, 8GB recommended
-- **Storage**: 10GB for application + data
-- **Network**: Stable internet connection for calendar sync
-
-### **ESP32 Solar Monitoring Setup**
-- **Microcontroller**: ESP32 DevKit V1 or compatible
-- **Sensors**: Voltage/current sensors for solar panels
-- **WiFi**: 2.4GHz network access
-- **Power Supply**: 5V DC power adapter
-- **Optional**: Temperature sensors, relay modules
-
-### **Development Environment**
-- **Node.js**: Version 20.x or higher
-- **NPM**: Latest version
-- **Git**: For version control
-- **Code Editor**: VS Code recommended with EJS extension
-
 ## Contributing
 
 This project welcomes contributions for:
-- **Bug fixes and improvements**
-- **Performance optimizations**
-- **Solar monitoring enhancements**
-- **Review system improvements**
-- **Accessibility enhancements**
-- **Documentation updates**
-- **Translation improvements**
+- Bug fixes and improvements
+- Performance optimizations
+- Solar monitoring enhancements
+- Review system improvements
+- Accessibility enhancements
+- Documentation updates
 
-### **Development Guidelines**
+### Development Guidelines
 1. **Code Quality**: Follow existing conventions and maintain English comments
 2. **Testing**: Test on multiple devices and browsers before submitting
 3. **Responsive Design**: Ensure compatibility across all screen sizes
 4. **Multi-language Support**: Maintain all language variants
 5. **Security**: Follow security best practices for all new features
-6. **Performance**: Consider impact on load times and server resources
-
-### **Areas for Contribution**
-- **Frontend**: React/Vue.js migration potential
-- **Backend**: Additional API endpoints and features
-- **Solar System**: Enhanced monitoring and control features
-- **Mobile App**: Native mobile application development
-- **Analytics**: Advanced reporting and data visualization
-- **Automation**: Smart home integration possibilities
 
 ## License
 
 This project is available for **non-commercial use only**.
 
-### Terms:
-- **Allowed**: Personal use, learning, educational purposes
-- **Allowed**: Contributing to the project
-- **Allowed**: Forking for non-commercial projects
-- **Not Allowed**: Commercial use without permission
-- **Not Allowed**: Selling or monetizing the code
+**Allowed**: Personal use, learning, educational purposes, contributing to the project
+**Not Allowed**: Commercial use without permission, selling or monetizing the code
 
 ## Author
 
@@ -594,30 +352,10 @@ This project is available for **non-commercial use only**.
 - Project: [apartments-sibenik.com](https://github.com/thedanielbatinicproject/apartments-sibenik.com)
 - Contact: [daniel.batinic@fer.hr](mailto:daniel.batinic@fer.hr)
 
-## Acknowledgments
-
-- **Modern Web Technologies**: Built with cutting-edge tools for optimal performance
-- **IoT Integration**: Pioneering ESP32 solar monitoring integration
-- **Hospitality Design**: Inspired by contemporary luxury accommodation websites
-- **Croatian Tourism**: Optimized for promoting beautiful Šibenik, Croatia
-- **Open Source Community**: Utilizing and contributing to open source ecosystem
-- **Sustainable Technology**: Promoting renewable energy monitoring and efficiency
-
-### **Special Thanks**
-- **Chart.js**: For beautiful data visualization
-- **Socket.IO**: For real-time communication capabilities
-- **Express.js Community**: For robust server framework
-- **EJS Template Engine**: For flexible templating
-- **Node.js Ecosystem**: For comprehensive package availability
-
 ---
 
-<div align="center">
+**Made with care for promoting beautiful accommodations in Šibenik, Croatia**
 
-**🏛️ Made with care for promoting beautiful accommodations in Šibenik 🌞**
+**Featuring Advanced Solar Monitoring & Smart Management Systems**
 
-**⚡ Featuring Advanced Solar Monitoring & Smart Management Systems ⚡**
-
-[Live Demo](https://test.apartments-sibenik.com) • [Contact](mailto:daniel.batinic@fer.hr) • [Star this repo](https://github.com/thedanielbatinicproject/apartments-sibenik.com)
-
-</div>
+[Live Demo](https://test.apartments-sibenik.com) • [Contact](mailto:daniel.batinic@fer.hr) • [GitHub](https://github.com/thedanielbatinicproject/apartments-sibenik.com)
