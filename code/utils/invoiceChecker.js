@@ -54,52 +54,18 @@ const processInvoiceCheck = async (req, res) => {
  * Find invoice by UID in both companies' data
  */
 const findInvoiceByUID = async (uid) => {
-    const companies = [
+    const companyFiles = [
         {
             name: 'Apartmani Ivica',
-            dataPath: path.join(__dirname, '../../data/private/invoices/apartmani-ivica.json'),
-            companyData: {
-                companyName: 'Apartmani Ivica',
-                companyInfo: {
-                    owner: 'Ivica Batinić',
-                    oib: '91783900722',
-                    address: 'Obala Jerka Šižgorića 13',
-                    city: '22000 Šibenik',
-                    country: 'Croatia',
-                    phone: '+385 99 563 7343',
-                    email: 'ivicaba@gmail.com',
-                    iban: 'HR1234567890123456789'
-                },
-                constants: {
-                    disclaimer1: 'Ovaj račun je valjan bez potpisa i bez pečata.',
-                    disclaimer2: 'Boravišna pristojba uključena u cijenu usluge. - Sojourn tax included in the price of service.'
-                }
-            }
+            dataPath: path.join(__dirname, '../../data/private/invoices/apartmani-ivica.json')
         },
         {
             name: 'Apartmani Brigita',
-            dataPath: path.join(__dirname, '../../data/private/invoices/apartmani-brigita.json'),
-            companyData: {
-                companyName: 'Apartmani Brigita',
-                companyInfo: {
-                    owner: 'Brigita Batinić',
-                    oib: '12345678901',
-                    address: 'Obala Jerka Šižgorića 13',
-                    city: '22000 Šibenik',
-                    country: 'Croatia',
-                    phone: '+385 99 563 7343',
-                    email: 'brigita@gmail.com',
-                    iban: 'HR0987654321098765432'
-                },
-                constants: {
-                    disclaimer1: 'Ovaj račun je valjan bez potpisa i bez pečata.',
-                    disclaimer2: 'Boravišna pristojba uključena u cijenu usluge. - Sojourn tax included in the price of service.'
-                }
-            }
+            dataPath: path.join(__dirname, '../../data/private/invoices/apartmani-brigita.json')
         }
     ];
 
-    for (const company of companies) {
+    for (const company of companyFiles) {
         try {
             // Check if file exists
             const fileExists = await fs.access(company.dataPath).then(() => true).catch(() => false);
@@ -117,7 +83,11 @@ const findInvoiceByUID = async (uid) => {
             if (invoice) {
                 return {
                     invoice,
-                    company: company.companyData
+                    company: {
+                        companyName: data.companyName,
+                        companyInfo: data.companyInfo,
+                        constants: data.constants
+                    }
                 };
             }
         } catch (error) {
