@@ -76,10 +76,19 @@ Professional apartment rental website for premium accommodations in Šibenik, Cr
 - Cookie-based user identification
 - Internal API for secure review operations
 
+**Invoice Management System**
+- Multi-company invoice generation and management
+- Automated invoice numbering with yearly sequences
+- PDF invoice export with company branding
+- Unique invoice UID generation for tracking
+- Guest invoice verification system
+- Company-specific settings and configurations
+
 **Management Dashboard**
 - Real-time solar monitoring with comprehensive metrics
 - Calendar sync scheduler management
 - Review system administration
+- Invoice management with CRUD operations
 - API key protected endpoints
 - Session-based authentication
 
@@ -117,6 +126,7 @@ apartments-sibenik.com/
 │   ├── booking/               # Reservation management
 │   ├── calendar/              # Calendar sync & scheduling  
 │   ├── gallery/               # Image gallery system
+│   ├── invoices/              # Invoice management system
 │   ├── reviews/               # Review & rating system
 │   ├── solar/                 # Solar monitoring & controls
 │   └── utils/                 # Shared utilities
@@ -124,6 +134,7 @@ apartments-sibenik.com/
 │   ├── calendars/             # Calendar cache files
 │   ├── public_data/           # Solar & public datasets
 │   ├── private/               # Configuration & private data
+│   │   └── invoices/          # Company invoice data
 │   └── user_data/             # User interaction data
 ├── public/                    # Static assets
 │   ├── images/                # Property photos & icons
@@ -136,6 +147,10 @@ apartments-sibenik.com/
 ├── views/                     # EJS templates
 │   ├── hr/, de/, en/          # Localized views
 │   ├── management/            # Admin templates
+│   │   ├── invoices.ejs       # Invoice management dashboard  
+│   │   ├── templates/         # Invoice templates
+│   │   │   └── invoice.ejs    # PDF invoice template
+│   │   └── check-invoice.ejs  # Invoice verification
 │   └── modules/               # Reusable components
 └── https-auth/                # SSL certificates
 ```
@@ -225,6 +240,10 @@ PORT=3000
 API_SECRET=your-secret-api-key-here
 SESSION_SECRET=your-session-secret-here
 
+# Invoice System Configuration
+INVOICE_DEFAULT_CURRENCY=EUR
+INVOICE_DEFAULT_TAX_RATE=25
+
 # Solar Monitoring (Optional)
 SOLAR_API_ENABLED=true
 ESP32_IP_ADDRESS=192.168.1.100
@@ -273,6 +292,20 @@ The application will be available at `http://localhost:3000`
 | `/api/reviews/:reviewId/upvote` | POST | Toggle review upvote |
 | `/api/internal/reviews` | GET/POST | Internal review management |
 
+### Invoice System API (Protected)
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/management/invoices` | GET | Invoice management dashboard |
+| `/management/invoices/:companyId` | GET | Company-specific invoices |
+| `/management/invoices/new/:companyId` | GET | New invoice form |
+| `/management/invoices/create/:companyId` | POST | Create new invoice |
+| `/management/invoices/edit/:companyId/:invoiceId` | GET | Edit invoice form |
+| `/management/invoices/update/:companyId/:invoiceId` | POST | Update invoice |
+| `/management/invoices/delete/:companyId/:invoiceId` | POST | Delete invoice |
+| `/management/invoices/print/:companyId/:invoiceId` | GET | Generate PDF invoice |
+| `/management/invoices/settings/:companyId` | GET/POST | Company settings |
+| `/check-invoice` | GET/POST | Public invoice verification |
+
 ### Management API (Protected)
 | Endpoint | Method | Description |
 |----------|--------|-------------|
@@ -296,6 +329,14 @@ The application will be available at `http://localhost:3000`
 - IDs remain immutable across all operations and files
 - Frontend uses `data-review-id` attributes for reliable identification
 - Upvote system tracks by review ID, never by array indices
+
+**Invoice Management System**
+- Multi-company invoice management with separate data files
+- Unique invoice UID generation using MD5 hashing
+- Automatic yearly invoice numbering sequences
+- PDF generation using EJS templates
+- Guest verification system with secure invoice lookup
+- Company-specific settings (currency, tax rates, services)
 
 **Real-time Communication**
 - Socket.IO integration for live solar data updates

@@ -4,110 +4,7 @@
     <%- include('../modules/head', { pageTitle: 'Apartman s vrtom - Apartmani Šibenik', device: device }) %>
     <link rel="stylesheet" href="/stylesheets/hr/home.css">
     <link rel="stylesheet" href="/stylesheets/index/reviews.css">
-    <style>
-        /* Poboljšanje kontrasta za apartman s vrtom stranicu */
-        .hero-section .hero-title {
-            color: #ffffff;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 0, 0, 0.5);
-            font-weight: 900;
-        }
-        
-        .hero-section .hero-description {
-            color: #f8f9fa;
-            text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.4);
-            font-weight: 500;
-        }
-        
-        .hero-section .feature-item span {
-            color: #ffffff;
-            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
-            font-weight: 600;
-        }
-        
-        .hero-section .explore-btn.primary {
-            background: rgba(14, 165, 233, 0.95);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-        
-        .hero-section .explore-btn.secondary {
-            background: rgba(255, 255, 255, 0.15);
-            border: 2px solid rgba(255, 255, 255, 0.4);
-            color: #ffffff;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-        }
-        
-        .hero-section .explore-btn.secondary:hover {
-            background: rgba(255, 255, 255, 0.25);
-            border-color: rgba(255, 255, 255, 0.6);
-        }
-        
-        /* Optimizacija reviews modula u hero sekciji */
-        .hero-visual .reviews-module {
-            width: 90%;
-            height: 70%;
-        }
-        
-        /* SPECIFIČAN OVERRIDE ZA REVIEW KARTICE - SAMO ZA OVU STRANICU */
-        body.apartman-s-vrtom .hero-visual .reviews-module .review-card {
-            background: rgba(30, 144, 255, 0.15) !important;
-            backdrop-filter: blur(8px) !important;
-            -webkit-backdrop-filter: blur(8px) !important;
-        }
-        
-        /* Dodatni override za sigurnost */
-        body.apartman-s-vrtom .review-card[data-review-id] {
-            background: rgba(30, 144, 255, 0.15) !important;
-            backdrop-filter: blur(8px) !important;
-            -webkit-backdrop-filter: blur(8px) !important;
-        }
-        
-        .hero-visual .reviews-module {
-            margin: 0 auto;
-            overflow-y: auto; /* Omogućavamo vertikalno skrolanje */
-            /* Skrivanje scroll bara */
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* Internet Explorer 10+ */
-            /* Zadržavamo originalni glassmorphism design iz reviews.css */
-        }
-        
-        /* Skrivanje scroll bara za WebKit browsere (Chrome, Safari, Edge) */
-        .hero-visual .reviews-module::-webkit-scrollbar {
-            display: none;
-        }
-        
-        /* Optimizacija hero-visual kontejnera */
-        .hero-visual {
-            min-height: 500px;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-        }
-        
-        /* Responsive prilagodbe za hero-visual */
-        @media (max-width: 1024px) {
-            .hero-visual .reviews-module {
-                width: 85%;
-                height: 75%;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .hero-visual .reviews-module {
-                width: 90%;
-                height: 80%;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .hero-visual .reviews-module {
-                width: 95%;
-                height: 85%;
-            }
-        }
-    </style>
+
 </head>
 <body class="apartman-s-vrtom">
     <%- include('../modules/header', { lang: 'hr', base: '/hr/desktop' }) %>
@@ -116,7 +13,7 @@
         <!-- Hero sekcija -->
         <section class="hero-section" style="background-image: url('/images/apartments/apartman-vrt/main-day.jpg');">
             <div class="hero-content">
-                <h1 class="hero-title">Apartman s vrtom <img src="/images/icons/garden.png" alt="vrt" class="hearth-icon"></h1>
+                <h1 class="hero-title" style="color: #ffffff; text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.6); font-weight: 900;">Apartman s vrtom <img src="/images/icons/garden.png" alt="vrt" class="hearth-icon"></h1>
                 <p class="hero-description">Prostrani luksuzni apartman s privatnim dvorištem i roštiljem, idealan za obitelji do 4 osobe. Uživajte u miru prirode uz sve moderne sadržaje u srcu Šibenika.</p>
 
                 <div class="hero-features">
@@ -165,15 +62,15 @@
                     <div class="text-content">
                         <h2 class="section-title">O apartmanu</h2>
                         <div class="text-block">
-                            <p><strong>Vaš oaza mira u srcu Šibenika</strong> - Prekrasno uređen klimatizirani apartman s dva spavaća kreveta, potpuno opremljenom kuhinjom, prostranom kupaonicom i spektakularnom terasom prepunom cvijeća. Ovdje možete početi dan s jutarnjom kavom u prirodnom vrtu, uživati u ručku na svježem zraku ili pak popiti čašu vina pod zvjezdanim nebom.</p>
+                            <p><strong>Vaš oaza mira u srcu Šibenika</strong> - Prekrasno uređen, klimatizirani apartman s udobnim ležajevima, potpuno opremljenom kuhinjom, prostranom kupaonicom, dodatnom sobom i spektakularnim dvorištem prepunim cvijeća i s kornjačama. Ovdje možete početi dan s jutarnjom kavom, uživati u ručku na svježem zraku ili pak popiti čašu vina pod zvjezdanim nebom uz večeru napravljenu u vanjskom roštilju.</p>
                             
-                            <p><strong>Sve na vašoj rašpolaganju</strong> - Kao naši gosti, imate ekskluzivan pristup cijelom apartmanu. Za boravke duže od pet dana, naši gosti dobivaju besplatne ulaznice za posjet povijesnim tvrđavama sv. Mihovila i Baron - savršenu priliku da istražite bogatu kulturnu baštinu grada!</p>
+                            <p><strong>Sve na vašem raspolaganju</strong> - Kao naši gosti, imate ekskluzivan pristup cijelom apartmanu i vrtu. Za boravke duže od tjedan dana, moguće je ostvariti popust na smještaj - iskoristite savršenu priliku da istražite bogatu kulturnu baštinu grada!</p>
                             
-                            <p><strong>Uvijek tu kad trebate savjet</strong> - Vaši domaćini žive na katu iznad i dostupni su u svakom trenutku za savjete o najboljem načinu kretanja po gradu, preporuke restorana, skrivenih plaža ili bilo što drugo što može učiniti vaš boravak nezaboravnim.</p>
+                            <p><strong>Uvijek smo tu kad trebate savjet</strong> - Vaši domaćini žive na katu iznad i dostupni su u svakom trenutku za savjete o najboljem načinu razgledanja grada, preporuke restorana, skrivenih plaža ili bilo što drugo što može učiniti vaš boravak nezaboravnim.</p>
                             
-                            <p><strong>Savršen spoj udobnosti i praktičnosti</strong> - Apartman je opremljen svim potrebnim sadržajima za potpuno opuštanje: besplatno parkiranje na imanju, perilica rublja, besplatna televizija i Wi-Fi, aparat za kavu za savršeno jutarnje buđenje, sušilo za kosu, šampon za svježinu nakon dugog dana, te prekrasno uređen vrt gdje možete uživati u tišini daleko od gradske vreve.</p>
+                            <p><strong>Savršen spoj udobnosti i praktičnosti</strong> - Apartman je opremljen svim potrebnim sadržajima za potpuno opuštanje: besplatno parkiranje u blizini smještaja, perilica rublja, besplatna televizija i Wi-Fi, aparat za kavu za savršeno jutarnje buđenje, sušilo za kosu, šampon te prekrasno uređen vrt gdje možete uživati u tišini daleko od gradske vreve.</p>
                             
-                            <p><strong>Idealna lokacija za istražavanje</strong> - Smješteni u mirnom dijelu Šibenika, apartman je savršena polazna točka za otkrivanje UNESCO-ove katedrale sv. Jakova, šetnju kroz stari gradsku jezgru, ili pak planiranje izleta u obližnje nacionalne parkove Krka i Kornati.</p>
+                            <p><strong>Idealna lokacija za istraživanje</strong> - Smješteni u mirnom dijelu Šibenika, apartman je savršena polazna točka za otkrivanje UNESCO-ove katedrale sv. Jakova, šetnju kroz staru gradsku jezgru, ili pak planiranje izleta u obližnje nacionalne parkove Krka i Kornati.</p>
                         </div>
                     </div>
                     <div class="gallery-content">

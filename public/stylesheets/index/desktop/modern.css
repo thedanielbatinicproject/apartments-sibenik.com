@@ -1,11 +1,11 @@
 /* Modern glassy theme for desktop version */
 :root {
-    --main-blue: #1e3a5c;
+    --main-blue: #162c47;
     --light-blue: #7fb3d5;
     --deep-blue: #2c3e50;
     --accent-orange: #ff6f3c;
     --accent-red: #ff3c3c;
-    --glass-bg: rgba(255, 255, 255, 0.18);
+    --glass-bg: rgba(23, 23, 23, 0.442);
     --glass-blur: blur(12px);
     --border-radius: 22px;
     --day-bg: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
