@@ -269,7 +269,7 @@ class HomePageManager {
                     card.style.setProperty('right', 'unset', 'important'); // reset stare pozicije
                     card.style.setProperty('bottom', 'unset', 'important'); // reset stare pozicije
                     card.style.transform = 'translate(-50%, -50%)';
-                    card.style.maxWidth = `${estimatedWidth}px`;
+                    card.style.maxWidth = `${estimatedWidth+100}px`;
                     card.style.minHeight = `${estimatedHeight}px`;
                     card.style.zIndex = '10'; // osiguraj da su vidljive
                     

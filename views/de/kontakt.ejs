@@ -1,329 +1,404 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="hr">
 <head>
-    <%- include('../modules/head', { pageTitle: 'Kontakt - Apartmani Šibenik', device: device }) %>
-    <link rel="stylesheet" href="/stylesheets/hr/home.css">
+    <%- include('../modules/head', { pageTitle: 'Contact - Apartmani Šibenik', device: device }) %>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #0f4f5c 50%, #164e63 75%, #0f172a 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            z-index: 1000;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            color: #ffffff;
+            padding: 1rem 2rem;
+            border-radius: 16px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .back-button:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            border-color: rgba(59, 130, 246, 0.6);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(59, 130, 246, 0.4);
+            color: #ffffff;
+        }
+
+        .contact-container {
+            display: flex;
+            min-height: 100vh;
+            width: 100vw;
+            margin: 0;
+            padding: 6rem 2rem 2rem;
+            gap: 2rem;
+        }
+
+        .contact-section {
+            flex: 1;
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            transition: background 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .contact-section:hover {
+            background: rgba(30, 41, 59, 0.7);
+        }
+
+        .host-info h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        .host-cards-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .host-card {
+            background: rgba(51, 65, 85, 0.4);
+            border: 1px solid rgba(148, 163, 184, 0.15);
+            border-radius: 12px;
+            padding: 1.5rem;
+            width: 100%;
+            transition: background 0.3s ease;
+        }
+
+        .host-card:hover {
+            background: rgba(51, 65, 85, 0.6);
+        }
+
+        .host-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .host-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid rgba(148, 163, 184, 0.3);
+        }
+
+        .host-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #f1f5f9;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 0.75rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            border: 1px solid transparent;
+        }
+
+        .contact-link:hover {
+            color: #f1f5f9;
+            background: rgba(148, 163, 184, 0.15);
+            border-color: rgba(148, 163, 184, 0.2);
+            transform: translateX(3px);
+        }
+
+        /* Special styling for phone numbers */
+        .contact-link[href^="tel:"] {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(22, 163, 74, 0.1) 100%);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            color: #86efac;
+            font-weight: 600;
+        }
+
+        .contact-link[href^="tel:"]:hover {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(22, 163, 74, 0.2) 100%);
+            border-color: rgba(34, 197, 94, 0.4);
+            color: #bbf7d0;
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+            transform: translateX(5px) translateY(-1px);
+        }
+
+        .contact-link[href^="tel:"] .contact-icon {
+            color: #22c55e;
+            opacity: 1;
+        }
+
+        .contact-icon {
+            width: 20px;
+            height: 20px;
+            opacity: 0.8;
+        }
+
+        .form-section h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        .form-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+            width: 100%;
+        }
+
+        .form-container {
+            width: 90%;
+            max-width: 600px;
+        }
+
+        /* Override reservation form styles for glass morphism */
+        .form-wrapper .reservation-form-container {
+            background: transparent;
+            box-shadow: none;
+            border: none;
+            border-radius: 0;
+            padding: 0;
+        }
+
+        .form-wrapper .reservation-form-backdrop {
+            background: rgba(51, 65, 85, 0.4);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(148, 163, 184, 0.15);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .form-wrapper .reservation-form-title {
+            display: none;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 1024px) {
+            .contact-container {
+                flex-direction: column;
+                padding: 5rem 1.5rem 2rem;
+                gap: 2rem;
+            }
+
+            .contact-section {
+                padding: 2.5rem;
+            }
+
+            .form-container {
+                width: 100%;
+                max-width: none;
+            }
+
+            .back-button {
+                top: 1rem;
+                left: 1rem;
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .contact-container {
+                padding: 4rem 1rem 1rem;
+                gap: 1.5rem;
+            }
+
+            .contact-section {
+                padding: 2rem;
+            }
+
+            .host-cards-container {
+                max-width: 100%;
+            }
+
+            .host-card {
+                padding: 1.25rem;
+            }
+
+            .host-info h2,
+            .form-section h2 {
+                font-size: 1.5rem;
+            }
+
+            .host-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.75rem;
+            }
+
+            .host-avatar {
+                width: 50px;
+                height: 50px;
+            }
+
+            .contact-info {
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .contact-container {
+                padding: 3rem 0.75rem 1rem;
+                gap: 1rem;
+            }
+
+            .contact-section {
+                padding: 1.5rem;
+            }
+
+            .host-card {
+                padding: 1rem;
+            }
+
+            .back-button {
+                top: 0.5rem;
+                left: 0.5rem;
+                padding: 0.75rem 1.25rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Subtle animations - removed excessive effects */
+        .contact-section {
+            opacity: 1;
+        }
+    </style>
 </head>
 <body>
-    <%- include('../modules/header', { lang: 'de', base: '/de/desktop' }) %>
+    <a href="/de" class="back-button">← ZURÜCK ZUR STARTSEITE</a>
     
-    <main>
-        <!-- Hero sekcija -->
-        <section class="hero-section">
-            <div class="hero-content">
-                <div class="hero-badge">
-                    <img src="/images/icons/phone.png" alt="Kontakt" class="badge-icon">
-                    <span>Odzovemo se u roku od sat vremena</span>
+    <div class="contact-container">
+        <!-- Host Information Section -->
+        <div class="contact-section host-info">
+            <h2>Über die Gastgeber</h2>
+            <br>
+
+            <div class="host-cards-container">
+                <!-- Primary Host -->
+                <div class="host-card">
+                    <div class="host-header">
+                        <img src="/images/avatars/default.png" alt="Brigita Batinić" class="host-avatar">
+                        <div class="host-name">Brigita Batinić</div>
+                    </div>
+                    <div class="contact-info">
+                        <a href="tel:+386989105640" class="contact-link">
+                            <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                            </svg>
+                            +386 98 910 5640
+                        </a>
+                        <a href="mailto:brigita.batinic@hotmail.com" class="contact-link">
+                            <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                <polyline points="22,6 12,13 2,6"/>
+                            </svg>
+                            brigita.batinic@hotmail.com
+                        </a>
+                        <a href="https://maps.google.com/?q=Slobodana+Macure+13,+22000+Šibenik" target="_blank" rel="noopener" class="contact-link">
+                            <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                                <circle cx="12" cy="10" r="3"/>
+                            </svg>
+                            Slobodana Macure 13, 22000 Šibenik
+                        </a>
+                    </div>
                 </div>
-                <h1 class="hero-title">Stupite u <img src="/images/icons/mail.png" alt="kontakt" class="hearth-icon"> <span class="highlight">kontakt</span></h1>
-                <p class="hero-description">Pošaljite nam upit za rezervaciju ili nam postavite bilo koje pitanje. Tu smo da vam pomognemo u planiranju savršenog odmora u Šibeniku.</p>
 
-                <div class="hero-features">
-                    <div class="feature-item">
-                        <img src="/images/icons/phone.png" alt="Telefon" class="feature-icon">
-                        <span>Brza telefonska podrška</span>
+                <!-- Secondary Host -->
+                <div class="host-card">
+                    <div class="host-header">
+                        <img src="/images/avatars/default.png" alt="Ivica Batinić" class="host-avatar">
+                        <div class="host-name">Ivica Batinić</div>
                     </div>
-                    <div class="feature-item">
-                        <img src="/images/icons/mail.png" alt="Email" class="feature-icon">
-                        <span>Email podrška 24/7</span>
-                    </div>
-                    <div class="feature-item">
-                        <img src="/images/icons/chat.png" alt="Chat" class="feature-icon">
-                        <span>Chat podrška uživo</span>
-                    </div>
-                </div>
-
-                <div class="hero-actions">
-                    <button class="explore-btn primary" onclick="smoothScrollToSection('.reservation-section')">
-                        <span>Pošalji upit</span>
-                    </button>
-                    <button class="explore-btn secondary" onclick="smoothScrollToSection('.contact-info')">
-                        <span>Podaci za kontakt</span>
-                    </button>
-                </div>
-            </div>
-            <div class="hero-visual">
-                <div class="floating-cards">
-                    <div class="floating-card main-card">
-                        <div class="card-header">
-                            <span class="card-rating" id="reviews-stars">★★★★★</span>
-                            <span class="card-reviews" id="reviews-count">5.0 (odličan odgovor)</span>
-                        </div>
-                        <h3>Brza podrška</h3>
-                        <p>Odgovaramo na sve upite u kratkom vremenu i pomažemo vam da planirate savršen odmor.</p>
-                        <div class="card-stats">
-                            <div class="stat">
-                                <span class="stat-number">&lt; 1 sat</span>
-                                <span class="stat-label">odgovor na upit</span>
-                            </div>
-                            <div class="stat">
-                                <span class="stat-number">24/7</span>
-                                <span class="stat-label">email podrška</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Dodatne floating kartice za desktop -->
-                    <div class="extra-floating-card extra-card-1">📞 Telefonska podrška</div>
-                    <div class="extra-floating-card extra-card-2">✉️ Email 24/7</div>
-                    <div class="extra-floating-card extra-card-3">💬 Chat uživo</div>
-                    <div class="extra-floating-card extra-card-4">🏡 Savjeti za boravak</div>
-                    <div class="extra-floating-card extra-card-5">🗺️ Preporuke za obilaske</div>
-                    <div class="extra-floating-card extra-card-6">🍽️ Preporuke restorana</div>
-                    <div class="extra-floating-card extra-card-7">🚗 Informacije o parkingu</div>
-                    <div class="extra-floating-card extra-card-8">🏖️ Najbolje plaže</div>
-                    <div class="extra-floating-card extra-card-9">🎟️ Popusti za atrakcije</div>
-                    <div class="extra-floating-card extra-card-10">📅 Dostupnost u realnom vremenu</div>
-                    <div class="extra-floating-card extra-card-11">💯 Jamstvo zadovoljstva</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Kontakt informacije -->
-        <section class="contact-info section-spacing">
-            <div class="container">
-                <h2 class="section-title centered">Kako nas možete kontaktirati</h2>
-                <p class="section-subtitle">Odaberite način komunikacije koji vam najbolje odgovara</p>
-                
-                <div class="contact-methods">
-                    <div class="contact-card">
-                        <div class="contact-icon">
-                            <img src="/images/icons/phone.png" alt="Telefon">
-                        </div>
-                        <h3>Telefon</h3>
-                        <p>Pozovite nas direktno za hitne upite ili brzu rezervaciju</p>
-                        <div class="contact-details">
-                            <a href="tel:+385995441234" class="contact-link">+385 99 544 1234</a>
-                            <span class="availability">Dostupno: 8:00 - 22:00</span>
-                        </div>
-                    </div>
-
-                    <div class="contact-card">
-                        <div class="contact-icon">
-                            <img src="/images/icons/mail.png" alt="Email">
-                        </div>
-                        <h3>Email</h3>
-                        <p>Pošaljite nam detaljne upite i očekujte odgovor u roku od sat vremena</p>
-                        <div class="contact-details">
-                            <a href="mailto:info@apartments-sibenik.com" class="contact-link">info@apartments-sibenik.com</a>
-                            <span class="availability">Odgovaramo 24/7</span>
-                        </div>
-                    </div>
-
-                    <div class="contact-card">
-                        <div class="contact-icon">
-                            <img src="/images/icons/whatsapp.png" alt="WhatsApp">
-                        </div>
-                        <h3>WhatsApp</h3>
-                        <p>Brza komunikacija putem WhatsApp aplikacije</p>
-                        <div class="contact-details">
-                            <a href="https://wa.me/385995441234" class="contact-link" target="_blank">+385 99 544 1234</a>
-                            <span class="availability">Odgovaramo brzo</span>
-                        </div>
+                    <div class="contact-info">
+                        <a href="tel:+38599593734" class="contact-link">
+                            <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                            </svg>
+                            +385 99 593 7343
+                        </a>
+                        <a href="mailto:ivicabat@gmail.com" class="contact-link">
+                            <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                <polyline points="22,6 12,13 2,6"/>
+                            </svg>
+                            ivicabat@gmail.com
+                        </a>
+                        <a href="https://maps.google.com/?q=Slobodana+Macure+13,+22000+Šibenik" target="_blank" rel="noopener" class="contact-link">
+                            <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                                <circle cx="12" cy="10" r="3"/>
+                            </svg>
+                            Slobodana Macure 13, 22000 Šibenik
+                        </a>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <!-- Forma za rezervaciju -->
-        <section class="reservation-section section-spacing">
-            <div class="container">
-                <div class="reservation-content">
-                    <div class="reservation-intro">
-                        <h2 class="section-title">Pošaljite upit za rezervaciju</h2>
-                        <p class="section-subtitle">Ispunite formu ispod i kontaktirati ćemo vas u najkraćem roku</p>
-                        
-                        <div class="intro-features">
-                            <div class="intro-feature">
-                                <img src="/images/icons/clock.png" alt="Brzo">
-                                <span>Odgovor u roku od sat vremena</span>
-                            </div>
-                            <div class="intro-feature">
-                                <img src="/images/icons/shield.png" alt="Sigurno">
-                                <span>Sigurna rezervacija</span>
-                            </div>
-                            <div class="intro-feature">
-                                <img src="/images/icons/gift.png" alt="Popust">
-                                <span>Mogući popusti za dulji boravak</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="reservation-form-container">
-                        <%- include('../modules/reservation-form', { lang: 'de', base: '/de/desktop' }) %>
-                    </div>
+        <!-- Contact Form Section -->
+        <div class="contact-section form-section">
+            <h2>Stellen Sie uns eine Anfrage</h2>
+            <br>
+            <div class="form-wrapper">
+                <div class="form-container">
+                    <%- include('../modules/reservation-form') %>
                 </div>
             </div>
-        </section>
-
-        <!-- Često postavljena pitanja -->
-        <section class="faq-section section-spacing">
-            <div class="container">
-                <h2 class="section-title centered">Često postavljena pitanja</h2>
-                <p class="section-subtitle">Odgovori na najčešća pitanja naših gostiju</p>
-
-                <div class="faq-container">
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <h3>Kako mogu rezervirati apartman?</h3>
-                            <img src="/images/icons/plus.png" alt="Otvori" class="faq-icon">
-                        </div>
-                        <div class="faq-answer">
-                            <p>Rezervaciju možete napraviti putem naše web stranice ispunjavanjem forme za rezervaciju, ili nas možete kontaktirati direktno putem telefona, emaila ili WhatsApp-a. Preporučujemo rezervaciju unaprijed, posebno tijekom ljetnih mjeseci.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <h3>Koliko unaprijed trebam rezervirati?</h3>
-                            <img src="/images/icons/plus.png" alt="Otvori" class="faq-icon">
-                        </div>
-                        <div class="faq-answer">
-                            <p>Preporučujemo rezervaciju što ranije, posebno za ljetne mjesece (lipanj-rujan). Za najbolje cijene i dostupnost, rezervirajte 2-3 mjeseca unaprijed. Za spontane rezervacije, kontaktirajte nas direktno da provjerimo dostupnost.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <h3>Postoji li parking za goste?</h3>
-                            <img src="/images/icons/plus.png" alt="Otvori" class="faq-icon">
-                        </div>
-                        <div class="faq-answer">
-                            <p>Da, svi naši apartmani imaju osigurano parking mjesto za goste. Parking je besplatan i nalazi se u neposrednoj blizini apartmana. Za točne informacije o lokaciji parkinga za vaš apartman, kontaktirajte nas.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <h3>Je li moguća otkazivanje rezervacije?</h3>
-                            <img src="/images/icons/plus.png" alt="Otvori" class="faq-icon">
-                        </div>
-                        <div class="faq-answer">
-                            <p>Da, otkazivanje rezervacije je moguće. Uvjeti otkazivanja ovise o vremenskom periodu i sezoni. Obično nudimo besplatno otkazivanje do 7-14 dana prije dolaska. Za točne uvjete otkazivanja za vašu rezervaciju, molimo kontaktirajte nas.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <h3>Što je uključeno u cijenu apartmana?</h3>
-                            <img src="/images/icons/plus.png" alt="Otvori" class="faq-icon">
-                        </div>
-                        <div class="faq-answer">
-                            <p>U cijenu apartmana uključeni su: WiFi internet, klima uređaj, parking, posteljina i ručnici, osnovni kuhinjski pribor i posuđe. Također su uključeni troškovi čišćenja i turističke takse (gdje je to primjenjivo).</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            <h3>Možete li preporučiti restorane i atrakcije?</h3>
-                            <img src="/images/icons/plus.png" alt="Otvori" class="faq-icon">
-                        </div>
-                        <div class="faq-answer">
-                            <p>Naravno! Naš tim odlično poznaje Šibenik i okolicu te rado daje preporuke za najbolje restorane, atrakcije, plaže i izlete. Kada rezervirate, poslat ćemo vam detaljnu brošuru s našim preporukama prilagođenim vašim interesima.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Lokacija sekcija -->
-        <section class="location-section section-spacing">
-            <div class="container">
-                <h2 class="section-title centered">Gdje se nalazimo</h2>
-                <p class="section-subtitle">Naši apartmani smješteni su u srcu Šibenika</p>
-                
-                <div class="location-content">
-                    <div class="location-info">
-                        <div class="location-item">
-                            <img src="/images/icons/location.png" alt="Lokacija" class="location-icon">
-                            <div class="location-details">
-                                <h3>Adresa</h3>
-                                <p>Šibenik, Hrvatska<br>
-                                Lokacije apartmana poslat ćemo vam nakon rezervacije</p>
-                            </div>
-                        </div>
-
-                        <div class="location-item">
-                            <img src="/images/icons/walking.png" alt="Pješice" class="location-icon">
-                            <div class="location-details">
-                                <h3>Udaljenosti pješice</h3>
-                                <p>Stari grad: 5-10 minuta<br>
-                                Katedrala sv. Jakova: 8-12 minuta<br>
-                                Tvrđave: 10-15 minuta</p>
-                            </div>
-                        </div>
-
-                        <div class="location-item">
-                            <img src="/images/icons/car.png" alt="Autom" class="location-icon">
-                            <div class="location-details">
-                                <h3>Udaljenosti autom</h3>
-                                <p>Plaže: 5-15 minuta<br>
-                                NP Kornati: 30 minuta<br>
-                                NP Krka: 45 minuta</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="map-container">
-                        <iframe 
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2861.892936842847!2d15.888659!3d43.734047!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x13355fb9890a6569%3A0x5ad8ba21fb3b3062!2s%C5%A0ibenik%2C%20Croatia!5e0!3m2!1sen!2shr!4v1699878234567!5m2!1sen!2shr"
-                            loading="lazy"
-                            referrerpolicy="no-referrer-when-downgrade"
-                            class="location-map">
-                        </iframe>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Theme Slider sekcija -->
-        <section class="theme-section">
-            <div class="container">
-                <div class="theme-controller">
-                    <h3 class="theme-title">Tema stranice</h3>
-                    <div class="theme-slider-container">
-                        <div class="theme-icon moon">
-                            <img src="/images/icons/moon.png" alt="Mjesec">
-                        </div>
-                        <div class="slider-wrapper">
-                            <input type="range" id="themeSlider" class="theme-slider" min="0" max="100" value="50">
-                            <div class="slider-track"></div>
-                            <div class="slider-thumb"></div>
-                        </div>
-                        <div class="theme-icon sun">
-                            <img src="/images/icons/sun.png" alt="Sunce">
-                        </div>
-                    </div>
-                    <p class="theme-description">Prilagodi svjetlinu stranice prema svojoj preferenciji</p>
-                    <div class="time-display">
-                        <p class="detected-time">Detektirano vrijeme: <span id="current-time">--:--:-- --</span></p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <%- include('../modules/footer') %>
-    
-    <script src="/javascripts/hr/home.js"></script>
-    <script>
-        // FAQ functionality
-        document.querySelectorAll('.faq-question').forEach(question => {
-            question.addEventListener('click', () => {
-                const faqItem = question.parentElement;
-                const isActive = faqItem.classList.contains('active');
-                
-                // Zatvori sve ostale FAQ-ove
-                document.querySelectorAll('.faq-item').forEach(item => {
-                    item.classList.remove('active');
-                });
-                
-                // Otvori trenutni ako nije bio aktivan
-                if (!isActive) {
-                    faqItem.classList.add('active');
-                }
-            });
-        });
-    </script>
+        </div>
+    </div>
 </body>
 </html>

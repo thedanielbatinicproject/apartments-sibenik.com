@@ -3,8 +3,43 @@
 <head>
     <%- include('../modules/head', { pageTitle: 'Dobrodošli u Apartmane Šibenik', device: device }) %>
     <link rel="stylesheet" href="/stylesheets/hr/home.css">
+    <link rel="stylesheet" href="/stylesheets/index/starting-popup.css">
 </head>
 <body>
+    <!-- Language Detection Popup -->
+    <div id="languagePopupOverlay" class="language-popup-overlay">
+        <div class="language-popup">
+            <h2 class="popup-title">Prepoznali smo vaš jezik kao Hrvatski.</h2>
+            <p class="popup-subtitle">Ako to nije točno, molimo odaberite jedan od tri dostupna jezika:</p>
+            
+            <div class="language-buttons">
+                <button class="language-btn" onclick="selectLanguage('hr')">
+                    <img src="/images/icons/flag-hr.svg" alt="Hrvatska" class="flag-icon">
+                    Hrvatski
+                </button>
+                <button class="language-btn" onclick="selectLanguage('en')">
+                    <img src="/images/icons/flag-en.svg" alt="English" class="flag-icon">
+                    English
+                </button>
+                <button class="language-btn" onclick="selectLanguage('de')">
+                    <img src="/images/icons/flag-de.svg" alt="Deutsch" class="flag-icon">
+                    Deutsch
+                </button>
+            </div>
+            
+            <button class="close-btn" onclick="closeLanguagePopup()">
+                Zatvori ovaj dijalog
+            </button>
+            
+            <div class="invoice-section">
+                <p class="invoice-text">Tražite provjeru računa?</p>
+                <a href="https://apartments-sibenik.com/check-invoice" class="invoice-btn">
+                    Idi na provjeru računa
+                </a>
+            </div>
+        </div>
+    </div>
+
     <%- include('../modules/header', { lang: 'hr', base: '/hr/desktop' }) %>
     
     <main>
@@ -259,5 +294,6 @@
         window.serverReviewsData = <%- JSON.stringify(reviewsData || {}) %>;
     </script>
     <script src="/javascripts/hr/home.js"></script>
+    <script src="/javascripts/language-popup.js"></script>
 </body>
 </html>

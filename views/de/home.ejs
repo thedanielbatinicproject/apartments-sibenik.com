@@ -1,10 +1,45 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <%- include('../modules/head', { pageTitle: 'Dobrodošli u Apartmane Šibenik', device: device }) %>
+    <%- include('../modules/head', { pageTitle: 'Willkommen in den Apartments Šibenik', device: device }) %>
     <link rel="stylesheet" href="/stylesheets/hr/home.css">
+    <link rel="stylesheet" href="/stylesheets/index/starting-popup.css">
 </head>
 <body>
+    <!-- Language Detection Popup -->
+    <div id="languagePopupOverlay" class="language-popup-overlay">
+        <div class="language-popup">
+            <h2 class="popup-title">Wir haben Ihre Sprachregion als Deutsch erkannt.</h2>
+            <p class="popup-subtitle">Falls das nicht korrekt ist, wählen Sie bitte eine der drei verfügbaren Sprachen:</p>
+            
+            <div class="language-buttons">
+                <button class="language-btn" onclick="selectLanguage('hr')">
+                    <img src="/images/icons/flag-hr.svg" alt="Kroatisch" class="flag-icon">
+                    Hrvatski
+                </button>
+                <button class="language-btn" onclick="selectLanguage('en')">
+                    <img src="/images/icons/flag-en.svg" alt="Englisch" class="flag-icon">
+                    English
+                </button>
+                <button class="language-btn" onclick="selectLanguage('de')">
+                    <img src="/images/icons/flag-de.svg" alt="Deutsch" class="flag-icon">
+                    Deutsch
+                </button>
+            </div>
+            
+            <button class="close-btn" onclick="closeLanguagePopup()">
+                Dialog schließen
+            </button>
+            
+            <div class="invoice-section">
+                <p class="invoice-text">Suchen Sie nach dem Rechnungsprüfer?</p>
+                <a href="https://apartments-sibenik.com/check-invoice" class="invoice-btn">
+                    Zur Rechnungsprüfung
+                </a>
+            </div>
+        </div>
+    </div>
+
     <%- include('../modules/header', { lang: 'de', base: '/de/desktop' }) %>
     
     <main>
@@ -13,32 +48,32 @@
             <div class="hero-content">
                 <div class="hero-badge">
                     <img src="/images/icons/glowingstar.png" alt="Preporučeno" class="badge-icon">
-                    <span>Preporučeno od 200+ gostiju</span>
+                    <span>Empfohlen von 200+ Gästen</span>
                 </div>
-                <h1 class="hero-title">Autentični doživljaj Šibenika u <img src="/images/icons/hearth.png" alt="srcu" class="hearth-icon"> <span class="highlight">Dalmacije</span></h1>
-                <p class="hero-description">Smjestite se u ugodnim apartmanima samo 10 minuta hoda od UNESCO katedrale sv. Jakova. Uživajte u privatnom dvorištu i modernim sadržajima u srcu povijesnog grada.</p>
+                <h1 class="hero-title">Authentisches Erlebnis in Šibenik in <img src="/images/icons/hearth.png" alt="srcu" class="hearth-icon"> <span class="highlight">Dalmatien</span></h1>
+                <p class="hero-description">Genießen Sie Ihren Aufenthalt in komfortablen Apartments nur 10 Gehminuten von der UNESCO-Kathedrale St. Jakob entfernt. Entspannen Sie in einem privaten Garten und modernen Annehmlichkeiten im Herzen der historischen Stadt.</p>
 
                 <div class="hero-features">
                     <div class="feature-item">
                         <img src="/images/icons/unesco.png" alt="UNESCO" class="feature-icon">
-                        <span>10 min do UNESCO spomenika</span>
+                        <span>10 min bis zum UNESCO-Weltkulturerbe</span>
                     </div>
                     <div class="feature-item">
-                        <img src="/images/icons/beach.png" alt="Plaža" class="feature-icon">
-                        <span>25 min do plaže</span>
+                        <img src="/images/icons/beach.png" alt="Strand" class="feature-icon">
+                        <span>25 min bis zum Strand</span>
                     </div>
                     <div class="feature-item">
-                        <img src="/images/icons/parking.png" alt="Parking" class="feature-icon">
-                        <span>Besplatan parking</span>
+                        <img src="/images/icons/parking.png" alt="Parken" class="feature-icon">
+                        <span>Kostenloses Parken</span>
                     </div>
                 </div>
 
                 <div class="hero-actions">
                     <button class="explore-btn primary" onclick="smoothScrollToSection('.reservation-section')">
-                        <span>Pošalji upit</span>
+                        <span>Jetzt anfragen</span>
                     </button>
                     <button class="explore-btn secondary" onclick="smoothScrollToSection('.about-sibenik')">
-                        <span>Saznaj više</span>
+                        <span>Mehr erfahren</span>
                     </button>
                 </div>
             </div>
@@ -54,36 +89,36 @@
                                 <img src="/images/icons/star_full.png" alt="★" class="star-icon">
                             </div>
                             <div class="card-reviews-section" id="reviews-count">
-                                <div class="rating-line">Prosječna ocjena: 4.9</div>
-                                <div class="reviews-line">(127 recenzija)</div>
+                                <div class="rating-line">Durchschnittliche Bewertung: 4.9</div>
+                                <div class="reviews-line">(127 Bewertungen)</div>
                             </div>
                         </div>
-                        <h3>3 Jedinstvena Smještaja</h3>
-                        <p>Od cozy soba do velikih apartmana s dvorištem</p>
+                        <h3>3 Einzigartige Unterkünfte</h3>
+                        <p>Von gemütlichen Zimmern bis hin zu großen Apartments mit Garten</p>
                         <div class="card-stats">
                             <div class="stat">
                                 <span class="stat-number">2+1</span>
-                                <span class="stat-label">max osoba</span>
+                                <span class="stat-label">max Personen</span>
                             </div>
                             <div class="stat">
                                 <span class="stat-number">24/7</span>
-                                <span class="stat-label">dostupnost</span>
+                                <span class="stat-label">Verfügbarkeit</span>
                             </div>
                         </div>
                     </div>
                     
                     <!-- Dodatne floating kartice za desktop -->
-                    <div class="extra-floating-card extra-card-1">🔥 Roštilj</div>
-                    <div class="extra-floating-card extra-card-2">🌿 Privatno dvorište</div>
-                    <div class="extra-floating-card extra-card-3">🏛️ UNESCO baština u blizini</div>
-                    <div class="extra-floating-card extra-card-4">⚡ Prvi grad sa strujom</div>
-                    <div class="extra-floating-card extra-card-5">🐢 4 Kornjače</div>
-                    <div class="extra-floating-card extra-card-6">🏰 4 povijesne tvrđave</div>
-                    <div class="extra-floating-card extra-card-7">👑 Krešimirov grad 1066.</div>
-                    <div class="extra-floating-card extra-card-8">🌊 Kanali i mostovi</div>
-                    <div class="extra-floating-card extra-card-9">🎭 Međunarodni festival</div>
-                    <div class="extra-floating-card extra-card-10">⚔️ Obrana od 25.000 Turaka</div>
-                    <div class="extra-floating-card extra-card-11">🌅 Najljepši zalazak sunca</div>
+                    <div class="extra-floating-card extra-card-1">🔥 Grill</div>
+                    <div class="extra-floating-card extra-card-2">🌿 Privatgarten</div>
+                    <div class="extra-floating-card extra-card-3">🏛️ UNESCO-Weltkulturerbe</div>
+                    <div class="extra-floating-card extra-card-4">⚡ Erste Stadt mit Strom</div>
+                    <div class="extra-floating-card extra-card-5">🐢 4 Schildkröten</div>
+                    <div class="extra-floating-card extra-card-6">🏰 4 historische Festungen</div>
+                    <div class="extra-floating-card extra-card-7">👑 Krešimirs Stadt - 1066.</div>
+                    <div class="extra-floating-card extra-card-8">🌊 Kanäle und Brücken</div>
+                    <div class="extra-floating-card extra-card-9">🎭 Internationales Festival</div>
+                    <div class="extra-floating-card extra-card-10">⚔️ Verteidigung gegen 25k Türken</div>
+                    <div class="extra-floating-card extra-card-11">🌅 Schönster Sonnenuntergang</div>
                 </div>
             </div>
         </section>
@@ -93,17 +128,17 @@
             <div class="container">
                 <div class="content-grid">
                     <div class="text-content">
-                        <h2 class="section-title">O Šibeniku</h2>
+                        <h2 class="section-title">Über Šibenik</h2>
                         <div class="text-block">
-                            <p><strong>Krešimirov grad</strong> - Šibenik je najstariji samorodni Hrvatski grad na Jadranu! Prvi put se spominje na Božić 1066. godine u darovnici kralja Petra Krešimira IV., pa se zato naziva i Krešimirovim gradom. Grad se razvio na brežuljku visine od 70 metara iznad mora, što je današnja lokacija tvrđave sv. Mihovila.</p>
-                            
-                            <p><strong>UNESCO čudo arhitekture</strong> - Katedrala sv. Jakova iz 15. stoljeća jedno je od najznačajnijih graditeljskih ostvarenja na tlu Hrvatske. Ova renesansna remek-djela, djelo majstora Jurja Dalmatinca i Nikole Firentinca, građena je potpuno od kamena bez korištenja ijednog vezivnog sredstva! Zbog svojih iznimnih vrijednosti 2000. godine uvrštena je na UNESCO-ov popis svjetskog kulturnog nasljeđa.</p>
-                            
-                            <p><strong>Grad elektrike i inovacija</strong> - Šibenik je bio jedan od prvih gradova u svijetu s javnom rasvjetom na izmjeničnu struju! Zahvaljujući hidroelektrani na rijeci Krki iz 1895. godine, grad je dobio modernu rasvjetu kad još mnogi europski gradovi nisu imali ni plinsku. Ova hidroelektrana i danas radi, što svjedoči o kvaliteti inženjerskog rješenja.</p>
-                            
-                            <p><strong>Herojska obrana grada</strong> - Tijekom velike osmanske opsade 1647. godine, više od 25.000 vojnika napalo je Šibenik, ali grad se hrabro obranio zahvaljujući četiri tvrđave i manje od 6.000 branitelja. Najžešća borba vodila se oko tek dovršene tvrđave sv. Ivana, što je bila jedna od najvećih pobjeda u Šibenskoj povijesti.</p>
-                            
-                            <p><strong>Moderni turistički dragulj</strong> - Danas je Šibenik živopisni mediteranski grad koji uspješno spaja bogatu povijest s modernim sadržajima. Poznat je po svojim festivalima, posebno Međunarodnom dječjem festivalu, te kao idealna polazna točka za istraživanje nacionalnih parkova Kornati i Krka.</p>
+                            <p><strong>Krešimirs Stadt</strong> - Šibenik ist die älteste kroatische Stadt an der Adria! Sie wurde erstmals am Weihnachtstag 1066 in einer Schenkungsurkunde von König Petar Krešimir IV. erwähnt, weshalb sie auch Krešimirs Stadt genannt wird. Die Stadt entwickelte sich auf einem Hügel 70 Meter über dem Meer, wo sich heute die Festung des Heiligen Michael befindet.</p>
+
+                            <p><strong>UNESCO-Weltkulturerbe</strong> - Die Kathedrale des Heiligen Jakob aus dem 15. Jahrhundert ist eines der bedeutendsten architektonischen Werke auf dem Boden Kroatiens. Dieses Renaissance-Meisterwerk, geschaffen von den Meistern Juraj Dalmatinac und Nikola Firentinac, wurde vollständig aus Stein ohne Verwendung von Bindemitteln erbaut! Aufgrund ihrer außergewöhnlichen Werte wurde sie im Jahr 2000 in die UNESCO-Liste des Weltkulturerbes aufgenommen.</p>
+
+                            <p><strong>Stadt der Elektrizität und Innovationen</strong> - Šibenik war eine der ersten Städte der Welt mit öffentlicher Beleuchtung mit Wechselstrom! Dank des Wasserkraftwerks an der Krka aus dem Jahr 1895 erhielt die Stadt moderne Beleuchtung, als viele europäische Städte nicht einmal Gaslicht hatten. Dieses Wasserkraftwerk ist auch heute noch in Betrieb, was die Qualität der Ingenieurlösungen belegt.</p>
+
+                            <p><strong>Heroische Verteidigung der Stadt</strong> - Während der großen osmanischen Belagerung im Jahr 1647 griffen mehr als 25.000 Soldaten Šibenik an, aber die Stadt verteidigte sich tapfer dank der vier Festungen und weniger als 6.000 Verteidiger. Die heftigsten Kämpfe fanden um die gerade fertiggestellte Festung St. Ivan statt, was einen der größten Siege in der Geschichte von Šibenik darstellt.</p>
+
+                            <p><strong>Modernes Touristenziel</strong> - Heute ist Šibenik eine lebendige mediterrane Stadt, die erfolgreich reiche Geschichte mit modernen Annehmlichkeiten verbindet. Sie ist bekannt für ihre Festivals, insbesondere das Internationale Kinderfestival, und als idealer Ausgangspunkt für die Erkundung der Nationalparks Kornati und Krka.</p>
                         </div>
                     </div>
                     <div class="gallery-content">
@@ -133,27 +168,27 @@
         <!-- Naši apartmani sekcija -->
         <section class="apartments-section section-spacing">
             <div class="container">
-                <h2 class="section-title left-aligned">Naši Apartmani</h2>
-                <p class="section-subtitle left-aligned">Odaberite smještaj koji najbolje odgovara vašim potrebama</p>
-                
+                <h2 class="section-title left-aligned">Unsere Apartments</h2>
+                <p class="section-subtitle left-aligned">Wählen Sie die Unterkunft, die am besten zu Ihren Bedürfnissen passt</p>
+
                 <div class="apartments-grid">
                     <!-- Apartman s vrtom -->
                     <div class="apartment-card">
                         <div class="card-image">
                             <img src="/images/apartments/apartman-vrt/main.jpg" alt="Apartman s vrtom" loading="lazy">
-                            <div class="card-badge">Najpopularniji</div>
+                            <div class="card-badge">Am beliebtesten</div>
                         </div>
                         <div class="card-content">
-                            <h3>Apartman s vrtom</h3>
-                            <p>Prostrani apartman s privatnim dvorištem, idealan za obitelji i grupe do 2+1 osoba. Uključuje potpuno opremljenu kuhinju, dnevni boravak, dvorište s roštiljem i kornjače.</p>
+                            <h3>Wohnung mit Garten</h3>
+                            <p>Geräumiges Apartment mit privatem Garten, ideal für Familien und Gruppen von bis zu 2+1 Personen. Beinhaltet eine voll ausgestattete Küche, ein Wohnzimmer, einen Garten mit Grill und Schildkröten.</p>
                             <ul class="amenities">
                                 <li><img src="/images/icons/garden.png" alt="Privatno dvorište" class="icon"> Privatno dvorište</li>
-                                <li><img src="/images/icons/family.png" alt="Do 2+1 osoba" class="icon"> Do 2+1 osoba</li>
-                                <li><img src="/images/icons/kitchen.png" alt="Potpuna kuhinja" class="icon"> Potpuna kuhinja</li>
-                                <li><img src="/images/icons/turtles.png" alt="Kornjače" class="icon"> Kornjače</li>
+                                <li><img src="/images/icons/family.png" alt="Do 2+1 osoba" class="icon"> Bis zu 2+1 Personen</li>
+                                <li><img src="/images/icons/kitchen.png" alt="Potpuna kuhinja" class="icon"> Voll ausgestattete Küche</li>
+                                <li><img src="/images/icons/turtles.png" alt="Kornjače" class="icon"> Schildkröten</li>
                             </ul>
                             <a href="/de/apartman-s-vrtom" class="card-link modern-btn">
-                                <span>Saznaj više</span>
+                                <span>Mehr erfahren</span>
                                 <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                     <path d="M5 12h14m-7-7 7 7-7 7"/>
                                 </svg>
@@ -167,16 +202,16 @@
                             <img src="/images/apartments/studio/main.jpg" alt="Studio apartman" loading="lazy">
                         </div>
                         <div class="card-content">
-                            <h3>Studio apartman</h3>
-                            <p>Moderni studio apartman savršen za parove ili manje obitelji. Kombinirani dnevni boravak i spavaća soba s mini kuhinjom za do 2+1 osoba.</p>
+                            <h3>Studio Apartment</h3>
+                            <p>Modernes Studio-Apartment, perfekt für Paare oder kleine Familien. Kombinierter Wohn- und Schlafbereich mit Kochnische für bis zu 2+1 Personen.</p>
                             <ul class="amenities">
-                                <li><img src="/images/icons/couple.png" alt="Do 2+1 osoba" class="icon"> Do 2+1 osoba</li>
-                                <li><img src="/images/icons/studio.png" alt="Studio layout" class="icon"> Studio layout</li>
-                                <li><img src="/images/icons/kitchen_mini.png" alt="Mini kuhinja" class="icon"> Mini kuhinja</li>
-                                <li><img src="/images/icons/bathroom.png" alt="Privatna kupaona" class="icon"> Privatna kupaona</li>
+                                <li><img src="/images/icons/couple.png" alt="Do 2+1 osoba" class="icon"> Bis zu 2+1 Personen</li>
+                                <li><img src="/images/icons/studio.png" alt="Studio layout" class="icon"> Studio-Layout</li>
+                                <li><img src="/images/icons/kitchen_mini.png" alt="Mini kuhinja" class="icon"> Mini-Küche</li>
+                                <li><img src="/images/icons/bathroom.png" alt="Privatna kupaona" class="icon"> Privates Badezimmer</li>
                             </ul>
                             <a href="/de/studio-apartman" class="card-link modern-btn">
-                                <span>Saznaj više</span>
+                                <span>Mehr erfahren</span>
                                 <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                     <path d="M5 12h14m-7-7 7 7-7 7"/>
                                 </svg>
@@ -190,16 +225,16 @@
                             <img src="/images/apartments/soba/main.jpg" alt="Soba" loading="lazy">
                         </div>
                         <div class="card-content">
-                            <h3>Soba</h3>
-                            <p>Udobna soba s privatnom kupaonom, idealna za parove ili solo putnike. Jednostavno, ali komfortno uređena za maksimalno 2 osobe.</p>
+                            <h3>Zimmer</h3>
+                            <p>Ein komfortables Zimmer mit eigenem Bad, ideal für Paare oder Alleinreisende. Einfach, aber komfortabel eingerichtet für maximal 2 Personen.</p>
                             <ul class="amenities">
-                                <li><img src="/images/icons/room.png" alt="Privatna soba" class="icon"> Privatna soba</li>
-                                <li><img src="/images/icons/couple.png" alt="Maksimalno 2 osobe" class="icon"> Maksimalno 2 osobe</li>
-                                <li><img src="/images/icons/bathroom.png" alt="Privatna kupaona" class="icon"> Privatna kupaona</li>
-                                <li><img src="/images/icons/economic.png" alt="Ekonomična opcija" class="icon"> Ekonomična opcija</li>
+                                <li><img src="/images/icons/room.png" alt="Privatna soba" class="icon"> Privatzimmer</li>
+                                <li><img src="/images/icons/couple.png" alt="Maksimalno 2 osobe" class="icon"> Maximal 2 Personen</li>
+                                <li><img src="/images/icons/bathroom.png" alt="Privatna kupaona" class="icon"> Privates Badezimmer</li>
+                                <li><img src="/images/icons/economic.png" alt="Ekonomična opcija" class="icon"> Ökonomische Option</li>
                             </ul>
                             <a href="/de/soba" class="card-link modern-btn">
-                                <span>Saznaj više</span>
+                                <span>Mehr erfahren</span>
                                 <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                     <path d="M5 12h14m-7-7 7 7-7 7"/>
                                 </svg>
@@ -215,8 +250,8 @@
             <div class="container">
                 <div class="reservation-wrapper">
                     <div class="reservation-header reservation-section-header">
-                        <h2 class="section-title">Rezervirajte svoj boravak</h2>
-                        <p>Provjerite dostupnost i rezervirajte svoj idealan smještaj u Šibeniku</p>
+                        <h2 class="section-title">Reservieren Sie Ihren Aufenthalt</h2>
+                        <p>Überprüfen Sie die Verfügbarkeit und buchen Sie Ihre ideale Unterkunft in Šibenik</p>
                     </div>
                     <div class="reservation-content">
                         <%- include('../modules/reservation-form', { lang: 'de', base: '/de/desktop' }) %>
@@ -229,7 +264,7 @@
         <section class="theme-section">
             <div class="container">
                 <div class="theme-controller">
-                    <h3 class="theme-title">Tema stranice</h3>
+                    <h3 class="theme-title">Farbthema der Website</h3>
                     <div class="theme-slider-container">
                         <div class="theme-icon moon">
                             <img src="/images/icons/moon.png" alt="Mjesec">
@@ -243,9 +278,9 @@
                             <img src="/images/icons/sun.png" alt="Sunce">
                         </div>
                     </div>
-                    <p class="theme-description">Prilagodi svjetlinu stranice prema svojoj preferenciji</p>
+                    <p class="theme-description">Passen Sie die Seitenhelligkeit nach Ihren Wünschen an.</p>
                     <div class="time-display">
-                        <p class="detected-time">Detektirano vrijeme: <span id="current-time">--:--:-- --</span></p>
+                        <p class="detected-time">Erkannte Zeit: <span id="current-time">--:--:-- --</span></p>
                     </div>
                 </div>
             </div>
@@ -259,5 +294,6 @@
         window.serverReviewsData = <%- JSON.stringify(reviewsData || {}) %>;
     </script>
     <script src="/javascripts/hr/home.js"></script>
+    <script src="/javascripts/language-popup.js"></script>
 </body>
 </html>
