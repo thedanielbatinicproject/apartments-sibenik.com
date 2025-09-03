@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <%- include('../modules/head', { pageTitle: 'Kontakt - Apartmani Šibenik', device: device }) %>
+    <link rel="stylesheet" href="/stylesheets/hr/home.css">
+</head>
+<body>
+    <%- include('../modules/header', { lang: 'de', base: '/de/desktop' }) %>
+    
+    <main>
+        <!-- Hero sekcija -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <img src="/images/icons/phone.png" alt="Kontakt" class="badge-icon">
+                    <span>Odzovemo se u roku od sat vremena</span>
+                </div>
+                <h1 class="hero-title">Stupite u <img src="/images/icons/mail.png" alt="kontakt" class="hearth-icon"> <span class="highlight">kontakt</span></h1>
+                <p class="hero-description">Pošaljite nam upit za rezervaciju ili nam postavite bilo koje pitanje. Tu smo da vam pomognemo u planiranju savršenog odmora u Šibeniku.</p>
+
+                <div class="hero-features">
+                    <div class="feature-item">
+                        <img src="/images/icons/phone.png" alt="Telefon" class="feature-icon">
+                        <span>Brza telefonska podrška</span>
+                    </div>
+                    <div class="feature-item">
+                        <img src="/images/icons/mail.png" alt="Email" class="feature-icon">
+                        <span>Email podrška 24/7</span>
+                    </div>
+                    <div class="feature-item">
+                        <img src="/images/icons/chat.png" alt="Chat" class="feature-icon">
+                        <span>Chat podrška uživo</span>
+                    </div>
+                </div>
+
+                <div class="hero-actions">
+                    <button class="explore-btn primary" onclick="smoothScrollToSection('.reservation-section')">
+                        <span>Pošalji upit</span>
+                    </button>
+                    <button class="explore-btn secondary" onclick="smoothScrollToSection('.contact-info')">
+                        <span>Podaci za kontakt</span>
+                    </button>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="floating-cards">
+                    <div class="floating-card main-card">
+                        <div class="card-header">
+                            <span class="card-rating" id="reviews-stars">★★★★★</span>
+                            <span class="card-reviews" id="reviews-count">5.0 (odličan odgovor)</span>
+                        </div>
+                        <h3>Brza podrška</h3>
+                        <p>Odgovaramo na sve upite u kratkom vremenu i pomažemo vam da planirate savršen odmor.</p>
+                        <div class="card-stats">
+                            <div class="stat">
+                                <span class="stat-number">&lt; 1 sat</span>
+                                <span class="stat-label">odgovor na upit</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-number">24/7</span>
+                                <span class="stat-label">email podrška</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Dodatne floating kartice za desktop -->
+                    <div class="extra-floating-card extra-card-1">📞 Telefonska podrška</div>
+                    <div class="extra-floating-card extra-card-2">✉️ Email 24/7</div>
+                    <div class="extra-floating-card extra-card-3">💬 Chat uživo</div>
+                    <div class="extra-floating-card extra-card-4">🏡 Savjeti za boravak</div>
+                    <div class="extra-floating-card extra-card-5">🗺️ Preporuke za obilaske</div>
+                    <div class="extra-floating-card extra-card-6">🍽️ Preporuke restorana</div>
+                    <div class="extra-floating-card extra-card-7">🚗 Informacije o parkingu</div>
+                    <div class="extra-floating-card extra-card-8">🏖️ Najbolje plaže</div>
+                    <div class="extra-floating-card extra-card-9">🎟️ Popusti za atrakcije</div>
+                    <div class="extra-floating-card extra-card-10">📅 Dostupnost u realnom vremenu</div>
+                    <div class="extra-floating-card extra-card-11">💯 Jamstvo zadovoljstva</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kontakt informacije -->
+        <section class="contact-info section-spacing">
+            <div class="container">
+                <h2 class="section-title centered">Kako nas možete kontaktirati</h2>
+                <p class="section-subtitle">Odaberite način komunikacije koji vam najbolje odgovara</p>
+                
+                <div class="contact-methods">
+                    <div class="contact-card">
+                        <div class="contact-icon">
+                            <img src="/images/icons/phone.png" alt="Telefon">
+                        </div>
+                        <h3>Telefon</h3>
+                        <p>Pozovite nas direktno za hitne upite ili brzu rezervaciju</p>
+                        <div class="contact-details">
+                            <a href="tel:+385995441234" class="contact-link">+385 99 544 1234</a>
+                            <span class="availability">Dostupno: 8:00 - 22:00</span>
+                        </div>
+                    </div>
+
+                    <div class="contact-card">
+                        <div class="contact-icon">
+                            <img src="/images/icons/mail.png" alt="Email">
+                        </div>
+                        <h3>Email</h3>
+                        <p>Pošaljite nam detaljne upite i očekujte odgovor u roku od sat vremena</p>
+                        <div class="contact-details">
+                            <a href="mailto:info@apartments-sibenik.com" class="contact-link">info@apartments-sibenik.com</a>
+                            <span class="availability">Odgovaramo 24/7</span>
+                        </div>
+                    </div>
+
+                    <div class="contact-card">
+                        <div class="contact-icon">
+                            <img src="/images/icons/whatsapp.png" alt="WhatsApp">
+                        </div>
+                        <h3>WhatsApp</h3>
+                        <p>Brza komunikacija putem WhatsApp aplikacije</p>
+                        <div class="contact-details">
+                            <a href="https://wa.me/385995441234" class="contact-link" target="_blank">+385 99 544 1234</a>
+                            <span class="availability">Odgovaramo brzo</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Forma za rezervaciju -->
+        <section class="reservation-section section-spacing">
+            <div class="container">
+                <div class="reservation-content">
+                    <div class="reservation-intro">
+                        <h2 class="section-title">Pošaljite upit za rezervaciju</h2>
+                        <p class="section-subtitle">Ispunite formu ispod i kontaktirati ćemo vas u najkraćem roku</p>
+                        
+                        <div class="intro-features">
+                            <div class="intro-feature">
+                                <img src="/images/icons/clock.png" alt="Brzo">
+                                <span>Odgovor u roku od sat vremena</span>
+                            </div>
+                            <div class="intro-feature">
+                                <img src="/images/icons/shield.png" alt="Sigurno">
+                                <span>Sigurna rezervacija</span>
+                            </div>
+                            <div class="intro-feature">
+                                <img src="/images/icons/gift.png" alt="Popust">
+                                <span>Mogući popusti za dulji boravak</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reservation-form-container">
+                        <%- include('../modules/reservation-form', { lang: 'de', base: '/de/desktop' }) %>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Često postavljena pitanja -->
+        <section class="faq-section section-spacing">
+            <div class="container">
+                <h2 class="section-title centered">Često postavljena pitanja</h2>
+                <p class="section-subtitle">Odgovori na najčešća pitanja naših gostiju</p>
+
+                <div class="faq-container">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Kako mogu rezervirati apartman?</h3>
+                            <img src="/images/icons/plus.png" alt="Otvori" class="faq-icon">
+                        </div>
+                        <div class="faq-answer">
+                            <p>Rezervaciju možete napraviti putem naše web stranice ispunjavanjem forme za rezervaciju, ili nas možete kontaktirati direktno putem telefona, emaila ili WhatsApp-a. Preporučujemo rezervaciju unaprijed, posebno tijekom ljetnih mjeseci.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Koliko unaprijed trebam rezervirati?</h3>
+                            <img src="/images/icons/plus.png" alt="Otvori" class="faq-icon">
+                        </div>
+                        <div class="faq-answer">
+                            <p>Preporučujemo rezervaciju što ranije, posebno za ljetne mjesece (lipanj-rujan). Za najbolje cijene i dostupnost, rezervirajte 2-3 mjeseca unaprijed. Za spontane rezervacije, kontaktirajte nas direktno da provjerimo dostupnost.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Postoji li parking za goste?</h3>
+                            <img src="/images/icons/plus.png" alt="Otvori" class="faq-icon">
+                        </div>
+                        <div class="faq-answer">
+                            <p>Da, svi naši apartmani imaju osigurano parking mjesto za goste. Parking je besplatan i nalazi se u neposrednoj blizini apartmana. Za točne informacije o lokaciji parkinga za vaš apartman, kontaktirajte nas.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Je li moguća otkazivanje rezervacije?</h3>
+                            <img src="/images/icons/plus.png" alt="Otvori" class="faq-icon">
+                        </div>
+                        <div class="faq-answer">
+                            <p>Da, otkazivanje rezervacije je moguće. Uvjeti otkazivanja ovise o vremenskom periodu i sezoni. Obično nudimo besplatno otkazivanje do 7-14 dana prije dolaska. Za točne uvjete otkazivanja za vašu rezervaciju, molimo kontaktirajte nas.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Što je uključeno u cijenu apartmana?</h3>
+                            <img src="/images/icons/plus.png" alt="Otvori" class="faq-icon">
+                        </div>
+                        <div class="faq-answer">
+                            <p>U cijenu apartmana uključeni su: WiFi internet, klima uređaj, parking, posteljina i ručnici, osnovni kuhinjski pribor i posuđe. Također su uključeni troškovi čišćenja i turističke takse (gdje je to primjenjivo).</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <h3>Možete li preporučiti restorane i atrakcije?</h3>
+                            <img src="/images/icons/plus.png" alt="Otvori" class="faq-icon">
+                        </div>
+                        <div class="faq-answer">
+                            <p>Naravno! Naš tim odlično poznaje Šibenik i okolicu te rado daje preporuke za najbolje restorane, atrakcije, plaže i izlete. Kada rezervirate, poslat ćemo vam detaljnu brošuru s našim preporukama prilagođenim vašim interesima.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Lokacija sekcija -->
+        <section class="location-section section-spacing">
+            <div class="container">
+                <h2 class="section-title centered">Gdje se nalazimo</h2>
+                <p class="section-subtitle">Naši apartmani smješteni su u srcu Šibenika</p>
+                
+                <div class="location-content">
+                    <div class="location-info">
+                        <div class="location-item">
+                            <img src="/images/icons/location.png" alt="Lokacija" class="location-icon">
+                            <div class="location-details">
+                                <h3>Adresa</h3>
+                                <p>Šibenik, Hrvatska<br>
+                                Lokacije apartmana poslat ćemo vam nakon rezervacije</p>
+                            </div>
+                        </div>
+
+                        <div class="location-item">
+                            <img src="/images/icons/walking.png" alt="Pješice" class="location-icon">
+                            <div class="location-details">
+                                <h3>Udaljenosti pješice</h3>
+                                <p>Stari grad: 5-10 minuta<br>
+                                Katedrala sv. Jakova: 8-12 minuta<br>
+                                Tvrđave: 10-15 minuta</p>
+                            </div>
+                        </div>
+
+                        <div class="location-item">
+                            <img src="/images/icons/car.png" alt="Autom" class="location-icon">
+                            <div class="location-details">
+                                <h3>Udaljenosti autom</h3>
+                                <p>Plaže: 5-15 minuta<br>
+                                NP Kornati: 30 minuta<br>
+                                NP Krka: 45 minuta</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="map-container">
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2861.892936842847!2d15.888659!3d43.734047!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x13355fb9890a6569%3A0x5ad8ba21fb3b3062!2s%C5%A0ibenik%2C%20Croatia!5e0!3m2!1sen!2shr!4v1699878234567!5m2!1sen!2shr"
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"
+                            class="location-map">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Theme Slider sekcija -->
+        <section class="theme-section">
+            <div class="container">
+                <div class="theme-controller">
+                    <h3 class="theme-title">Tema stranice</h3>
+                    <div class="theme-slider-container">
+                        <div class="theme-icon moon">
+                            <img src="/images/icons/moon.png" alt="Mjesec">
+                        </div>
+                        <div class="slider-wrapper">
+                            <input type="range" id="themeSlider" class="theme-slider" min="0" max="100" value="50">
+                            <div class="slider-track"></div>
+                            <div class="slider-thumb"></div>
+                        </div>
+                        <div class="theme-icon sun">
+                            <img src="/images/icons/sun.png" alt="Sunce">
+                        </div>
+                    </div>
+                    <p class="theme-description">Prilagodi svjetlinu stranice prema svojoj preferenciji</p>
+                    <div class="time-display">
+                        <p class="detected-time">Detektirano vrijeme: <span id="current-time">--:--:-- --</span></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <%- include('../modules/footer') %>
+    
+    <script src="/javascripts/hr/home.js"></script>
+    <script>
+        // FAQ functionality
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const faqItem = question.parentElement;
+                const isActive = faqItem.classList.contains('active');
+                
+                // Zatvori sve ostale FAQ-ove
+                document.querySelectorAll('.faq-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                // Otvori trenutni ako nije bio aktivan
+                if (!isActive) {
+                    faqItem.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

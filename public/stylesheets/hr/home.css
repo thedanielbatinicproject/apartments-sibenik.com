@@ -8,7 +8,7 @@
   --day-bg-end: #e0f2fe;
   --day-card-bg: rgba(255, 255, 255, 0.85);
   --day-text: #0f172a;
-  --day-text-muted: #8f959c;
+  --day-text-muted: #a8afb8;
   
   /* Večernje boje (18-20h) */
   --evening-primary: #f59e0b;
@@ -18,7 +18,7 @@
   --evening-bg-end: #fed7aa;
   --evening-card-bg: rgba(255, 255, 255, 0.9);
   --evening-text: #1c1917;
-  --evening-text-muted: #484644;
+  --evening-text-muted: #635648;
   
   /* Noćne boje (20-6h) */
   --night-primary: #6366f1;
@@ -28,7 +28,7 @@
   --night-bg-end: #1e293b;
   --night-card-bg: rgba(30, 41, 59, 0.8);
   --night-text: #f8fafc;
-  --night-text-muted: #55585a;
+  --night-text-muted: #b9b5b5;
   
   /* Aktivne varijable (postavljene dinamički) */
   --primary-color: var(--day-primary);

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <%- include('../modules/head', { pageTitle: 'Studio apartman - Apartmani Šibenik', device: device }) %>
+    <link rel="stylesheet" href="/stylesheets/hr/home.css">
+    <style>
+        /* Poboljšanje kontrasta za studio apartment stranicu */
+        .hero-section .hero-title {
+            color: #ffffff;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 0, 0, 0.5);
+            font-weight: 900;
+        }
+        
+        .hero-section .hero-description {
+            color: #f8f9fa;
+            text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.4);
+            font-weight: 500;
+        }
+        
+        .hero-section .feature-item span {
+            color: #ffffff;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
+            font-weight: 600;
+        }
+        
+        .hero-section .explore-btn.primary {
+            background: rgba(14, 165, 233, 0.95);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .hero-section .explore-btn.secondary {
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            color: #ffffff;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .hero-section .explore-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* SPECIFIČAN OVERRIDE ZA REVIEW KARTICE - SAMO ZA OVU STRANICU */
+        body.apartman-s-vrtom .hero-visual .reviews-module .review-card {
+            background: rgba(30, 144, 255, 0.15) !important;
+            backdrop-filter: blur(8px) !important;
+            -webkit-backdrop-filter: blur(8px) !important;
+        }
+        
+        /* Dodatni override za sigurnost */
+        body.apartman-s-vrtom .review-card[data-review-id] {
+            background: rgba(30, 144, 255, 0.15) !important;
+            backdrop-filter: blur(8px) !important;
+            -webkit-backdrop-filter: blur(8px) !important;
+        }
+        
+        .hero-visual .reviews-module {
+            margin: 0 auto;
+            overflow-y: auto; /* Omogućavamo vertikalno skrolanje */
+            /* Skrivanje scroll bara */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* Internet Explorer 10+ */
+            /* Zadržavamo originalni glassmorphism design iz reviews.css */
+        }
+        
+        /* Skrivanje scroll bara za WebKit browsere (Chrome, Safari, Edge) */
+        .hero-visual .reviews-module::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* Optimizacija hero-visual kontejnera */
+        .hero-visual {
+            min-height: 500px;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        /* Responsive prilagodbe za hero-visual */
+        @media (max-width: 1024px) {
+            .hero-visual .reviews-module {
+                width: 85%;
+                height: 75%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero-visual .reviews-module {
+                width: 90%;
+                height: 80%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-visual .reviews-module {
+                width: 95%;
+                height: 85%;
+            }
+        }
+
+        .hero-image {
+            width: 80vw;
+            border-radius: 24px;
+            box-shadow: 0 4px 24px rgba(92, 85, 63, 0.22), 0 1.5px 8px rgba(0,0,0,0.10);
+            transition: transform 0.3s ease-in;
+        }
+        .hero-image:hover {
+            transform: scale(1.005);
+            transition: transform 0.3s ease-in;
+        }
+    </style>
+</head>
+<body class="studio-apartman">
+    <%- include('../modules/header', { lang: 'de', base: '/de/desktop' }) %>
+    
+    <main>
+        <!-- Hero sekcija -->
+        <section class="hero-section" style="background-image: url('/images/apartments/soba/main-day.jpg');">
+            <div class="hero-content">
+                <h1 class="hero-title">Soba Apartman <img src="/images/icons/apartment.png" alt="apartment" class="hearth-icon"></h1>
+                <p class="hero-description">Soba apartman, idealan za parove. Uživajte u ljepoti i sadržajima koje nudi Šibenik.</p>
+
+                <div class="hero-features">
+                    <div class="feature-item">
+                        <img src="/images/icons/unesco.png" alt="UNESCO" class="feature-icon">
+                        <span>10 min do UNESCO spomenika</span>
+                    </div>
+                    <div class="feature-item">
+                        <img src="/images/icons/beach.png" alt="Plaža" class="feature-icon">
+                        <span>25 min do plaže</span>
+                    </div>
+                    <div class="feature-item">
+                        <img src="/images/icons/parking.png" alt="Parking" class="feature-icon">
+                        <span>Besplatan parking</span>
+                    </div>
+                </div>
+
+                <div class="hero-actions">
+                    <button class="explore-btn primary" onclick="smoothScrollToSection('.reservation-section')">
+                        <span>Pošalji upit</span>
+                    </button>
+                    <button class="explore-btn secondary" onclick="smoothScrollToSection('.about-apartment')">
+                        <span>Saznaj više</span>
+                    </button>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <img src="/images/apartments/soba/main-day.jpg" alt="Studio Apartman - Noć" class="hero-image">
+            </div>
+        </section>
+
+        <!-- O apartmanu sekcija -->
+        <section class="about-apartment section-spacing">
+            <div class="container">
+                <div class="content-grid">
+                    <div class="text-content">
+                        <h2 class="section-title">O sobi</h2>
+                        <div class="text-block">
+                            <p><strong>Vaša soba srcu Šibenika</strong> - Ova udobna soba idealna je za dvije osobe i nudi sve što vam treba za opušten boravak – brz Wi-Fi internet, satelitski TV, klima uređaj i grijanje... </p>
+
+                            <p><strong>Praktično i ekonomično</strong> - Soba je opremljena hladnjakom, kuhalom za vodu i mini štednjakom na struju. Savršen smještaj za one koji traže smještaj koji nudi savršen omjer cijene i kvalitete.</p>
+
+                            <p><strong>Za bezbrižan boravak</strong> - Gosti imaju privatni WC, blok kuhinju i sve potrebne kuhinjske potrepštine.</p>
+
+                            <p><strong>Savršeno mjesto za jeftin odmor i istraživanje grada</strong> - Bilo da ste u Šibeniku zbog mora, kulture ili opuštanja, ova soba je vaša idealna polazišna točka. Rezervirajte svoj boravak i uživajte u svim prednostima koje nudi!</p>
+
+                        </div>
+                    </div>
+                    <div class="gallery-content">
+                        <div class="apartment-gallery">
+                            <%- include('../modules/gallery', { 
+                                images: [
+                                    { fullsize: '/galleries/apartments/soba/soba-1.jpg', thumbnail: '/galleries/apartments/soba/soba-1.jpg', alt: 'Soba apartman - Slika 1' },
+                                    { fullsize: '/galleries/apartments/soba/soba-2.jpg', thumbnail: '/galleries/apartments/soba/soba-2.jpg', alt: 'Soba apartman - Slika 2' },
+                                    { fullsize: '/galleries/apartments/soba/soba-3.jpg', thumbnail: '/galleries/apartments/soba/soba-3.jpg', alt: 'Soba apartman - Slika 3' },
+                                    { fullsize: '/galleries/apartments/soba/soba-4.jpg', thumbnail: '/galleries/apartments/soba/soba-4.jpg', alt: 'Soba apartman - Slika 4' },
+                                    { fullsize: '/galleries/apartments/soba/soba-5.jpg', thumbnail: '/galleries/apartments/soba/soba-5.jpg', alt: 'Soba apartman - Slika 5' },
+                                    { fullsize: '/galleries/apartments/soba/soba-6.jpg', thumbnail: '/galleries/apartments/soba/soba-6.jpg', alt: 'Soba apartman - Slika 6' },
+                                    { fullsize: '/galleries/apartments/soba/soba-7.jpg', thumbnail: '/galleries/apartments/soba/soba-7.jpg', alt: 'Soba apartman - Slika 7' }
+                                ] 
+                            }) %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kalendar i rezervacija sekcija -->
+        <section class="calendar-reservation-section section-spacing">
+            <div class="container">
+                <div class="calendar-header">
+                    <h2>Kalendar rezervacija</h2>
+                </div>
+                
+                <!-- Kalendar modul -->
+                <div class="calendar-wrapper">
+                    <%- include('../modules/calendar', { calendarData: calendar3 }) %>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rezervacija sekcija -->
+        <section class="reservation-section section-spacing">
+            <div class="container">
+                <div class="reservation-wrapper">
+                    <div class="reservation-header reservation-section-header">
+                        <h2 class="section-title">Rezervirajte svoj boravak</h2>
+                        <p>Provjerite dostupnost i rezervirajte svoj idealan smještaj u Šibeniku</p>
+                    </div>
+                    <div class="reservation-content">
+                        <%- include('../modules/reservation-form') %>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Theme Slider sekcija -->
+        <section class="theme-section">
+            <div class="container">
+                <div class="theme-controller">
+                    <h3 class="theme-title">Tema stranice</h3>
+                    <div class="theme-slider-container">
+                        <div class="theme-icon moon">
+                            <img src="/images/icons/moon.png" alt="Mjesec">
+                        </div>
+                        <div class="slider-wrapper">
+                            <input type="range" id="themeSlider" class="theme-slider" min="0" max="100" value="50">
+                            <div class="slider-track"></div>
+                            <div class="slider-thumb"></div>
+                        </div>
+                        <div class="theme-icon sun">
+                            <img src="/images/icons/sun.png" alt="Sunce">
+                        </div>
+                    </div>
+                    <p class="theme-description">Prilagodi svjetlinu stranice prema svojoj preferenciji</p>
+                    <div class="time-display">
+                        <p class="detected-time">Detektirano vrijeme: <span id="current-time">--:--:-- --</span></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <%- include('../modules/footer') %>
+    
+    <script src="/javascripts/hr/home.js"></script>
+    <script>
+        // Dinamičko mijenjanje pozadine ovisno o vremenu
+        function setHeroBackground() {
+            const hour = new Date().getHours();
+            const heroSection = document.querySelector('.hero-section');
+            
+            if (hour >= 20 || hour < 6) {
+                heroSection.style.backgroundImage = "url('/images/apartments/soba/main-night.jpg')";
+            } else {
+                heroSection.style.backgroundImage = "url('/images/apartments/soba/main-day.jpg')";
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <%- include('../modules/head', { pageTitle: 'Studio apartman - Apartmani Šibenik', device: device }) %>
+    <link rel="stylesheet" href="/stylesheets/hr/home.css">
+    <link rel="stylesheet" href="/stylesheets/index/reviews.css">
+    <style>
+        /* Poboljšanje kontrasta za studio apartment stranicu */
+        .hero-section .hero-title {
+            color: #ffffff;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 0, 0, 0.5);
+            font-weight: 900;
+        }
+        
+        .hero-section .hero-description {
+            color: #f8f9fa;
+            text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.4);
+            font-weight: 500;
+        }
+        
+        .hero-section .feature-item span {
+            color: #ffffff;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
+            font-weight: 600;
+        }
+        
+        .hero-section .explore-btn.primary {
+            background: rgba(14, 165, 233, 0.95);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .hero-section .explore-btn.secondary {
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            color: #ffffff;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .hero-section .explore-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* Optimizacija reviews modula u hero sekciji */
+        .hero-visual .reviews-module {
+            width: 90%;
+            height: 70%;
+        }
+        
+        /* SPECIFIČAN OVERRIDE ZA REVIEW KARTICE - SAMO ZA OVU STRANICU */
+        body.apartman-s-vrtom .hero-visual .reviews-module .review-card {
+            background: rgba(30, 144, 255, 0.15) !important;
+            backdrop-filter: blur(8px) !important;
+            -webkit-backdrop-filter: blur(8px) !important;
+        }
+        
+        /* Dodatni override za sigurnost */
+        body.apartman-s-vrtom .review-card[data-review-id] {
+            background: rgba(30, 144, 255, 0.15) !important;
+            backdrop-filter: blur(8px) !important;
+            -webkit-backdrop-filter: blur(8px) !important;
+        }
+        
+        .hero-visual .reviews-module {
+            margin: 0 auto;
+            overflow-y: auto; /* Omogućavamo vertikalno skrolanje */
+            /* Skrivanje scroll bara */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* Internet Explorer 10+ */
+            /* Zadržavamo originalni glassmorphism design iz reviews.css */
+        }
+        
+        /* Skrivanje scroll bara za WebKit browsere (Chrome, Safari, Edge) */
+        .hero-visual .reviews-module::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* Optimizacija hero-visual kontejnera */
+        .hero-visual {
+            min-height: 500px;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        /* Responsive prilagodbe za hero-visual */
+        @media (max-width: 1024px) {
+            .hero-visual .reviews-module {
+                width: 85%;
+                height: 75%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero-visual .reviews-module {
+                width: 90%;
+                height: 80%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-visual .reviews-module {
+                width: 95%;
+                height: 85%;
+            }
+        }
+    </style>
+</head>
+<body class="studio-apartman">
+    <%- include('../modules/header', { lang: 'de', base: '/de/desktop' }) %>
+    
+    <main>
+        <!-- Hero sekcija -->
+        <section class="hero-section" style="background-image: url('/images/apartments/studio/main-day.jpg');">
+            <div class="hero-content">
+                <h1 class="hero-title">Studio Apartman <img src="/images/icons/apartment.png" alt="apartment" class="hearth-icon"></h1>
+                <p class="hero-description">Studio apartman s besplatnim parkingom, idealan za parove. Uživajte u ljepoti i sadržajima koje nudi Šibenik.</p>
+
+                <div class="hero-features">
+                    <div class="feature-item">
+                        <img src="/images/icons/unesco.png" alt="UNESCO" class="feature-icon">
+                        <span>10 min do UNESCO spomenika</span>
+                    </div>
+                    <div class="feature-item">
+                        <img src="/images/icons/beach.png" alt="Plaža" class="feature-icon">
+                        <span>25 min do plaže</span>
+                    </div>
+                    <div class="feature-item">
+                        <img src="/images/icons/parking.png" alt="Parking" class="feature-icon">
+                        <span>Besplatan parking</span>
+                    </div>
+                </div>
+
+                <div class="hero-actions">
+                    <button class="explore-btn primary" onclick="smoothScrollToSection('.reservation-section')">
+                        <span>Pošalji upit</span>
+                    </button>
+                    <button class="explore-btn secondary" onclick="smoothScrollToSection('.about-apartment')">
+                        <span>Saznaj više</span>
+                    </button>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <%- include('../modules/reviews', { 
+                    unitId: '1',
+                    averageRating: reviewsData?.averageRating || 4.9,
+                    totalReviews: reviewsData?.totalReviews || 127,
+                    platforms: reviewsData?.platforms || {
+                        airbnb: { rating: 4.9, totalReviews: 67 },
+                        booking: { rating: 4.8, totalReviews: 60 }
+                    },
+                    reviews: reviewsData?.allReviews || [], // Koristimo sve recenzije za Load More funkcionalnost
+                    upvoteData: upvoteData || null
+                }) %>
+            </div>
+        </section>
+
+        <!-- O apartmanu sekcija -->
+        <section class="about-apartment section-spacing">
+            <div class="container">
+                <div class="content-grid">
+                    <div class="text-content">
+                        <h2 class="section-title">O apartmanu</h2>
+                        <div class="text-block">
+                            <p><strong>Vaš kutak udobnosti u srcu Šibenika</strong> - Studio apartman smješten je u samom centru grada, na samo nekoliko koraka od lokalne tržnice, autobusnog i željezničkog kolodvora. Ovdje ste u neposrednoj blizini svih gradskih sadržaja, a istovremeno uživate u miru obiteljske kuće.</p>
+                            
+                            <p><strong>Sve što vam treba za bezbrižan boravak</strong> - Apartman je moderno uređen, klimatiziran i opremljen Wi-Fi internetom. Ima udobni bračni krevet i jedan pomoćni ležaj, potpuno opremljenu kuhinju i prostranu kupaonicu. Na raspolaganju su vam perilica rublja, televizija, svježe posteljine, ručnici i svi osnovni sadržaji za ugodan boravak.</p>
+                            
+                            <p><strong>Praktičnost na dohvat ruke</strong> - Gostima je osiguran besplatan parking u blizini kuće. Sve što vam treba – od kuhinjskih potrepština do dječje opreme – već vas čeka u apartmanu ukoliko ste to zatražili.</p>
+                            
+                            <p><strong>Idealno za obitelji i putnike</strong> - Studio je prilagođen i obiteljima s malom djecom – na raspolaganju je dječji krevetić. Sigurnost je osigurana s protupožarnim aparatom i kutijom prve pomoći.</p>
+                            
+                            <p><strong>Savršena polazna točka za istraživanje</strong> - Bilo da ste u Šibeniku poslovno, turistički ili u potrazi za opuštanjem, ovaj studio apartman je idealan izbor. Uživajte u jutarnjoj kavi, istražujte gradske znamenitosti ili se opustite uz knjigu – sve je na dohvat ruke.</p>
+                        </div>
+                    </div>
+                    <div class="gallery-content">
+                        <div class="apartment-gallery">
+                            <%- include('../modules/gallery', { 
+                                images: [
+                                    { fullsize: '/galleries/apartments/studio/studio-1.jpg', thumbnail: '/galleries/apartments/studio/studio-1.jpg', alt: 'Studio apartman - Slika 1' },
+                                    { fullsize: '/galleries/apartments/studio/studio-2.jpg', thumbnail: '/galleries/apartments/studio/studio-2.jpg', alt: 'Studio apartman - Slika 2' },
+                                    { fullsize: '/galleries/apartments/studio/studio-3.jpg', thumbnail: '/galleries/apartments/studio/studio-3.jpg', alt: 'Studio apartman - Slika 3' },
+                                    { fullsize: '/galleries/apartments/studio/studio-4.jpg', thumbnail: '/galleries/apartments/studio/studio-4.jpg', alt: 'Studio apartman - Slika 4' },
+                                    { fullsize: '/galleries/apartments/studio/studio-5.jpg', thumbnail: '/galleries/apartments/studio/studio-5.jpg', alt: 'Studio apartman - Slika 5' },
+                                    { fullsize: '/galleries/apartments/studio/studio-6.jpg', thumbnail: '/galleries/apartments/studio/studio-6.jpg', alt: 'Studio apartman - Slika 6' },
+                                    { fullsize: '/galleries/apartments/studio/studio-7.jpg', thumbnail: '/galleries/apartments/studio/studio-7.jpg', alt: 'Studio apartman - Slika 7' },
+                                    { fullsize: '/galleries/apartments/studio/studio-8.jpg', thumbnail: '/galleries/apartments/studio/studio-8.jpg', alt: 'Studio apartman - Slika 8' },
+                                    { fullsize: '/galleries/apartments/studio/studio-9.jpg', thumbnail: '/galleries/apartments/studio/studio-9.jpg', alt: 'Studio apartman - Slika 9' },
+                                    { fullsize: '/galleries/apartments/studio/studio-10.jpg', thumbnail: '/galleries/apartments/studio/studio-10.jpg', alt: 'Studio apartman - Slika 10' },
+                                    { fullsize: '/galleries/apartments/studio/studio-11.jpg', thumbnail: '/galleries/apartments/studio/studio-11.jpg', alt: 'Studio apartman - Slika 11' },
+                                    { fullsize: '/galleries/apartments/studio/studio-12.jpg', thumbnail: '/galleries/apartments/studio/studio-12.jpg', alt: 'Studio apartman - Slika 12' },
+                                    { fullsize: '/galleries/apartments/studio/studio-13.jpg', thumbnail: '/galleries/apartments/studio/studio-13.jpg', alt: 'Studio apartman - Slika 13' }
+                                ] 
+                            }) %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kalendar i rezervacija sekcija -->
+        <section class="calendar-reservation-section section-spacing">
+            <div class="container">
+                <div class="calendar-header">
+                    <h2>Kalendar rezervacija</h2>
+                </div>
+                
+                <!-- Kalendar modul -->
+                <div class="calendar-wrapper">
+                    <%- include('../modules/calendar', { calendarData: calendar1 }) %>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rezervacija sekcija -->
+        <section class="reservation-section section-spacing">
+            <div class="container">
+                <div class="reservation-wrapper">
+                    <div class="reservation-header reservation-section-header">
+                        <h2 class="section-title">Rezervirajte svoj boravak</h2>
+                        <p>Provjerite dostupnost i rezervirajte svoj idealan smještaj u Šibeniku</p>
+                    </div>
+                    <div class="reservation-content">
+                        <%- include('../modules/reservation-form') %>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Theme Slider sekcija -->
+        <section class="theme-section">
+            <div class="container">
+                <div class="theme-controller">
+                    <h3 class="theme-title">Tema stranice</h3>
+                    <div class="theme-slider-container">
+                        <div class="theme-icon moon">
+                            <img src="/images/icons/moon.png" alt="Mjesec">
+                        </div>
+                        <div class="slider-wrapper">
+                            <input type="range" id="themeSlider" class="theme-slider" min="0" max="100" value="50">
+                            <div class="slider-track"></div>
+                            <div class="slider-thumb"></div>
+                        </div>
+                        <div class="theme-icon sun">
+                            <img src="/images/icons/sun.png" alt="Sunce">
+                        </div>
+                    </div>
+                    <p class="theme-description">Prilagodi svjetlinu stranice prema svojoj preferenciji</p>
+                    <div class="time-display">
+                        <p class="detected-time">Detektirano vrijeme: <span id="current-time">--:--:-- --</span></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <%- include('../modules/footer') %>
+    
+    <script src="/javascripts/hr/home.js"></script>
+    <script src="/javascripts/reviews.js"></script>
+    <script>
+        // Dinamičko mijenjanje pozadine ovisno o vremenu
+        function setHeroBackground() {
+            const hour = new Date().getHours();
+            const heroSection = document.querySelector('.hero-section');
+            
+            if (hour >= 20 || hour < 6) {
+                heroSection.style.backgroundImage = "url('/images/apartments/studio/main-night.jpg')";
+            } else {
+                heroSection.style.backgroundImage = "url('/images/apartments/studio/main-day.jpg')";
+            }
+        }
+        
+        // Initialize reviews module for studio apartments
+        document.addEventListener('DOMContentLoaded', function() {
+            setHeroBackground();
+
+            // Auto-select "Studio Apartment" on this page
+            const apartmentSelect = document.getElementById('apartment');
+            if (apartmentSelect) {
+                apartmentSelect.value = '2'; // Studio apartments
+            }
+            
+            console.log('Reviews module initialized for studio apartments');
+        });
+    </script>
+</body>
+</html>

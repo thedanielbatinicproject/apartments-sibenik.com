@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../modules/head', { pageTitle: 'Apartman s vrtom - Apartmani Šibenik', device: device }) %>
+    <link rel="stylesheet" href="/stylesheets/hr/home.css">
+    <link rel="stylesheet" href="/stylesheets/index/reviews.css">
+
+</head>
+<body class="apartman-s-vrtom">
+    <%- include('../modules/header', { lang: 'en', base: '/en/desktop' }) %>
+    
+    <main>
+        <!-- Hero sekcija -->
+        <section class="hero-section" style="background-image: url('/images/apartments/apartman-vrt/main-day.jpg');">
+            <div class="hero-content">
+                <h1 class="hero-title" style="color: #ffffff; text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.6); font-weight: 900;">Apartman s vrtom <img src="/images/icons/garden.png" alt="vrt" class="hearth-icon"></h1>
+                <p class="hero-description">Prostrani luksuzni apartman s privatnim dvorištem i roštiljem, idealan za obitelji do 4 osobe. Uživajte u miru prirode uz sve moderne sadržaje u srcu Šibenika.</p>
+
+                <div class="hero-features">
+                    <div class="feature-item">
+                        <img src="/images/icons/unesco.png" alt="UNESCO" class="feature-icon">
+                        <span>10 min do UNESCO spomenika</span>
+                    </div>
+                    <div class="feature-item">
+                        <img src="/images/icons/beach.png" alt="Plaža" class="feature-icon">
+                        <span>25 min do plaže</span>
+                    </div>
+                    <div class="feature-item">
+                        <img src="/images/icons/parking.png" alt="Parking" class="feature-icon">
+                        <span>Besplatan parking</span>
+                    </div>
+                </div>
+
+                <div class="hero-actions">
+                    <button class="explore-btn primary" onclick="smoothScrollToSection('.reservation-section')">
+                        <span>Pošalji upit</span>
+                    </button>
+                    <button class="explore-btn secondary" onclick="smoothScrollToSection('.about-apartment')">
+                        <span>Saznaj više</span>
+                    </button>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <%- include('../modules/reviews', { 
+                    unitId: '1',
+                    averageRating: reviewsData?.averageRating || 4.9,
+                    totalReviews: reviewsData?.totalReviews || 127,
+                    platforms: reviewsData?.platforms || {
+                        airbnb: { rating: 4.9, totalReviews: 67 },
+                        booking: { rating: 4.8, totalReviews: 60 }
+                    },
+                    reviews: reviewsData?.allReviews || [], // Koristimo sve recenzije za Load More funkcionalnost
+                    upvoteData: upvoteData || null
+                }) %>
+            </div>
+        </section>
+
+        <!-- O apartmanu sekcija -->
+        <section class="about-apartment section-spacing">
+            <div class="container">
+                <div class="content-grid">
+                    <div class="text-content">
+                        <h2 class="section-title">O apartmanu</h2>
+                        <div class="text-block">
+                            <p><strong>Vaš oaza mira u srcu Šibenika</strong> - Prekrasno uređen, klimatizirani apartman s udobnim ležajevima, potpuno opremljenom kuhinjom, prostranom kupaonicom, dodatnom sobom i spektakularnim dvorištem prepunim cvijeća i s kornjačama. Ovdje možete početi dan s jutarnjom kavom, uživati u ručku na svježem zraku ili pak popiti čašu vina pod zvjezdanim nebom uz večeru napravljenu u vanjskom roštilju.</p>
+                            
+                            <p><strong>Sve na vašem raspolaganju</strong> - Kao naši gosti, imate ekskluzivan pristup cijelom apartmanu i vrtu. Za boravke duže od tjedan dana, moguće je ostvariti popust na smještaj - iskoristite savršenu priliku da istražite bogatu kulturnu baštinu grada!</p>
+                            
+                            <p><strong>Uvijek smo tu kad trebate savjet</strong> - Vaši domaćini žive na katu iznad i dostupni su u svakom trenutku za savjete o najboljem načinu razgledanja grada, preporuke restorana, skrivenih plaža ili bilo što drugo što može učiniti vaš boravak nezaboravnim.</p>
+                            
+                            <p><strong>Savršen spoj udobnosti i praktičnosti</strong> - Apartman je opremljen svim potrebnim sadržajima za potpuno opuštanje: besplatno parkiranje u blizini smještaja, perilica rublja, besplatna televizija i Wi-Fi, aparat za kavu za savršeno jutarnje buđenje, sušilo za kosu, šampon te prekrasno uređen vrt gdje možete uživati u tišini daleko od gradske vreve.</p>
+                            
+                            <p><strong>Idealna lokacija za istraživanje</strong> - Smješteni u mirnom dijelu Šibenika, apartman je savršena polazna točka za otkrivanje UNESCO-ove katedrale sv. Jakova, šetnju kroz staru gradsku jezgru, ili pak planiranje izleta u obližnje nacionalne parkove Krka i Kornati.</p>
+                        </div>
+                    </div>
+                    <div class="gallery-content">
+                        <div class="apartment-gallery">
+                            <%- include('../modules/gallery', { 
+                                images: [
+                                    { fullsize: '/galleries/apartments/apartman-vrt/veliki-1.jpg', thumbnail: '/galleries/apartments/apartman-vrt/veliki-1.jpg', alt: 'Apartman s vrtom - Slika 1' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/veliki-2.jpg', thumbnail: '/galleries/apartments/apartman-vrt/veliki-2.jpg', alt: 'Apartman s vrtom - Slika 2' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/veliki-3.jpg', thumbnail: '/galleries/apartments/apartman-vrt/veliki-3.jpg', alt: 'Apartman s vrtom - Slika 3' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/veliki-4.jpg', thumbnail: '/galleries/apartments/apartman-vrt/veliki-4.jpg', alt: 'Apartman s vrtom - Slika 4' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/veliki-5.jpg', thumbnail: '/galleries/apartments/apartman-vrt/veliki-5.jpg', alt: 'Apartman s vrtom - Slika 5' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/veliki-6.jpg', thumbnail: '/galleries/apartments/apartman-vrt/veliki-6.jpg', alt: 'Apartman s vrtom - Slika 6' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/veliki-7.jpg', thumbnail: '/galleries/apartments/apartman-vrt/veliki-7.jpg', alt: 'Apartman s vrtom - Slika 7' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/veliki-8.jpg', thumbnail: '/galleries/apartments/apartman-vrt/veliki-8.jpg', alt: 'Apartman s vrtom - Slika 8' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/veliki-9.jpg', thumbnail: '/galleries/apartments/apartman-vrt/veliki-9.jpg', alt: 'Apartman s vrtom - Slika 9' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/veliki-10.jpg', thumbnail: '/galleries/apartments/apartman-vrt/veliki-10.jpg', alt: 'Apartman s vrtom - Slika 10' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/veliki-11.jpg', thumbnail: '/galleries/apartments/apartman-vrt/veliki-11.jpg', alt: 'Apartman s vrtom - Slika 11' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/veliki-12.jpg', thumbnail: '/galleries/apartments/apartman-vrt/veliki-12.jpg', alt: 'Apartman s vrtom - Slika 12' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/veliki-13.jpg', thumbnail: '/galleries/apartments/apartman-vrt/veliki-13.jpg', alt: 'Apartman s vrtom - Slika 13' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/veliki-14.jpg', thumbnail: '/galleries/apartments/apartman-vrt/veliki-14.jpg', alt: 'Apartman s vrtom - Slika 14' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/veliki-15.jpg', thumbnail: '/galleries/apartments/apartman-vrt/veliki-15.jpg', alt: 'Apartman s vrtom - Slika 15' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/veliki-16.jpg', thumbnail: '/galleries/apartments/apartman-vrt/veliki-16.jpg', alt: 'Apartman s vrtom - Slika 16' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/veliki-17.jpg', thumbnail: '/galleries/apartments/apartman-vrt/veliki-17.jpg', alt: 'Apartman s vrtom - Slika 17' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/veliki-18.jpg', thumbnail: '/galleries/apartments/apartman-vrt/veliki-18.jpg', alt: 'Apartman s vrtom - Slika 18' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/veliki-19.jpg', thumbnail: '/galleries/apartments/apartman-vrt/veliki-19.jpg', alt: 'Apartman s vrtom - Slika 19' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/veliki-20.jpg', thumbnail: '/galleries/apartments/apartman-vrt/veliki-20.jpg', alt: 'Apartman s vrtom - Slika 20' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/veliki-21.jpg', thumbnail: '/galleries/apartments/apartman-vrt/veliki-21.jpg', alt: 'Apartman s vrtom - Slika 21' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/veliki-22.jpg', thumbnail: '/galleries/apartments/apartman-vrt/veliki-22.jpg', alt: 'Apartman s vrtom - Slika 22' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/veliki-23.jpg', thumbnail: '/galleries/apartments/apartman-vrt/veliki-23.jpg', alt: 'Apartman s vrtom - Slika 23' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/veliki-24.jpg', thumbnail: '/galleries/apartments/apartman-vrt/veliki-24.jpg', alt: 'Apartman s vrtom - Slika 24' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/veliki-25.jpg', thumbnail: '/galleries/apartments/apartman-vrt/veliki-25.jpg', alt: 'Apartman s vrtom - Slika 25' },
+                                    { fullsize: '/galleries/apartments/apartman-vrt/veliki-26.jpg', thumbnail: '/galleries/apartments/apartman-vrt/veliki-26.jpg', alt: 'Apartman s vrtom - Slika 26' }
+                                ] 
+                            }) %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kalendar i rezervacija sekcija -->
+        <section class="calendar-reservation-section section-spacing">
+            <div class="container">
+                <div class="calendar-header">
+                    <h2>Kalendar rezervacija</h2>
+                </div>
+                
+                <!-- Kalendar modul -->
+                <div class="calendar-wrapper">
+                    <%- include('../modules/calendar', { 
+                        unitId: '1',
+                        calendarData: calendar2 || {}
+                    }) %>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rezervacija sekcija -->
+        <section class="reservation-section section-spacing">
+            <div class="container">
+                <div class="reservation-wrapper">
+                    <div class="reservation-header reservation-section-header">
+                        <h2 class="section-title">Rezervirajte svoj boravak</h2>
+                        <p>Provjerite dostupnost i rezervirajte svoj idealan smještaj u Šibeniku</p>
+                    </div>
+                    <div class="reservation-content">
+                        <%- include('../modules/reservation-form') %>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Theme Slider sekcija -->
+        <section class="theme-section">
+            <div class="container">
+                <div class="theme-controller">
+                    <h3 class="theme-title">Tema stranice</h3>
+                    <div class="theme-slider-container">
+                        <div class="theme-icon moon">
+                            <img src="/images/icons/moon.png" alt="Mjesec">
+                        </div>
+                        <div class="slider-wrapper">
+                            <input type="range" id="themeSlider" class="theme-slider" min="0" max="100" value="50">
+                            <div class="slider-track"></div>
+                            <div class="slider-thumb"></div>
+                        </div>
+                        <div class="theme-icon sun">
+                            <img src="/images/icons/sun.png" alt="Sunce">
+                        </div>
+                    </div>
+                    <p class="theme-description">Prilagodi svjetlinu stranice prema svojoj preferenciji</p>
+                    <div class="time-display">
+                        <p class="detected-time">Detektirano vrijeme: <span id="current-time">--:--:-- --</span></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <%- include('../modules/footer') %>
+    
+    <script src="/javascripts/hr/home.js"></script>
+    <script src="/javascripts/reviews.js"></script>
+    <script>
+        // Dinamičko mijenjanje pozadine ovisno o vremenu
+        function setHeroBackground() {
+            const hour = new Date().getHours();
+            const heroSection = document.querySelector('.hero-section');
+            
+            if (hour >= 20 || hour < 6) {
+                heroSection.style.backgroundImage = "url('/images/apartments/apartman-vrt/main-night.jpg')";
+            } else {
+                heroSection.style.backgroundImage = "url('/images/apartments/apartman-vrt/main-day.jpg')";
+            }
+        }
+        
+        // Initialize reviews module for apartman-s-vrtom
+        document.addEventListener('DOMContentLoaded', function() {
+            setHeroBackground();
+            
+            // Auto-select "Apartment with Garden" on this page
+            const apartmentSelect = document.getElementById('apartment');
+            if (apartmentSelect) {
+                apartmentSelect.value = '1'; // Apartment with Garden
+            }
+            
+            console.log('Reviews module initialized for apartman-s-vrtom');
+        });
+    </script>
+</body>
+</html>
