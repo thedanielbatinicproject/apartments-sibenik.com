@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%- include('../modules/head', { pageTitle: 'Studio apartman - Apartmani Šibenik', device: device }) %>
+    <%- include('../modules/head', { pageTitle: 'Room apartment - Apartmani Šibenik', device: device }) %>
     <link rel="stylesheet" href="/stylesheets/hr/home.css">
     <style>
         /* Poboljšanje kontrasta za studio apartment stranicu */
@@ -120,35 +120,35 @@
         <!-- Hero sekcija -->
         <section class="hero-section" style="background-image: url('/images/apartments/soba/main-day.jpg');">
             <div class="hero-content">
-                <h1 class="hero-title">Soba Apartman <img src="/images/icons/apartment.png" alt="apartment" class="hearth-icon"></h1>
-                <p class="hero-description">Soba apartman, idealan za parove. Uživajte u ljepoti i sadržajima koje nudi Šibenik.</p>
+                <h1 class="hero-title">Room Apartment <img src="/images/icons/apartment.png" alt="apartment" class="hearth-icon"></h1>
+                <p class="hero-description">Room apartment, ideal for couples. Enjoy the beauty and amenities that Šibenik has to offer.</p>
 
                 <div class="hero-features">
                     <div class="feature-item">
                         <img src="/images/icons/unesco.png" alt="UNESCO" class="feature-icon">
-                        <span>10 min do UNESCO spomenika</span>
+                        <span>10 min to UNESCO monument</span>
                     </div>
                     <div class="feature-item">
-                        <img src="/images/icons/beach.png" alt="Plaža" class="feature-icon">
-                        <span>25 min do plaže</span>
+                        <img src="/images/icons/beach.png" alt="Beach" class="feature-icon">
+                        <span>25 min to beach</span>
                     </div>
                     <div class="feature-item">
                         <img src="/images/icons/parking.png" alt="Parking" class="feature-icon">
-                        <span>Besplatan parking</span>
+                        <span>Free parking</span>
                     </div>
                 </div>
 
                 <div class="hero-actions">
                     <button class="explore-btn primary" onclick="smoothScrollToSection('.reservation-section')">
-                        <span>Pošalji upit</span>
+                        <span>Send inquiry</span>
                     </button>
                     <button class="explore-btn secondary" onclick="smoothScrollToSection('.about-apartment')">
-                        <span>Saznaj više</span>
+                        <span>Learn more</span>
                     </button>
                 </div>
             </div>
             <div class="hero-visual">
-                <img src="/images/apartments/soba/main-day.jpg" alt="Studio Apartman - Noć" class="hero-image">
+                <img src="/images/apartments/soba/main-day.jpg" alt="Room Apartment - Day" class="hero-image">
             </div>
         </section>
 
@@ -157,15 +157,15 @@
             <div class="container">
                 <div class="content-grid">
                     <div class="text-content">
-                        <h2 class="section-title">O sobi</h2>
+                        <h2 class="section-title">About Room</h2>
                         <div class="text-block">
-                            <p><strong>Vaša soba srcu Šibenika</strong> - Ova udobna soba idealna je za dvije osobe i nudi sve što vam treba za opušten boravak – brz Wi-Fi internet, satelitski TV, klima uređaj i grijanje... </p>
+                            <p><strong>Your room in the heart of Šibenik</strong> - This comfortable room is ideal for two people and offers everything you need for a relaxing stay – fast Wi-Fi internet, satellite TV, air conditioning, and heating...</p>
 
-                            <p><strong>Praktično i ekonomično</strong> - Soba je opremljena hladnjakom, kuhalom za vodu i mini štednjakom na struju. Savršen smještaj za one koji traže smještaj koji nudi savršen omjer cijene i kvalitete.</p>
+                            <p><strong>Practical and economical</strong> - The room is equipped with a refrigerator, kettle, and electric hot plate. The perfect accommodation for those looking for a place that offers the perfect balance of price and quality.</p>
 
-                            <p><strong>Za bezbrižan boravak</strong> - Gosti imaju privatni WC, blok kuhinju i sve potrebne kuhinjske potrepštine.</p>
+                            <p><strong>For a worry-free stay</strong> - Guests have a private bathroom, kitchenette, and all necessary kitchen utensils.</p>
 
-                            <p><strong>Savršeno mjesto za jeftin odmor i istraživanje grada</strong> - Bilo da ste u Šibeniku zbog mora, kulture ili opuštanja, ova soba je vaša idealna polazišna točka. Rezervirajte svoj boravak i uživajte u svim prednostima koje nudi!</p>
+                            <p><strong>The perfect place for a budget holiday and exploring the city</strong> - Whether you are in Šibenik for the sea, culture, or relaxation, this room is your ideal starting point. Book your stay and enjoy all the benefits it offers!</p>
 
                         </div>
                     </div>
@@ -192,7 +192,7 @@
         <section class="calendar-reservation-section section-spacing">
             <div class="container">
                 <div class="calendar-header">
-                    <h2>Kalendar rezervacija</h2>
+                    <h2>Book calendar</h2>
                 </div>
                 
                 <!-- Kalendar modul -->
@@ -207,8 +207,8 @@
             <div class="container">
                 <div class="reservation-wrapper">
                     <div class="reservation-header reservation-section-header">
-                        <h2 class="section-title">Rezervirajte svoj boravak</h2>
-                        <p>Provjerite dostupnost i rezervirajte svoj idealan smještaj u Šibeniku</p>
+                        <h2 class="section-title">Book Your Stay</h2>
+                        <p>Check availability and book your ideal accommodation in Šibenik</p>
                     </div>
                     <div class="reservation-content">
                         <%- include('../modules/reservation-form') %>
@@ -221,10 +221,10 @@
         <section class="theme-section">
             <div class="container">
                 <div class="theme-controller">
-                    <h3 class="theme-title">Tema stranice</h3>
+                    <h3 class="theme-title">Color theme</h3>
                     <div class="theme-slider-container">
                         <div class="theme-icon moon">
-                            <img src="/images/icons/moon.png" alt="Mjesec">
+                            <img src="/images/icons/moon.png" alt="Moon">
                         </div>
                         <div class="slider-wrapper">
                             <input type="range" id="themeSlider" class="theme-slider" min="0" max="100" value="50">
@@ -232,12 +232,12 @@
                             <div class="slider-thumb"></div>
                         </div>
                         <div class="theme-icon sun">
-                            <img src="/images/icons/sun.png" alt="Sunce">
+                            <img src="/images/icons/sun.png" alt="Sun">
                         </div>
                     </div>
-                    <p class="theme-description">Prilagodi svjetlinu stranice prema svojoj preferenciji</p>
+                    <p class="theme-description">Adjust the page brightness according to your preference</p>
                     <div class="time-display">
-                        <p class="detected-time">Detektirano vrijeme: <span id="current-time">--:--:-- --</span></p>
+                        <p class="detected-time">Detected time: <span id="current-time">--:--:-- --</span></p>
                     </div>
                 </div>
             </div>

@@ -8,7 +8,7 @@
   --day-bg-end: #e0f2fe;
   --day-card-bg: rgba(255, 255, 255, 0.85);
   --day-text: #0f172a;
-  --day-text-muted: #a8afb8;
+  --day-text-muted: #383c41;
   
   /* Večernje boje (18-20h) */
   --evening-primary: #f59e0b;
@@ -18,7 +18,7 @@
   --evening-bg-end: #fed7aa;
   --evening-card-bg: rgba(255, 255, 255, 0.9);
   --evening-text: #1c1917;
-  --evening-text-muted: #635648;
+  --evening-text-muted: #2a2016;
   
   /* Noćne boje (20-6h) */
   --night-primary: #6366f1;

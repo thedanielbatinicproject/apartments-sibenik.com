@@ -5,7 +5,7 @@
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(16, 42, 82, 0.85);
+  background: rgba(16, 42, 82, 0.8);
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
@@ -502,5 +502,23 @@
 
 /* Body padding for fixed header */
 body {
-  padding-top: 70px; /* Prilagođeno na stvarnu visinu header-a */
+  padding-top: 50px; /* Prilagođeno na stvarnu visinu header-a */
+}
+
+@media (max-width: 768px) {
+  body {
+    padding-top: 60px; /* Prilagođeno na stvarnu visinu header-a */
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    padding-top: 60px; /* Prilagođeno na stvarnu visinu header-a */
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding-top: 75px; /* Prilagođeno na stvarnu visinu header-a */
+  }
 }

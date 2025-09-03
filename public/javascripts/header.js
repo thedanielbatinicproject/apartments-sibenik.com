@@ -129,11 +129,11 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // Add scroll effect - adjust header opacity based on scroll
       if (currentScrollY > 50) {
-        header.style.background = 'rgba(13, 71, 161, 0.25)';
-        header.style.backdropFilter = 'blur(25px)';
+        header.style.background = 'rgba(16, 42, 82, 0.9)';
+        header.style.backdropFilter = 'blur(30px)';
       } else {
-        header.style.background = 'rgba(13, 71, 161, 0.15)';
-        header.style.backdropFilter = 'blur(20px)';
+        header.style.background = 'rgba(16, 42, 82, 0.8)';
+        header.style.backdropFilter = 'blur(25px)';
       }
       
       lastScrollY = currentScrollY;

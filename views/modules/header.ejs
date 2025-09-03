@@ -1,5 +1,45 @@
 <link rel="stylesheet" href="/stylesheets/index/header.css">
 
+<%
+// Definiramo nazive menija za različite jezike
+const menuTranslations = {
+  hr: {
+    apartmanSVrtom: 'Apartman s vrtom',
+    studioApartman: 'Studio apartman',
+    soba: 'Soba',
+    oSibeniku: 'O Šibeniku',
+    kontakt: 'Kontakt'
+  },
+  de: {
+    apartmanSVrtom: 'Apartment mit Garten',
+    studioApartman: 'Studio Apartment',
+    soba: 'Zimmer',
+    oSibeniku: 'Über Šibenik',
+    kontakt: 'Kontakt'
+  },
+  en: {
+    apartmanSVrtom: 'Apartment with Garden',
+    studioApartman: 'Studio Apartment',
+    soba: 'Room',
+    oSibeniku: 'About Šibenik',
+    kontakt: 'Contact'
+  }
+};
+
+// Određujemo trenutni jezik na osnovu 'lang' parametra ili 'base' URL-a
+let currentLang = 'hr'; // default
+if (typeof lang !== 'undefined') {
+  currentLang = lang;
+} else if (typeof base !== 'undefined' && base) {
+  if (base.includes('/de/')) currentLang = 'de';
+  else if (base.includes('/en/')) currentLang = 'en';
+  else currentLang = 'hr';
+}
+
+// Uzimamo odgovarajuće prijevode
+const menu = menuTranslations[currentLang] || menuTranslations.hr;
+%>
+
 <header class="main-header">
   <div class="header-container">
     <!-- Logo and Title -->
@@ -15,11 +55,11 @@
     <!-- Desktop Navigation -->
     <nav class="desktop-nav">
       <ul class="nav-menu">
-        <li><a href="<%= (typeof base !== 'undefined' ? base : '') + '/apartman-s-vrtom' %>" class="nav-link">Apartman s vrtom</a></li>
-        <li><a href="<%= (typeof base !== 'undefined' ? base : '') + '/studio-apartman' %>" class="nav-link">Studio apartman</a></li>
-        <li><a href="<%= (typeof base !== 'undefined' ? base : '') + '/soba' %>" class="nav-link">Soba</a></li>
-        <li><a href="<%= (typeof base !== 'undefined' ? base : '') + '/o-sibeniku' %>" class="nav-link">O Šibeniku</a></li>
-        <li><a href="<%= (typeof base !== 'undefined' ? base : '') + '/kontakt' %>" class="nav-link contact-btn">Kontakt</a></li>
+        <li><a href="<%= (typeof base !== 'undefined' ? base : '') + '/apartman-s-vrtom' %>" class="nav-link"><%= menu.apartmanSVrtom %></a></li>
+        <li><a href="<%= (typeof base !== 'undefined' ? base : '') + '/studio-apartman' %>" class="nav-link"><%= menu.studioApartman %></a></li>
+        <li><a href="<%= (typeof base !== 'undefined' ? base : '') + '/soba' %>" class="nav-link"><%= menu.soba %></a></li>
+        <li><a href="<%= (typeof base !== 'undefined' ? base : '') + '/o-sibeniku' %>" class="nav-link"><%= menu.oSibeniku %></a></li>
+        <li><a href="<%= (typeof base !== 'undefined' ? base : '') + '/kontakt' %>" class="nav-link contact-btn"><%= menu.kontakt %></a></li>
       </ul>
     </nav>
 
@@ -35,11 +75,11 @@
   <div class="mobile-menu-overlay" id="mobileMenuOverlay">
     <div class="mobile-menu-content">
       <ul class="mobile-nav-menu">
-        <li><a href="<%= (typeof base !== 'undefined' ? base : '') + '/apartman-s-vrtom' %>" class="mobile-nav-link">Apartman s vrtom</a></li>
-        <li><a href="<%= (typeof base !== 'undefined' ? base : '') + '/studio-apartman' %>" class="mobile-nav-link">Studio apartman</a></li>
-        <li><a href="<%= (typeof base !== 'undefined' ? base : '') + '/soba' %>" class="mobile-nav-link">Soba</a></li>
-        <li><a href="<%= (typeof base !== 'undefined' ? base : '') + '/o-sibeniku' %>" class="mobile-nav-link">O Šibeniku</a></li>
-        <li><a href="<%= (typeof base !== 'undefined' ? base : '') + '/kontakt' %>" class="mobile-nav-link mobile-contact-btn">Kontakt</a></li>
+        <li><a href="<%= (typeof base !== 'undefined' ? base : '') + '/apartman-s-vrtom' %>" class="mobile-nav-link"><%= menu.apartmanSVrtom %></a></li>
+        <li><a href="<%= (typeof base !== 'undefined' ? base : '') + '/studio-apartman' %>" class="mobile-nav-link"><%= menu.studioApartman %></a></li>
+        <li><a href="<%= (typeof base !== 'undefined' ? base : '') + '/soba' %>" class="mobile-nav-link"><%= menu.soba %></a></li>
+        <li><a href="<%= (typeof base !== 'undefined' ? base : '') + '/o-sibeniku' %>" class="mobile-nav-link"><%= menu.oSibeniku %></a></li>
+        <li><a href="<%= (typeof base !== 'undefined' ? base : '') + '/kontakt' %>" class="mobile-nav-link mobile-contact-btn"><%= menu.kontakt %></a></li>
       </ul>
       <div class="mobile-menu-close" id="mobileMenuClose">
         <span>&times;</span>

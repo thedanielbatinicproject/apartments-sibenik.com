@@ -75,8 +75,6 @@ class HomePageManager {
                 forbiddenRadius = 2; // POVEĆANO - manji desktop ekrani
             }
             
-            console.log(`Veličina kontajnera: ${containerWidth}px, forbidden radius: ${forbiddenRadius}`);
-            
             // Provjeri veličinu ekrana za broj kartica
             const isSmallScreen = containerWidth < 1200;
             
@@ -151,9 +149,6 @@ class HomePageManager {
             
             // Kombinuj nazad
             const shuffledPositions = [...highPriorityPositions, ...lowPriorityPositions];
-            
-            console.log(`Dostupno ${shuffledPositions.length} pozicija za ${floatingCards.length} kartica (isSmallScreen: ${isSmallScreen})`);
-            console.log(`Forbidden radius: ${forbiddenRadius}, Container: ${containerWidth}x${containerHeight}`);
             // Funkcija za provjeru kolizije između dvije kartice
             const checkCollision = (pos1, pos2, cardWidth = 180, cardHeight = 60) => {
                 const buffer = 40; // POVEĆAN BUFFER za sprečavanje preklapanja
@@ -267,9 +262,6 @@ class HomePageManager {
                     
                     const leftPercent = (validPosition.x / containerWidth) * 100;
                     const topPercent = (validPosition.y / containerHeight) * 100;
-                    
-                    console.log(`🎉 Kartica ${index} postavljena na (${validPosition.col},${validPosition.row}) = ${leftPercent.toFixed(1)}%, ${topPercent.toFixed(1)}%`);
-                    
                     // POSTAVKE POZICIJE - ključno sa !important!
                     card.style.setProperty('position', 'absolute', 'important');
                     card.style.setProperty('left', `${leftPercent}%`, 'important');
