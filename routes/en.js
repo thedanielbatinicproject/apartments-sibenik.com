@@ -35,8 +35,7 @@ router.get('/desktop/apartman-s-vrtom', async (req, res) => {
         "error-title": "Error fetching data",
         "error-message": err.message || "Failed to fetch data."
       },
-      validBackPage: req.session.validBackPage,
-      isAuthenticated: authManager.isUserAuthenticated(req) });
+      validBackPage: req.session.validBackPage});
   }
 });
 
@@ -64,8 +63,7 @@ router.get('/desktop/studio-apartman', async (req, res) => {
         "error-title": "Error fetching data",
         "error-message": err.message || "Failed to fetch data."
       },
-      validBackPage: req.session.validBackPage,
-      isAuthenticated: authManager.isUserAuthenticated(req) });
+      validBackPage: req.session.validBackPage});
   }
 });
 
@@ -84,8 +82,7 @@ router.get('/desktop/soba', async (req, res) => {
         "error-title": "Error fetching data",
         "error-message": err.message || "Failed to fetch data."
       },
-      validBackPage: req.session.validBackPage,
-      isAuthenticated: authManager.isUserAuthenticated(req) });
+      validBackPage: req.session.validBackPage});
   }
 });
 
@@ -142,8 +139,7 @@ router.get('/mobile', async (req, res) => {
         "error-title": "Error fetching calendar",
         "error-message": err.message || "Failed to fetch calendar."
       },
-      validBackPage: req.session.validBackPage,
-      isAuthenticated: authManager.isUserAuthenticated(req) });
+      validBackPage: req.session.validBackPage});
   }
 });
 
@@ -174,8 +170,7 @@ router.get('/mobile/apartman-s-vrtom', async (req, res) => {
         "error-title": "Error fetching calendar",
         "error-message": err.message || "Failed to fetch calendar."
       },
-      validBackPage: req.session.validBackPage,
-      isAuthenticated: authManager.isUserAuthenticated(req) });
+      validBackPage: req.session.validBackPage});
   }
 });
 
@@ -194,8 +189,7 @@ router.get('/mobile/studio-apartman', async (req, res) => {
         "error-title": "Error fetching data",
         "error-message": err.message || "Failed to fetch data."
       },
-      validBackPage: req.session.validBackPage,
-      isAuthenticated: authManager.isUserAuthenticated(req) });
+      validBackPage: req.session.validBackPage});
   }
 });
 
@@ -214,8 +208,7 @@ router.get('/mobile/soba', async (req, res) => {
         "error-title": "Error fetching data",
         "error-message": err.message || "Failed to fetch data."
       },
-      validBackPage: req.session.validBackPage,
-      isAuthenticated: authManager.isUserAuthenticated(req) });
+      validBackPage: req.session.validBackPage});
   }
 });
 
@@ -267,8 +260,7 @@ router.get('/desktop', async (req, res) => {
         "error-title": "Error fetching calendar",
         "error-message": err.message || "Failed to fetch calendar."
       },
-      validBackPage: req.session.validBackPage,
-      isAuthenticated: authManager.isUserAuthenticated(req) });
+      validBackPage: req.session.validBackPage});
   }
 });
 

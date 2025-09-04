@@ -8,8 +8,7 @@ const authManager = require('../auth/authManager');
 const handleCheckInvoice = (req, res) => {
     res.render('management/check-invoice', {
         title: 'Check Invoice - Apartments Šibenik',
-        error: null,
-        isAuthenticated: authManager.isUserAuthenticated(req)
+        error: null
     });
 };
 
@@ -22,8 +21,7 @@ const processInvoiceCheck = async (req, res) => {
     if (!uid || uid.trim() === '') {
         return res.render('management/check-invoice', {
             title: 'Check Invoice - Apartments Šibenik',
-            error: 'Please enter an Invoice UID',
-            isAuthenticated: authManager.isUserAuthenticated(req)
+            error: 'Please enter an Invoice UID'
         });
     }
 
@@ -34,24 +32,21 @@ const processInvoiceCheck = async (req, res) => {
         if (!invoiceData) {
             return res.render('management/check-invoice', {
                 title: 'Check Invoice - Apartments Šibenik',
-                error: 'Invoice not found. Please check the UID and try again.',
-                isAuthenticated: authManager.isUserAuthenticated(req)
+                error: 'Invoice not found. Please check the UID and try again.'
             });
         }
 
         // Render invoice with guest mode
         res.render('management/templates/invoice', {
             ...invoiceData,
-            isGuest: true,
-            isAuthenticated: authManager.isUserAuthenticated(req)
+            isGuest: true
         });
 
     } catch (error) {
         console.error('Error checking invoice:', error);
         res.render('management/check-invoice', {
             title: 'Check Invoice - Apartments Šibenik',
-            error: 'An error occurred while checking the invoice. Please try again.',
-            isAuthenticated: authManager.isUserAuthenticated(req)
+            error: 'An error occurred while checking the invoice. Please try again.'
         });
     }
 };

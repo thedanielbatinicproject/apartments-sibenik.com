@@ -22,8 +22,7 @@ function handleSmartPageRedirect(req, res) {
       'error-message': 'The page you requested: ' + page + ' could not be found.',
       'error-code': '404', 
       'error-title': 'Page not found' 
-    },
-    isAuthenticated: authManager.isUserAuthenticated(req)
+    }
   });
 
   if (isMobile && fs.existsSync(mobilePath)) {
@@ -40,8 +39,7 @@ function handleSmartPageRedirect(req, res) {
         'error-message': 'The page you requested: ' + page + ' could not be found.', 
         'error-code': '404', 
         'error-title': 'Page not found' 
-      },
-      isAuthenticated: authManager.isUserAuthenticated(req)
+      }
     });
   }
 }
@@ -72,8 +70,7 @@ async function handleRootRedirect(req, res) {
           "error-title": "Geolocation error",
           "error-message": error.message || "Failed to fetch location.",
         },
-        validBackPage: req.session.validBackPage,
-        isAuthenticated: authManager.isUserAuthenticated(req)
+        validBackPage: req.session.validBackPage
       });
     }
 

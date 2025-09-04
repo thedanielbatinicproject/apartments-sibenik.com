@@ -7,8 +7,6 @@
   <link rel="stylesheet" href="/stylesheets/index/error-page.css">
 </head>
 <body>
-  <%- include('modules/header', { lang: 'en', base: '/en', isAuthenticated: isAuthenticated }) %>
-  
   <div class="error-glass-container">
     <div class="error-glass-box">
       <div class="error-code"><%= typeof error !== 'undefined' && error ? error['error-code'] : '???' %></div>
