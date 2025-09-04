@@ -4,6 +4,55 @@
     <%- include('../modules/head', { pageTitle: 'Wohnung mit Garten - Apartmani Šibenik', device: device }) %>
     <link rel="stylesheet" href="/stylesheets/hr/home.css">
     <link rel="stylesheet" href="/stylesheets/index/reviews.css">
+    
+    <style>
+        /* Optimizacija reviews modula u hero sekciji - fiksna visina s scroll */
+        .hero-visual .reviews-module {
+            width: 90%;
+            height: 70%;
+            margin: 0 auto;
+            overflow-y: auto; /* Omogućavamo vertikalno skrolanje */
+            /* Skrivanje scroll bara */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* Internet Explorer 10+ */
+            /* Zadržavamo originalni glassmorphism design iz reviews.css */
+        }
+        
+        /* Skrivanje scroll bara za WebKit browsere (Chrome, Safari, Edge) */
+        .hero-visual .reviews-module::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* Optimizacija hero-visual kontejnera */
+        .hero-visual {
+            min-height: 500px;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        /* Responsive prilagodbe za hero-visual */
+        @media (max-width: 1024px) {
+            .hero-visual .reviews-module {
+                width: 85%;
+                height: 75%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero-visual .reviews-module {
+                width: 90%;
+                height: 80%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-visual .reviews-module {
+                width: 95%;
+                height: 85%;
+            }
+        }
+    </style>
 
 </head>
 <body class="apartman-s-vrtom">
