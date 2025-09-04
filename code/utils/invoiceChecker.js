@@ -1,5 +1,6 @@
 const fs = require('fs').promises;
 const path = require('path');
+const authManager = require('../auth/authManager');
 
 /**
  * Check invoice page handler
@@ -7,7 +8,8 @@ const path = require('path');
 const handleCheckInvoice = (req, res) => {
     res.render('management/check-invoice', {
         title: 'Check Invoice - Apartments Šibenik',
-        error: null
+        error: null,
+        isAuthenticated: authManager.isUserAuthenticated(req)
     });
 };
 
@@ -20,7 +22,8 @@ const processInvoiceCheck = async (req, res) => {
     if (!uid || uid.trim() === '') {
         return res.render('management/check-invoice', {
             title: 'Check Invoice - Apartments Šibenik',
-            error: 'Please enter an Invoice UID'
+            error: 'Please enter an Invoice UID',
+            isAuthenticated: authManager.isUserAuthenticated(req)
         });
     }
 
@@ -31,21 +34,24 @@ const processInvoiceCheck = async (req, res) => {
         if (!invoiceData) {
             return res.render('management/check-invoice', {
                 title: 'Check Invoice - Apartments Šibenik',
-                error: 'Invoice not found. Please check the UID and try again.'
+                error: 'Invoice not found. Please check the UID and try again.',
+                isAuthenticated: authManager.isUserAuthenticated(req)
             });
         }
 
         // Render invoice with guest mode
         res.render('management/templates/invoice', {
             ...invoiceData,
-            isGuest: true
+            isGuest: true,
+            isAuthenticated: authManager.isUserAuthenticated(req)
         });
 
     } catch (error) {
         console.error('Error checking invoice:', error);
         res.render('management/check-invoice', {
             title: 'Check Invoice - Apartments Šibenik',
-            error: 'An error occurred while checking the invoice. Please try again.'
+            error: 'An error occurred while checking the invoice. Please try again.',
+            isAuthenticated: authManager.isUserAuthenticated(req)
         });
     }
 };

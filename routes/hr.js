@@ -5,6 +5,7 @@ const { fetchCalendars } = require('../code/calendar/calendarAPI');
 const { generateGalleryImages } = require('../code/utils/galleryHelper');
 const { getCombinedReviews } = require('../code/reviews/reviewsAPI');
 const reviewUpvoteManager = require('../code/reviews/reviewUpvoteManager');
+const authManager = require('../code/auth/authManager');
 const router = express.Router();
 
 // Desktop podstranice
@@ -29,17 +30,17 @@ router.get('/desktop/apartman-s-vrtom', async (req, res) => {
       calendar2: calendars.calendar2,
       images: apartmentImages,
       reviewsData: reviews,
-      upvoteData: upvoteData
+      upvoteData: upvoteData,
+      isAuthenticated: authManager.isUserAuthenticated(req)
     });
   } catch (err) {
-    res.status(500).render('error', {
-      error: {
+    res.status(500).render('error', { error: {
         "error-code": 500,
         "error-title": "Greška pri dohvaćanju podataka",
         "error-message": err.message || "Neuspješno dohvaćanje podataka."
       },
-      validBackPage: req.session.validBackPage
-    });
+      validBackPage: req.session.validBackPage,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   }
 });
 
@@ -54,23 +55,21 @@ router.get('/desktop/studio-apartman', async (req, res) => {
       reviews.allReviews, // Koristimo sve recenzije za upvote data
       '2'
     );
-    res.render('hr/studio-apartman', { 
-      language: 'hr', 
+    res.render('hr/studio-apartman', { language: 'hr', 
       device: 'desktop',
       calendar1: calendars.calendar1,
       images: studioImages,
       reviewsData: reviews,
-      upvoteData: upvoteData
-    });
+      upvoteData: upvoteData,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   } catch (err) {
-    res.status(500).render('error', {
-      error: {
+    res.status(500).render('error', { error: {
         "error-code": 500,
         "error-title": "Greška pri dohvaćanju podataka",
         "error-message": err.message || "Neuspješno dohvaćanje podataka."
       },
-      validBackPage: req.session.validBackPage
-    });
+      validBackPage: req.session.validBackPage,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   }
 });
 
@@ -78,35 +77,33 @@ router.get('/desktop/soba', async (req, res) => {
   try {
     const calendars = await fetchCalendars();
     const roomImages = generateGalleryImages('room');
-    res.render('hr/soba', { 
-      language: 'hr', 
+    res.render('hr/soba', { language: 'hr', 
       device: 'desktop',
       calendar3: calendars.calendar3,
-      images: roomImages
-    });
+      images: roomImages,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   } catch (err) {
-    res.status(500).render('error', {
-      error: {
+    res.status(500).render('error', { error: {
         "error-code": 500,
         "error-title": "Greška pri dohvaćanju podataka",
         "error-message": err.message || "Neuspješno dohvaćanje podataka."
       },
-      validBackPage: req.session.validBackPage
-    });
+      validBackPage: req.session.validBackPage,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   }
 });
 
 router.get('/desktop/o-sibeniku', (req, res) => {
   const sibenikImages = generateGalleryImages('sibenik');
-  res.render('hr/o-sibeniku', { 
-    language: 'hr', 
+  res.render('hr/o-sibeniku', { language: 'hr', 
     device: 'desktop',
-    images: sibenikImages
-  });
+    images: sibenikImages,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
 });
 
 router.get('/desktop/kontakt', (req, res) => {
-  res.render('hr/kontakt', { language: 'hr', device: 'desktop' });
+  res.render('hr/kontakt', { language: 'hr', device: 'desktop',
+      isAuthenticated: authManager.isUserAuthenticated(req) });
 });
 
 router.get('/', (req, res) => {
@@ -141,16 +138,16 @@ router.get('/mobile', async (req, res) => {
       { thumbnail: "/images/gallery/studio/studio-slike-8-thumb.jpg", fullsize: "/images/gallery/studio/studio-slike-8.jpg", alt: "Studio slika 8" },
       { thumbnail: "/images/gallery/studio/studio-slike-9-thumb.jpg", fullsize: "/images/gallery/studio/studio-slike-9.jpg", alt: "Studio slika 9" }
     ];
-    res.render('hr/home', { language: 'hr', device: 'mobile', calendar, galleryImages, reviewsData });
+    res.render('hr/home', { language: 'hr', device: 'mobile', calendar, galleryImages, reviewsData,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   } catch (err) {
-    res.status(500).render('error', {
-      error: {
+    res.status(500).render('error', { error: {
         "error-code": 500,
         "error-title": "Greška pri dohvaćanju kalendara",
         "error-message": err.message || "Neuspješno dohvaćanje kalendara."
       },
-      validBackPage: req.session.validBackPage
-    });
+      validBackPage: req.session.validBackPage,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   }
 });
 
@@ -168,23 +165,21 @@ router.get('/mobile/apartman-s-vrtom', async (req, res) => {
       '1'
     );
     
-    res.render('hr/apartman-s-vrtom', { 
-      language: 'hr', 
+    res.render('hr/apartman-s-vrtom', { language: 'hr', 
       device: 'mobile',
       calendar1: calendars.calendar1,
       images: apartmentImages,
       reviewsData: reviews,
-      upvoteData: upvoteData
-    });
+      upvoteData: upvoteData,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   } catch (err) {
-    res.status(500).render('error', {
-      error: {
+    res.status(500).render('error', { error: {
         "error-code": 500,
         "error-title": "Greška pri dohvaćanju kalendara",
         "error-message": err.message || "Neuspješno dohvaćanje kalendara."
       },
-      validBackPage: req.session.validBackPage
-    });
+      validBackPage: req.session.validBackPage,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   }
 });
 
@@ -192,21 +187,19 @@ router.get('/mobile/studio-apartman', async (req, res) => {
   try {
     const calendars = await fetchCalendars();
     const studioImages = generateGalleryImages('studio');
-    res.render('hr/studio-apartman', { 
-      language: 'hr', 
+    res.render('hr/studio-apartman', { language: 'hr', 
       device: 'mobile',
       calendar2: calendars.calendar2,
-      images: studioImages
-    });
+      images: studioImages,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   } catch (err) {
-    res.status(500).render('error', {
-      error: {
+    res.status(500).render('error', { error: {
         "error-code": 500,
         "error-title": "Greška pri dohvaćanju podataka",
         "error-message": err.message || "Neuspješno dohvaćanje podataka."
       },
-      validBackPage: req.session.validBackPage
-    });
+      validBackPage: req.session.validBackPage,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   }
 });
 
@@ -214,35 +207,33 @@ router.get('/mobile/soba', async (req, res) => {
   try {
     const calendars = await fetchCalendars();
     const roomImages = generateGalleryImages('room');
-    res.render('hr/soba', { 
-      language: 'hr', 
+    res.render('hr/soba', { language: 'hr', 
       device: 'mobile',
       calendar3: calendars.calendar3,
-      images: roomImages
-    });
+      images: roomImages,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   } catch (err) {
-    res.status(500).render('error', {
-      error: {
+    res.status(500).render('error', { error: {
         "error-code": 500,
         "error-title": "Greška pri dohvaćanju podataka",
         "error-message": err.message || "Neuspješno dohvaćanje podataka."
       },
-      validBackPage: req.session.validBackPage
-    });
+      validBackPage: req.session.validBackPage,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   }
 });
 
 router.get('/mobile/o-sibeniku', (req, res) => {
   const sibenikImages = generateGalleryImages('sibenik');
-  res.render('hr/o-sibeniku', { 
-    language: 'hr', 
+  res.render('hr/o-sibeniku', { language: 'hr', 
     device: 'mobile',
-    images: sibenikImages
-  });
+    images: sibenikImages,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
 });
 
 router.get('/mobile/kontakt', (req, res) => {
-  res.render('hr/kontakt', { language: 'hr', device: 'mobile' });
+  res.render('hr/kontakt', { language: 'hr', device: 'mobile',
+      isAuthenticated: authManager.isUserAuthenticated(req) });
 });
 
 router.get('/desktop', async (req, res) => {
@@ -272,16 +263,16 @@ router.get('/desktop', async (req, res) => {
       { thumbnail: "/images/gallery/studio/studio-slike-8-thumb.jpg", fullsize: "/images/gallery/studio/studio-slike-8.jpg", alt: "Studio slika 8" },
       { thumbnail: "/images/gallery/studio/studio-slike-9-thumb.jpg", fullsize: "/images/gallery/studio/studio-slike-9.jpg", alt: "Studio slika 9" }
     ];
-    res.render('hr/home', { language: 'hr', device: 'desktop', calendar, galleryImages, reviewsData });
+    res.render('hr/home', { language: 'hr', device: 'desktop', calendar, galleryImages, reviewsData,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   } catch (err) {
-    res.status(500).render('error', {
-      error: {
+    res.status(500).render('error', { error: {
         "error-code": 500,
         "error-title": "Greška pri dohvaćanju kalendara",
         "error-message": err.message || "Neuspješno dohvaćanje kalendara."
       },
-      validBackPage: req.session.validBackPage
-    });
+      validBackPage: req.session.validBackPage,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   }
 });
 

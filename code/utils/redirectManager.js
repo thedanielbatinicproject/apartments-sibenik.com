@@ -1,4 +1,5 @@
 const axios = require('axios');
+const authManager = require('../auth/authManager');
 
 const path = require('path');
 const fs = require('fs');
@@ -16,9 +17,14 @@ function handleSmartPageRedirect(req, res) {
 
 
 
-  if (!page) return res.status(404).render('error', { error: { 'error-message': 'The page you requested: ' + page + ' could not be found.',
-                                                                'error-code': '404', 
-                                                                'error-title': 'Page not found' } });
+  if (!page) return res.status(404).render('error', { 
+    error: { 
+      'error-message': 'The page you requested: ' + page + ' could not be found.',
+      'error-code': '404', 
+      'error-title': 'Page not found' 
+    },
+    isAuthenticated: authManager.isUserAuthenticated(req)
+  });
 
   if (isMobile && fs.existsSync(mobilePath)) {
     return res.redirect(`/${lang}/mobile/${page}`);
@@ -29,7 +35,14 @@ function handleSmartPageRedirect(req, res) {
   } else if (fs.existsSync(desktopPath)) {
     return res.redirect(`/${lang}/desktop/${page}`);
   } else {
-    return res.status(404).render('error', { error: { 'error-message': 'The page you requested: ' + page + ' could not be found.', 'error-code': '404', 'error-title': 'Page not found' } });
+    return res.status(404).render('error', { 
+      error: { 
+        'error-message': 'The page you requested: ' + page + ' could not be found.', 
+        'error-code': '404', 
+        'error-title': 'Page not found' 
+      },
+      isAuthenticated: authManager.isUserAuthenticated(req)
+    });
   }
 }
 
@@ -60,6 +73,7 @@ async function handleRootRedirect(req, res) {
           "error-message": error.message || "Failed to fetch location.",
         },
         validBackPage: req.session.validBackPage,
+        isAuthenticated: authManager.isUserAuthenticated(req)
       });
     }
 

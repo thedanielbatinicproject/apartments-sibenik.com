@@ -419,6 +419,15 @@ class AuthManager {
       message: 'Password changed successfully'
     };
   }
+
+  // Check if user is authenticated (helper function for views)
+  isUserAuthenticated(req) {
+    const authCookie = req.cookies?.management_auth;
+    if (!authCookie) return false;
+    
+    const session = this.validateSession(authCookie);
+    return !!session;
+  }
 }
 
 module.exports = new AuthManager();

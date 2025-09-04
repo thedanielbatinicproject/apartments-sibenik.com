@@ -522,3 +522,103 @@ body {
     padding-top: 75px; /* Prilagođeno na stvarnu visinu header-a */
   }
 }
+
+/* ==============================================
+   MANAGEMENT PANEL BUTTON STYLES
+   ============================================== */
+
+/* Desktop Management Panel Button */
+.management-panel-btn-desktop {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1001;
+}
+
+.management-panel-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #4a148c, #6a1b9a);
+  border: 1px solid rgba(186, 104, 200, 0.3);
+  border-radius: 25px;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(74, 20, 140, 0.3);
+}
+
+.management-panel-link:hover {
+  background: linear-gradient(135deg, #6a1b9a, #8e24aa);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(74, 20, 140, 0.4);
+  color: white;
+  text-decoration: none;
+}
+
+.management-panel-link:active {
+  transform: translateY(-1px);
+}
+
+.management-icon {
+  width: 20px;
+  height: 20px;
+  filter: brightness(0) invert(1);
+}
+
+.management-text {
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+/* Mobile Management Panel Button */
+.mobile-management-btn {
+  background: linear-gradient(135deg, #4a148c, #6a1b9a) !important;
+  border: 1px solid rgba(186, 104, 200, 0.3) !important;
+  color: white !important;
+  font-weight: 600 !important;
+}
+
+.mobile-management-btn:hover {
+  background: linear-gradient(135deg, #6a1b9a, #8e24aa) !important;
+  color: white !important;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+  .management-panel-btn-desktop {
+    left: 15px;
+  }
+  
+  .management-panel-link {
+    padding: 8px 14px;
+    font-size: 0.8rem;
+  }
+  
+  .management-text {
+    font-size: 0.75rem;
+  }
+  
+  .management-icon {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Hide desktop button on mobile */
+  .management-panel-btn-desktop {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .mobile-management-btn {
+    font-size: 0.9rem !important;
+  }
+}

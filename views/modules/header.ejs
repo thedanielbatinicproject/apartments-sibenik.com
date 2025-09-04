@@ -42,6 +42,16 @@ const menu = menuTranslations[currentLang] || menuTranslations.hr;
 
 <header class="main-header">
   <div class="header-container">
+    <!-- Management Panel Button (Desktop) - Shown only when user is authenticated -->
+    <% if (typeof isAuthenticated !== 'undefined' && isAuthenticated) { %>
+    <div class="management-panel-btn-desktop">
+      <a href="/management" class="management-panel-link">
+        <img src="/images/icons/management.png" alt="Management" class="management-icon">
+        <span class="management-text">MANAGEMENT PANEL</span>
+      </a>
+    </div>
+    <% } %>
+
     <!-- Logo and Title -->
     <div class="header-logo">
       <a href="/" class="logo-link">
@@ -80,6 +90,9 @@ const menu = menuTranslations[currentLang] || menuTranslations.hr;
         <li><a href="<%= (typeof base !== 'undefined' ? base : '') + '/soba' %>" class="mobile-nav-link"><%= menu.soba %></a></li>
         <li><a href="<%= (typeof base !== 'undefined' ? base : '') + '/o-sibeniku' %>" class="mobile-nav-link"><%= menu.oSibeniku %></a></li>
         <li><a href="<%= (typeof base !== 'undefined' ? base : '') + '/kontakt' %>" class="mobile-nav-link mobile-contact-btn"><%= menu.kontakt %></a></li>
+        <% if (typeof isAuthenticated !== 'undefined' && isAuthenticated) { %>
+        <li><a href="/management" class="mobile-nav-link mobile-management-btn">MANAGEMENT PANEL</a></li>
+        <% } %>
       </ul>
       <div class="mobile-menu-close" id="mobileMenuClose">
         <span>&times;</span>

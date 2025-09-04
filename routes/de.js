@@ -3,6 +3,7 @@ const { fetchCalendars } = require('../code/calendar/calendarAPI');
 const { generateGalleryImages } = require('../code/utils/galleryHelper');
 const { getCombinedReviews } = require('../code/reviews/reviewsAPI');
 const reviewUpvoteManager = require('../code/reviews/reviewUpvoteManager');
+const authManager = require('../code/auth/authManager');
 const router = express.Router();
 
 // Desktop subpages
@@ -20,24 +21,22 @@ router.get('/desktop/apartman-s-vrtom', async (req, res) => {
       '1'
     );
     
-    res.render('de/apartman-s-vrtom', { 
-      language: 'de', 
+    res.render('de/apartman-s-vrtom', { language: 'de', 
       device: 'desktop',
       calendar1: calendars.calendar1,
       calendar2: calendars.calendar2,
       images: apartmentImages,
       reviewsData: reviews,
-      upvoteData: upvoteData
-    });
+      upvoteData: upvoteData,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   } catch (err) {
-    res.status(500).render('error', {
-      error: {
+    res.status(500).render('error', { error: {
         "error-code": 500,
         "error-title": "Fehler beim Laden der Daten",
         "error-message": err.message || "Daten konnten nicht geladen werden."
       },
-      validBackPage: req.session.validBackPage
-    });
+      validBackPage: req.session.validBackPage,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   }
 });
 
@@ -52,23 +51,21 @@ router.get('/desktop/studio-apartman', async (req, res) => {
       reviews.allReviews,
       '2'
     );
-    res.render('de/studio-apartman', { 
-      language: 'de', 
+    res.render('de/studio-apartman', { language: 'de', 
       device: 'desktop',
       calendar1: calendars.calendar1,
       images: studioImages,
       reviewsData: reviews,
-      upvoteData: upvoteData
-    });
+      upvoteData: upvoteData,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   } catch (err) {
-    res.status(500).render('error', {
-      error: {
+    res.status(500).render('error', { error: {
         "error-code": 500,
         "error-title": "Fehler beim Laden der Daten",
         "error-message": err.message || "Daten konnten nicht geladen werden."
       },
-      validBackPage: req.session.validBackPage
-    });
+      validBackPage: req.session.validBackPage,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   }
 });
 
@@ -76,35 +73,33 @@ router.get('/desktop/soba', async (req, res) => {
   try {
     const calendars = await fetchCalendars();
     const roomImages = generateGalleryImages('room');
-    res.render('de/soba', { 
-      language: 'de', 
+    res.render('de/soba', { language: 'de', 
       device: 'desktop',
       calendar3: calendars.calendar3,
-      images: roomImages
-    });
+      images: roomImages,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   } catch (err) {
-    res.status(500).render('error', {
-      error: {
+    res.status(500).render('error', { error: {
         "error-code": 500,
         "error-title": "Fehler beim Laden der Daten",
         "error-message": err.message || "Daten konnten nicht geladen werden."
       },
-      validBackPage: req.session.validBackPage
-    });
+      validBackPage: req.session.validBackPage,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   }
 });
 
 router.get('/desktop/o-sibeniku', (req, res) => {
   const sibenikImages = generateGalleryImages('sibenik');
-  res.render('de/o-sibeniku', { 
-    language: 'de', 
+  res.render('de/o-sibeniku', { language: 'de', 
     device: 'desktop',
-    images: sibenikImages
-  });
+    images: sibenikImages,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
 });
 
 router.get('/desktop/kontakt', (req, res) => {
-  res.render('de/kontakt', { language: 'de', device: 'desktop' });
+  res.render('de/kontakt', { language: 'de', device: 'desktop',
+      isAuthenticated: authManager.isUserAuthenticated(req) });
 });
 
 router.get('/', (req, res) => {
@@ -139,16 +134,16 @@ router.get('/mobile', async (req, res) => {
       { thumbnail: "/images/gallery/studio/studio-slike-8-thumb.jpg", fullsize: "/images/gallery/studio/studio-slike-8.jpg", alt: "Studio Bild 8" },
       { thumbnail: "/images/gallery/studio/studio-slike-9-thumb.jpg", fullsize: "/images/gallery/studio/studio-slike-9.jpg", alt: "Studio Bild 9" }
     ];
-    res.render('de/home', { language: 'de', device: 'mobile', calendar, galleryImages, reviewsData });
+    res.render('de/home', { language: 'de', device: 'mobile', calendar, galleryImages, reviewsData,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   } catch (err) {
-    res.status(500).render('error', {
-      error: {
+    res.status(500).render('error', { error: {
         "error-code": 500,
         "error-title": "Fehler beim Laden des Kalenders",
         "error-message": err.message || "Kalender konnte nicht geladen werden."
       },
-      validBackPage: req.session.validBackPage
-    });
+      validBackPage: req.session.validBackPage,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   }
 });
 
@@ -166,23 +161,21 @@ router.get('/mobile/apartman-s-vrtom', async (req, res) => {
       '1'
     );
     
-    res.render('de/apartman-s-vrtom', { 
-      language: 'de', 
+    res.render('de/apartman-s-vrtom', { language: 'de', 
       device: 'mobile',
       calendar1: calendars.calendar1,
       images: apartmentImages,
       reviewsData: reviews,
-      upvoteData: upvoteData
-    });
+      upvoteData: upvoteData,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   } catch (err) {
-    res.status(500).render('error', {
-      error: {
+    res.status(500).render('error', { error: {
         "error-code": 500,
         "error-title": "Fehler beim Laden des Kalenders",
         "error-message": err.message || "Kalender konnte nicht geladen werden."
       },
-      validBackPage: req.session.validBackPage
-    });
+      validBackPage: req.session.validBackPage,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   }
 });
 
@@ -190,21 +183,19 @@ router.get('/mobile/studio-apartman', async (req, res) => {
   try {
     const calendars = await fetchCalendars();
     const studioImages = generateGalleryImages('studio');
-    res.render('de/studio-apartman', { 
-      language: 'de', 
+    res.render('de/studio-apartman', { language: 'de', 
       device: 'mobile',
       calendar2: calendars.calendar2,
-      images: studioImages
-    });
+      images: studioImages,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   } catch (err) {
-    res.status(500).render('error', {
-      error: {
+    res.status(500).render('error', { error: {
         "error-code": 500,
         "error-title": "Fehler beim Laden der Daten",
         "error-message": err.message || "Daten konnten nicht geladen werden."
       },
-      validBackPage: req.session.validBackPage
-    });
+      validBackPage: req.session.validBackPage,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   }
 });
 
@@ -212,35 +203,33 @@ router.get('/mobile/soba', async (req, res) => {
   try {
     const calendars = await fetchCalendars();
     const roomImages = generateGalleryImages('room');
-    res.render('de/soba', { 
-      language: 'de', 
+    res.render('de/soba', { language: 'de', 
       device: 'mobile',
       calendar3: calendars.calendar3,
-      images: roomImages
-    });
+      images: roomImages,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   } catch (err) {
-    res.status(500).render('error', {
-      error: {
+    res.status(500).render('error', { error: {
         "error-code": 500,
         "error-title": "Fehler beim Laden der Daten",
         "error-message": err.message || "Daten konnten nicht geladen werden."
       },
-      validBackPage: req.session.validBackPage
-    });
+      validBackPage: req.session.validBackPage,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   }
 });
 
 router.get('/mobile/o-sibeniku', (req, res) => {
   const sibenikImages = generateGalleryImages('sibenik');
-  res.render('de/o-sibeniku', { 
-    language: 'de', 
+  res.render('de/o-sibeniku', { language: 'de', 
     device: 'mobile',
-    images: sibenikImages
-  });
+    images: sibenikImages,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
 });
 
 router.get('/mobile/kontakt', (req, res) => {
-  res.render('de/kontakt', { language: 'de', device: 'mobile' });
+  res.render('de/kontakt', { language: 'de', device: 'mobile',
+      isAuthenticated: authManager.isUserAuthenticated(req) });
 });
 
 router.get('/desktop', async (req, res) => {
@@ -270,16 +259,16 @@ router.get('/desktop', async (req, res) => {
       { thumbnail: "/images/gallery/studio/studio-slike-8-thumb.jpg", fullsize: "/images/gallery/studio/studio-slike-8.jpg", alt: "Studio Bild 8" },
       { thumbnail: "/images/gallery/studio/studio-slike-9-thumb.jpg", fullsize: "/images/gallery/studio/studio-slike-9.jpg", alt: "Studio Bild 9" }
     ];
-    res.render('de/home', { language: 'de', device: 'desktop', calendar, galleryImages, reviewsData });
+    res.render('de/home', { language: 'de', device: 'desktop', calendar, galleryImages, reviewsData,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   } catch (err) {
-    res.status(500).render('error', {
-      error: {
+    res.status(500).render('error', { error: {
         "error-code": 500,
         "error-title": "Fehler beim Laden des Kalenders",
         "error-message": err.message || "Kalender konnte nicht geladen werden."
       },
-      validBackPage: req.session.validBackPage
-    });
+      validBackPage: req.session.validBackPage,
+      isAuthenticated: authManager.isUserAuthenticated(req) });
   }
 });
 

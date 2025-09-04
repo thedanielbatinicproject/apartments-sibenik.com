@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  padding: 0;
+  padding: 80px 0 0 0; /* Added top padding for header */
   font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #475569 75%, #64748b 100%);
   min-height: 100vh;
@@ -8,7 +8,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow-x: hidden;
   position: relative;
 }
 
