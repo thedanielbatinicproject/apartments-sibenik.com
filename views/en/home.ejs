@@ -3,43 +3,8 @@
 <head>
     <%- include('../modules/head', { pageTitle: 'Welcome to Apartmani Šibenik', device: device }) %>
     <link rel="stylesheet" href="/stylesheets/hr/home.css">
-    <link rel="stylesheet" href="/stylesheets/index/starting-popup.css">
 </head>
 <body>
-    <!-- Language Detection Popup -->
-    <div id="languagePopupOverlay" class="language-popup-overlay">
-        <div class="language-popup">
-            <h2 class="popup-title">We have detected your language region to be English.</h2>
-            <p class="popup-subtitle">If this is incorrect please select one of three available languages:</p>
-            
-            <div class="language-buttons">
-                <button class="language-btn" onclick="selectLanguage('hr')">
-                    <img src="/images/icons/flag-hr.svg" alt="Croatian" class="flag-icon">
-                    Hrvatski
-                </button>
-                <button class="language-btn" onclick="selectLanguage('en')">
-                    <img src="/images/icons/flag-en.svg" alt="English" class="flag-icon">
-                    English
-                </button>
-                <button class="language-btn" onclick="selectLanguage('de')">
-                    <img src="/images/icons/flag-de.svg" alt="German" class="flag-icon">
-                    Deutsch
-                </button>
-            </div>
-            
-            <button class="close-btn" onclick="closeLanguagePopup()">
-                Close this prompt
-            </button>
-            
-            <div class="invoice-section">
-                <p class="invoice-text">Looking for invoice checker?</p>
-                <a href="https://apartments-sibenik.com/check-invoice" class="invoice-btn">
-                    Go to invoice checker
-                </a>
-            </div>
-        </div>
-    </div>
-
     <%- include('../modules/header', { lang: 'en', base: '/en/desktop' }) %>
     
     <main>
@@ -294,7 +259,5 @@
         window.serverReviewsData = <%- JSON.stringify(reviewsData || {}) %>;
     </script>
     <script src="/javascripts/hr/home.js"></script>
-    <script src="/javascripts/language-popup.js"></script>
-    <script src="/javascripts/language-popup-test.js"></script>
 </body>
 </html>

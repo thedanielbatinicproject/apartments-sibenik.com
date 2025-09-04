@@ -35,28 +35,40 @@ function handleSmartPageRedirect(req, res) {
 
 // Get user's location and redirect to appropriate language
 async function handleRootRedirect(req, res) {
-  const clientIp = req.ip;
-  let countryCode = "EN";
+  // First check if user has a preferred language cookie
+  let lang = "en"; // default
   
-  try {
-    const response = await axios.get(`http://ip-api.com/json/${clientIp}`);
-    if (response.data && response.data.countryCode) {
-      countryCode = response.data.countryCode;
+  if (req.cookies && req.cookies.preferred_language) {
+    // User has saved language preference
+    lang = req.cookies.preferred_language;
+    console.log('handleRootRedirect: Using saved language preference:', lang);
+  } else {
+    // No saved preference, use geolocation
+    const clientIp = req.ip;
+    let countryCode = "EN";
+    
+    try {
+      const response = await axios.get(`http://ip-api.com/json/${clientIp}`);
+      if (response.data && response.data.countryCode) {
+        countryCode = response.data.countryCode;
+      }
+    } catch (error) {
+      return res.status(500).render("error", {
+        error: {
+          "error-code": 500,
+          "error-title": "Geolocation error",
+          "error-message": error.message || "Failed to fetch location.",
+        },
+        validBackPage: req.session.validBackPage,
+      });
     }
-  } catch (error) {
-    return res.status(500).render("error", {
-      error: {
-        "error-code": 500,
-        "error-title": "Geolocation error",
-        "error-message": error.message || "Failed to fetch location.",
-      },
-      validBackPage: req.session.validBackPage,
-    });
-  }
 
-  let lang = "en";
-  if (countryCode === "HR") lang = "hr";
-  else if (countryCode === "DE") lang = "de";
+    if (countryCode === "HR") lang = "hr";
+    else if (countryCode === "DE") lang = "de";
+    else lang = "en";
+    
+    console.log('handleRootRedirect: No saved preference, using geolocation. Country:', countryCode, 'Language:', lang);
+  }
 
   
 

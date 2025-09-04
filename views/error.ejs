@@ -9,14 +9,22 @@
 <body>
   <div class="error-glass-container">
     <div class="error-glass-box">
-      <div class="error-code"><%= typeof error !== 'undefined' && error ? error['error-code'] : '' %></div>
-      <div class="error-title"><%= typeof error !== 'undefined' && error ? error['error-title'] : '' %></div>
-      <div class="error-message"><%= typeof error !== 'undefined' && error ? error['error-message'] : '' %></div>
+      <div class="error-code"><%= typeof error !== 'undefined' && error ? error['error-code'] : '???' %></div>
+      <div class="error-title"><%= typeof error !== 'undefined' && error ? error['error-title'] : 'Unknown error title' %></div>
+      <div class="error-message"><%= typeof error !== 'undefined' && error ? error['error-message'] : 'Unknown error message or error not sent?' %></div>
+
       <% if (typeof validBackPage !== 'undefined' && validBackPage) { %>
         <a href="<%= validBackPage %>" class="error-back-btn">BACK</a>
       <% } else { %>
         <a href="/en" class="error-back-btn">BACK TO HOME</a>
       <% } %>
+      
+      <div class="error-divider"></div>
+      
+      <div class="invoice-section">
+        <p class="invoice-text">Looking for invoice checker?</p>
+        <a href="/check-invoice" class="invoice-check-btn">GO TO INVOICE CHECKER</a>
+      </div>
     </div>
   </div>
 </body>
