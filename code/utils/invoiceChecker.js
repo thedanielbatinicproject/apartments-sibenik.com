@@ -36,8 +36,11 @@ const processInvoiceCheck = async (req, res) => {
             });
         }
 
+        // Choose template based on whether it's a pre-invoice
+        const template = invoiceData.invoice.preInvoice ? 'management/templates/pre-invoice' : 'management/templates/invoice';
+        
         // Render invoice with guest mode
-        res.render('management/templates/invoice', {
+        res.render(template, {
             ...invoiceData,
             isGuest: true
         });

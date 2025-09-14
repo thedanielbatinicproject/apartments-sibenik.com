@@ -13,11 +13,13 @@ const INVOICES_DIR = path.join(__dirname, '../../data/private/invoices');
  * Generate invoice UID based on invoice number
  * @param {string} invoiceNumber - Invoice number
  * @param {string} companyId - Company identifier
+ * @param {boolean} isPreInvoice - Whether this is a pre-invoice
  * @returns {string} Generated UID
  */
-function generateInvoiceUID(invoiceNumber, companyId) {
-    // Create a simple hash based on invoice number and company
-    const baseString = `${companyId}-${invoiceNumber}`;
+function generateInvoiceUID(invoiceNumber, companyId, isPreInvoice = false) {
+    // Create a simple hash based on invoice number, company, and type
+    const typePrefix = isPreInvoice ? 'PRE' : 'INV';
+    const baseString = `${companyId}-${typePrefix}-${invoiceNumber}`;
     const hash = crypto.createHash('md5').update(baseString).digest('hex');
     
     // Take first 8 characters and format as XXXX-XXXX
@@ -151,10 +153,10 @@ async function getNextInvoiceNumber(companyId) {
 
     const currentYear = new Date().getFullYear();
     
-    // Find all invoices for current year
+    // Find all REGULAR invoices for current year (exclude pre-invoices)
     const invoicesThisYear = companyData.invoices.filter(invoice => {
         const invoiceYear = parseInt(invoice.invoiceNumber.split('/')[1]);
-        return invoiceYear === currentYear;
+        return invoiceYear === currentYear && !invoice.preInvoice;
     });
 
     // Find the highest invoice number for this year
@@ -183,7 +185,7 @@ async function addInvoice(companyId, invoiceData) {
 
         // Generate unique invoice ID and UID
         const invoiceId = Date.now().toString();
-        const invoiceUID = generateInvoiceUID(invoiceData.invoiceNumber, companyId);
+        const invoiceUID = generateInvoiceUID(invoiceData.invoiceNumber, companyId, invoiceData.preInvoice);
         
         const invoice = {
             id: invoiceId,
@@ -293,7 +295,7 @@ async function addUIDsToExistingInvoices(companyId) {
         let updated = false;
         companyData.invoices.forEach(invoice => {
             if (!invoice.uid && invoice.invoiceNumber) {
-                invoice.uid = generateInvoiceUID(invoice.invoiceNumber, companyId);
+                invoice.uid = generateInvoiceUID(invoice.invoiceNumber, companyId, invoice.preInvoice);
                 updated = true;
             }
         });

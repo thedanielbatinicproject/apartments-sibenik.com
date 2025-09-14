@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Račun <%= invoice.invoiceNumber %> - <%= company.companyName %></title>
+    <title>Predračun <%= invoice.invoiceNumber %> - <%= company.companyName %></title>
     <link rel="stylesheet" href="/stylesheets/management/single-invoice.css">
     <script>
         // Set print preferences
@@ -29,11 +29,11 @@
     <!-- Sticky Action Buttons -->
     <div class="action-buttons">
         <button class="action-btn print-btn" onclick="printInvoice()">
-            🖨️ Ispiši račun
+            🖨️ Ispiši predračun
         </button>
         <% if (isGuest) { %>
             <div class="action-btn found-btn">
-                ✓ INVOICE FOUND
+                ✓ PREINVOICE FOUND
             </div>
         <% } else { %>
             <a href="/management/invoices" class="action-btn back-btn">
@@ -48,8 +48,8 @@
     <!-- Invoice Header with Blue Background -->
     <div class="invoice-header">
         <div class="header-left">
-            <div class="invoice-title">RAČUN</div>
-            <div class="invoice-title-en">INVOICE</div>
+            <div class="invoice-title">PREDRAČUN</div>
+            <div class="invoice-title-en">PRE-INVOICE</div>
         </div>
         <div class="header-center">
             <img class="company-logo" src="/images/logo.png" alt="<%= company.companyName %> Logo" onerror="this.style.display='none'">
@@ -57,7 +57,7 @@
         </div>
         <div class="header-right">
             <div class="invoice-number-en">BROJ/NO.</div>
-            <div class="invoice-number"><%= invoice.invoiceNumber %></div>
+            <div class="invoice-number">PREDRAČUN <%= invoice.invoiceNumber %></div>
             <div class="invoice-date-en">DATUM/DATE</div>
             <div class="invoice-date"><%= new Date(invoice.issueDate).toLocaleDateString('hr-HR') %></div>
         </div>
@@ -94,8 +94,8 @@
     
     <!-- Services Table -->
     <div class="services-section">
-        <div class="services-title">VRSTA USLUGE</div>
-        <div class="services-title-en">SERVICE</div>
+        <div class="services-title">PROCJENA TROŠKA USLUGE</div>
+        <div class="services-title-en">ESTIMATED SERVICE COST</div>
         
         <table class="services-table">
             <thead>
@@ -168,8 +168,8 @@
         <div class="totals">
             <div class="total-row">
                 <span class="total-label">
-                    UKUPNO
-                    <span class="total-label-en">NET AMOUNT</span>
+                    PROCIJENJENI TROŠAK
+                    <span class="total-label-en">ESTIMATED AMOUNT</span>
                 </span>
                 <span><%= parseFloat(invoice.totalPrice).toFixed(2) %> €</span>
             </div>
@@ -184,8 +184,8 @@
             <% } %>
             <div class="total-row final">
                 <span class="total-label">
-                    PLAĆENO
-                    <span class="total-label-en">PAID</span>
+                    ZA PLATITI
+                    <span class="total-label-en">TO PAY</span>
                 </span>
                 <span><%= parseFloat(invoice.finalPrice).toFixed(2) %> €</span>
             </div>
@@ -199,7 +199,8 @@
             <span class="footer-title-separator"> / </span>
             <span class="footer-title-en">Notes</span>
         </div>
-        <div style="margin-bottom: 8px; font-weight: bold;">Ovaj račun je valjan bez potpisa i bez pečata. / This invoice is valid without a signature and stamp.</div>
+        <div style="margin-bottom: 8px; font-weight: bold;">Ovaj predračun je informativan i ne predstavlja konačnu obvezu plaćanja. / This pre-invoice is for information only and does not constitute a final payment obligation.</div>
+        <div style="margin-bottom: 8px; font-weight: bold;">Konačni račun bit će izdan nakon pružene usluge. / Final invoice will be issued after service provision.</div>
         <% if (company.constants.disclaimer1) { %>
         <div style="margin-bottom: 8px;"><%= company.constants.disclaimer1 %></div>
         <% } %>
@@ -207,14 +208,14 @@
         <div style="margin-bottom: 8px;"><%= company.constants.disclaimer2 %></div>
         <% } %>
         <div style="margin-top: 15px; font-style: italic;">
-            Račun je izdao i ovjerio: <%= company.companyInfo.owner %> /  <span style="font-style: italic;">Invoice issued and verified by: <%= company.companyInfo.owner %></span>
+            Predračun je izdao: <%= company.companyInfo.owner %> / <span style="font-style: italic;">Pre-invoice issued by: <%= company.companyInfo.owner %></span>
         </div>
         
         <% if (invoice.uid) { %>
         <div class="invoice-uid-footer">
-            <div class="uid-code">Invoice UID: <span class="uid-bold"><%= invoice.uid %></span></div>
-            <div class="uid-verification">Ovaj račun možete verificirati na: apartments-sibenik.com/check-invoice</div>
-            <div class="uid-verification-en">This invoice can be verified at: apartments-sibenik.com/check-invoice</div>
+            <div class="uid-code">Pre-invoice UID: <span class="uid-bold"><%= invoice.uid %></span></div>
+            <div class="uid-verification">Ovaj predračun možete verificirati na: apartments-sibenik.com/check-invoice</div>
+            <div class="uid-verification-en">This pre-invoice can be verified at: apartments-sibenik.com/check-invoice</div>
         </div>
         <% } %>
     </div>

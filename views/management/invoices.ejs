@@ -63,9 +63,14 @@
                 <!-- Dashboard actions -->
                 <div class="dashboard-actions">
                     <h3 style="color: #ffffff; margin: 0;">📊 Računi za <%= selectedCompany.companyName %></h3>
-                    <button class="new-invoice-btn" onclick="openInvoiceForm()">
-                        ➕ Novi račun
-                    </button>
+                    <div class="action-buttons">
+                        <button class="new-invoice-btn" onclick="openInvoiceForm()">
+                            ➕ Novi račun
+                        </button>
+                        <button class="new-preinvoice-btn" onclick="openPreInvoiceForm()">
+                            📋 Novi predračun
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Invoices table -->
@@ -192,10 +197,6 @@
                         <div class="form-group">
                             <label class="form-label">Ukupno dana</label>
                             <input type="number" id="totalDays" name="totalDays" class="form-input" min="1" required>
-                            <div class="number-controls-bottom">
-                                <button type="button" class="number-btn-bottom decrease" onclick="decrementValue('totalDays')">−</button>
-                                <button type="button" class="number-btn-bottom increase" onclick="incrementValue('totalDays')">+</button>
-                            </div>
                         </div>
                     </div>
 
@@ -241,7 +242,7 @@
                         <div class="form-group">
                             <label class="form-label">Jedinična cijena</label>
                             <div class="currency-input-group">
-                                <input type="number" id="price" name="price" class="form-input" step="0.01" min="0" value="50" readonly>
+                                <input type="number" id="price" name="price" class="form-input" step="0.01" min="0" value="50" required>
                                 <span class="currency-symbol">€</span>
                             </div>
                         </div>
@@ -251,10 +252,6 @@
                         <div class="form-group">
                             <label class="form-label">Broj dana</label>
                             <input type="number" id="daysCount" name="daysCount" class="form-input" min="1" required>
-                            <div class="number-controls-bottom">
-                                <button type="button" class="number-btn-bottom decrease" onclick="decrementValue('daysCount')">−</button>
-                                <button type="button" class="number-btn-bottom increase" onclick="incrementValue('daysCount')">+</button>
-                            </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Ukupna cijena</label>

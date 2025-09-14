@@ -122,15 +122,19 @@
   gap: 1rem;
 }
 
-.new-invoice-btn {
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.new-invoice-btn,
+.new-preinvoice-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   padding: 0.8rem 1.5rem;
-  background: rgba(74, 222, 128, 0.2);
-  color: #4ade80;
   text-decoration: none;
-  border: 1px solid rgba(74, 222, 128, 0.3);
   border-radius: 12px;
   font-weight: 600;
   font-size: 0.95rem;
@@ -138,11 +142,29 @@
   cursor: pointer;
   backdrop-filter: blur(10px);
   outline: none;
+  border: 1px solid;
+}
+
+.new-invoice-btn {
+  background: rgba(74, 222, 128, 0.2);
+  color: #4ade80;
+  border-color: rgba(74, 222, 128, 0.3);
+}
+
+.new-preinvoice-btn {
+  background: rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
+  border-color: rgba(251, 191, 36, 0.3);
 }
 
 .new-invoice-btn:hover {
   background: rgba(74, 222, 128, 0.3);
   box-shadow: 0 0 20px rgba(74, 222, 128, 0.3);
+}
+
+.new-preinvoice-btn:hover {
+  background: rgba(251, 191, 36, 0.3);
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
 }
 
 .invoices-table-container {
@@ -276,6 +298,13 @@
   transition: transform 0.3s ease;
   padding-top: 3rem;
   padding-bottom: 3rem;
+  /* Hide scrollbar */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.modal-content::-webkit-scrollbar {
+  display: none; /* WebKit */
 }
 
 .modal-overlay.active .modal-content {
@@ -319,7 +348,7 @@
 .modal-body {
   padding: 2rem;
   max-height: calc(90vh - 140px);
-  overflow-y: auto;
+  overflow-y: visible; /* Remove second scrollbar */
 }
 
 .form-grid {
@@ -528,7 +557,9 @@
   justify-content: flex-end;
   gap: 1rem;
   margin-top: 2rem;
+  margin-bottom: 2rem; /* Add bottom margin for scroll spacing */
   padding-top: 1.5rem;
+  padding-bottom: 1.5rem; /* Add bottom padding */
   border-top: 1px solid rgba(255,255,255,0.1);
 }
 

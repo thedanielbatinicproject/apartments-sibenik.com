@@ -12,6 +12,7 @@ class InvoicesManager {
         this.currentPage = 0;
         this.paginationInfo = null;
         this.allLoadedInvoices = [];
+        this.isPreInvoiceMode = false; // Track if we're creating a pre-invoice
         this.init();
     }
 
@@ -68,25 +69,85 @@ class InvoicesManager {
             serviceType.addEventListener('change', () => this.updateRoomNumber());
         }
 
-        // Pricing calculation handlers - now totalPrice drives unit price
+        // Pricing calculation handlers - improved logic
         const quantity = document.getElementById('quantity');
+        const price = document.getElementById('price'); // unit price
         const totalPrice = document.getElementById('totalPrice');
+        const totalDays = document.getElementById('totalDays');
+        const daysCount = document.getElementById('daysCount');
         const discount = document.getElementById('discount');
         
-        if (quantity) quantity.addEventListener('input', () => this.calculateUnitPrice());
-        if (totalPrice) totalPrice.addEventListener('input', () => this.calculateUnitPrice());
+        // When unit price changes: update total price (unit * quantity)
+        if (price) {
+            price.addEventListener('input', () => this.calculateTotalFromUnit());
+        }
+        
+        // When quantity changes: update total price (unit * quantity) and sync days
+        if (quantity) quantity.addEventListener('input', () => {
+            this.syncDaysWithQuantity();
+            this.calculateTotalFromUnit();
+        });
+        
+        // When total price changes: update unit price (total / quantity)
+        if (totalPrice) totalPrice.addEventListener('input', () => this.calculateUnitFromTotal());
+        
+        // When discount changes: update final price
         if (discount) discount.addEventListener('input', () => this.calculateFinalPrice());
 
-        // Sync quantity with total days
-        const totalDays = document.getElementById('totalDays');
+        // Make totalDays read-only and sync with quantity
         if (totalDays) {
-            totalDays.addEventListener('input', () => {
-                const daysCount = document.getElementById('daysCount');
-                const quantity = document.getElementById('quantity');
-                if (daysCount) daysCount.value = totalDays.value;
-                if (quantity) quantity.value = totalDays.value;
-                this.calculateUnitPrice();
-            });
+            totalDays.readOnly = true;
+            totalDays.style.backgroundColor = 'rgba(255,255,255,0.05)';
+            totalDays.style.cursor = 'not-allowed';
+        }
+        if (daysCount) {
+            daysCount.readOnly = true;
+            daysCount.style.backgroundColor = 'rgba(255,255,255,0.05)';
+            daysCount.style.cursor = 'not-allowed';
+        }
+    }
+
+    // New calculation methods
+    calculateTotalFromUnit() {
+        const price = document.getElementById('price');
+        const quantity = document.getElementById('quantity');
+        const totalPrice = document.getElementById('totalPrice');
+        
+        if (price && quantity && totalPrice) {
+            const unitPrice = parseFloat(price.value) || 0;
+            const quantityVal = parseFloat(quantity.value) || 1;
+            const total = unitPrice * quantityVal;
+            totalPrice.value = total.toFixed(2);
+            this.calculateFinalPrice();
+            this.saveFormData();
+        }
+    }
+    
+    calculateUnitFromTotal() {
+        const price = document.getElementById('price');
+        const quantity = document.getElementById('quantity');
+        const totalPrice = document.getElementById('totalPrice');
+        
+        if (price && quantity && totalPrice) {
+            const total = parseFloat(totalPrice.value) || 0;
+            const quantityVal = parseFloat(quantity.value) || 1;
+            const unitPrice = quantityVal > 0 ? total / quantityVal : 0;
+            price.value = unitPrice.toFixed(2);
+            this.calculateFinalPrice();
+            this.saveFormData();
+        }
+    }
+    
+    syncDaysWithQuantity() {
+        const quantity = document.getElementById('quantity');
+        const totalDays = document.getElementById('totalDays');
+        const daysCount = document.getElementById('daysCount');
+        
+        if (quantity && totalDays && daysCount) {
+            const quantityVal = quantity.value;
+            totalDays.value = quantityVal;
+            daysCount.value = quantityVal;
+            this.saveFormData();
         }
     }
 
@@ -123,13 +184,14 @@ class InvoicesManager {
             if (diffDays > 0) {
                 totalDays.value = diffDays;
                 
-                // Update quantity and days count
+                // Update quantity and days count to match calculated days
                 const quantity = document.getElementById('quantity');
                 const daysCount = document.getElementById('daysCount');
                 if (quantity) quantity.value = diffDays;
                 if (daysCount) daysCount.value = diffDays;
                 
-                this.calculatePricing();
+                // Update total price based on new quantity (keep unit price same)
+                this.calculateTotalFromUnit();
                 this.saveFormData(); // Save data after calculation
             }
         }
@@ -192,7 +254,7 @@ class InvoicesManager {
 
     // Keep the old calculatePricing for backward compatibility 
     calculatePricing() {
-        this.calculateUnitPrice();
+        this.calculateTotalFromUnit();
     }
 
     saveFormData() {
@@ -234,7 +296,7 @@ class InvoicesManager {
             
             // Recalculate after loading data
             this.calculateDays();
-            this.calculatePricing();
+            this.calculateTotalFromUnit(); // Use new calculation method
         } catch (error) {
             console.error('Error loading saved form data:', error);
         }
@@ -280,7 +342,8 @@ class InvoicesManager {
                 this.currentCompany = data.company;
                 this.updateSubtitle(data.company.companyName);
                 
-                this.resetAndLoadInvoices();
+                // Refresh the page to load invoices for the new company
+                window.location.reload();
             } else {
                 console.error('Failed to select company');
             }
@@ -373,18 +436,25 @@ class InvoicesManager {
 
             invoices.forEach(invoice => {
                 const row = document.createElement('tr');
+                
+                // Display "PREDRAČUN - {broj}" for pre-invoices, invoice number for regular invoices
+                const invoiceDisplay = invoice.preInvoice ? `PREDRAČUN - ${invoice.invoiceNumber}` : (invoice.invoiceNumber || 'N/A');
+                const printButtonText = invoice.preInvoice ? 'ISPIŠI PREDRAČUN' : 'ISPIŠI RAČUN';
+                const editButtonText = invoice.preInvoice ? 'UREDI PREDRAČUN' : 'UREDI RAČUN';
+                const deleteButtonText = invoice.preInvoice ? 'IZBRIŠI PREDRAČUN' : 'IZBRIŠI RAČUN';
+                
                 row.innerHTML = `
-                    <td>${invoice.invoiceNumber || 'N/A'}</td>
+                    <td>${invoiceDisplay}</td>
                     <td>
                         <div class="invoice-actions">
-                            <button class="print-btn" onclick="invoicesManager.printInvoice('${invoice.invoiceNumber}')">
-                                ISPIŠI RAČUN
+                            <button class="print-btn" onclick="invoicesManager.printInvoice('${invoice.invoiceNumber}', ${invoice.preInvoice || false})">
+                                ${printButtonText}
                             </button>
                             <button class="edit-btn" onclick="invoicesManager.editInvoice('${invoice.id}')">
-                                UREDI RAČUN
+                                ${editButtonText}
                             </button>
                             <button class="delete-btn" onclick="invoicesManager.deleteInvoice('${invoice.id}')">
-                                IZBRIŠI RAČUN
+                                ${deleteButtonText}
                             </button>
                         </div>
                     </td>
@@ -470,10 +540,23 @@ class InvoicesManager {
                 const data = await response.json();
                 this.populateForm(data.invoice);
                 this.currentInvoiceId = invoiceId;
-                document.getElementById('modalTitle').textContent = 'Uredi račun';
-                document.getElementById('submitBtn').textContent = 'Ažuriraj račun';
+                
+                // Set mode based on whether it's a pre-invoice
+                this.isPreInvoiceMode = data.invoice.preInvoice || false;
+                
+                // Set appropriate texts
+                if (this.isPreInvoiceMode) {
+                    document.getElementById('modalTitle').textContent = 'Uredi predračun';
+                    document.getElementById('submitBtn').textContent = 'Ažuriraj predračun';
+                } else {
+                    document.getElementById('modalTitle').textContent = 'Uredi račun';
+                    document.getElementById('submitBtn').textContent = 'Ažuriraj račun';
+                }
                 document.getElementById('submitBtn').className = 'btn-warning';
-                this.openInvoiceForm();
+                
+                // Open the modal directly without calling openInvoiceForm
+                document.getElementById('invoiceModal').classList.add('active');
+                document.body.style.overflow = 'hidden';
             } else {
                 console.error('Failed to load invoice');
             }
@@ -532,11 +615,28 @@ class InvoicesManager {
     }
 
     async openInvoiceForm() {
+        this.isPreInvoiceMode = false;
+        await this.openInvoiceFormInternal();
+    }
+
+    async openPreInvoiceForm() {
+        this.isPreInvoiceMode = true;
+        await this.openInvoiceFormInternal();
+    }
+
+    async openInvoiceFormInternal() {
         // Reset form for new invoice
         if (!this.currentInvoiceId) {
             document.getElementById('invoiceForm').reset();
-            document.getElementById('modalTitle').textContent = 'Novi račun';
-            document.getElementById('submitBtn').textContent = 'Dodaj račun';
+            
+            // Set different titles based on mode
+            if (this.isPreInvoiceMode) {
+                document.getElementById('modalTitle').textContent = 'Novi predračun';
+                document.getElementById('submitBtn').textContent = 'Dodaj predračun';
+            } else {
+                document.getElementById('modalTitle').textContent = 'Novi račun';
+                document.getElementById('submitBtn').textContent = 'Dodaj račun';
+            }
             document.getElementById('submitBtn').className = 'btn-primary';
             
             // Set default values
@@ -557,15 +657,22 @@ class InvoicesManager {
                 paymentMethod.value = 'Gotovina';
             }
 
-            // Get next invoice number
-            try {
-                const response = await fetch('/management/api/invoices/next-number');
-                if (response.ok) {
-                    const data = await response.json();
-                    document.getElementById('invoiceNumber').value = data.invoiceNumber;
+            // Get next invoice number only for regular invoices
+            // For pre-invoices, let user enter the number they want to reference
+            if (!this.isPreInvoiceMode) {
+                try {
+                    const response = await fetch('/management/api/invoices/next-number');
+                    if (response.ok) {
+                        const data = await response.json();
+                        document.getElementById('invoiceNumber').value = data.invoiceNumber;
+                    }
+                } catch (error) {
+                    console.error('Error getting next invoice number:', error);
                 }
-            } catch (error) {
-                console.error('Error getting next invoice number:', error);
+            } else {
+                // For pre-invoices, clear the field so user can enter their own number
+                document.getElementById('invoiceNumber').value = '';
+                document.getElementById('invoiceNumber').placeholder = 'Broj predračuna';
             }
 
             this.setTodayDate();
@@ -575,9 +682,9 @@ class InvoicesManager {
             document.getElementById('totalPrice').value = '50.00';
             document.getElementById('discount').value = '0';
             
-            // Calculate unit price based on defaults
+            // Calculate total price based on defaults (unit price * quantity)
             setTimeout(() => {
-                this.calculateUnitPrice();
+                this.calculateTotalFromUnit();
             }, 100);
             
             // Load saved form data if available
@@ -594,6 +701,13 @@ class InvoicesManager {
         document.getElementById('invoiceModal').classList.remove('active');
         document.body.style.overflow = '';
         this.currentInvoiceId = null;
+        this.isPreInvoiceMode = false; // Reset mode
+        
+        // Reset placeholder if it was changed
+        const invoiceNumberField = document.getElementById('invoiceNumber');
+        if (invoiceNumberField) {
+            invoiceNumberField.placeholder = '';
+        }
     }
 
     closeAllModals() {
@@ -606,6 +720,11 @@ class InvoicesManager {
         
         const formData = new FormData(e.target);
         const invoiceData = Object.fromEntries(formData.entries());
+        
+        // Add preInvoice flag if we're in pre-invoice mode
+        if (this.isPreInvoiceMode && !this.currentInvoiceId) {
+            invoiceData.preInvoice = true;
+        }
 
         try {
             let response;
@@ -636,14 +755,19 @@ class InvoicesManager {
                 }
                 
                 this.resetAndLoadInvoices();
+                
+                // Save pre-invoice mode before closing form (as closeInvoiceForm resets it)
+                const wasPreInvoiceMode = this.isPreInvoiceMode;
+                
                 this.closeInvoiceForm();
                 
                 // Auto-redirect to print page for new invoices
                 if (!this.currentInvoiceId) {
                     const selectedCompanyId = await this.getSelectedCompanyId();
                     if (selectedCompanyId && invoiceData.invoiceNumber) {
+                        const preInvoiceParam = wasPreInvoiceMode ? '&preInvoice=true' : '&preInvoice=false';
                         setTimeout(() => {
-                            window.location.href = `/management/invoices/print?company=${selectedCompanyId}&invoice=${encodeURIComponent(invoiceData.invoiceNumber)}`;
+                            window.location.href = `/management/invoices/print?company=${selectedCompanyId}&invoice=${encodeURIComponent(invoiceData.invoiceNumber)}${preInvoiceParam}`;
                         }, 500);
                     }
                 }
@@ -670,10 +794,11 @@ class InvoicesManager {
         return null;
     }
 
-    async printInvoice(invoiceNumber) {
+    async printInvoice(invoiceNumber, isPreInvoice = false) {
         const selectedCompanyId = await this.getSelectedCompanyId();
         if (selectedCompanyId && invoiceNumber) {
-            window.location.href = `/management/invoices/print?company=${selectedCompanyId}&invoice=${encodeURIComponent(invoiceNumber)}`;
+            const preInvoiceParam = isPreInvoice ? '&preInvoice=true' : '&preInvoice=false';
+            window.location.href = `/management/invoices/print?company=${selectedCompanyId}&invoice=${encodeURIComponent(invoiceNumber)}${preInvoiceParam}`;
         }
     }
 }
@@ -706,6 +831,10 @@ function decrementValue(fieldId) {
 // Global functions for onclick handlers
 function openInvoiceForm() {
     window.invoicesManager.openInvoiceForm();
+}
+
+function openPreInvoiceForm() {
+    window.invoicesManager.openPreInvoiceForm();
 }
 
 function closeInvoiceForm() {

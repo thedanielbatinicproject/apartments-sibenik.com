@@ -1183,7 +1183,7 @@ router.get('/api/invoices/:invoiceId', requireAuth, async (req, res) => {
 // Print invoice route
 router.get('/invoices/print', requireAuth, async (req, res) => {
   try {
-    const { company: companyId, invoice: invoiceNumber } = req.query;
+    const { company: companyId, invoice: invoiceNumber, preInvoice } = req.query;
 
     if (!companyId || !invoiceNumber) {
       return res.status(400).render('error', { 
@@ -1207,17 +1207,29 @@ router.get('/invoices/print', requireAuth, async (req, res) => {
       });
     }
 
-    // Find invoice by invoice number
-    const invoice = companyData.invoices.find(inv => inv.invoiceNumber === invoiceNumber);
+    // Convert preInvoice parameter to boolean
+    const isPreInvoice = preInvoice === 'true';
+    
+    // Find invoice by invoice number AND pre-invoice status
+    const invoice = companyData.invoices.find(inv => 
+      inv.invoiceNumber === invoiceNumber && 
+      Boolean(inv.preInvoice) === isPreInvoice
+    );
+
     if (!invoice) {
+      const documentType = isPreInvoice ? 'Predračun' : 'Račun';
       return res.status(404).render('error', { 
         title: 'Greška',
-        message: 'Račun nije pronađen'
+        message: `${documentType} ${invoiceNumber} nije pronađen`
       });
     }
 
-    res.render('management/templates/invoice', {
-      title: `Račun ${invoiceNumber} - ${companyData.companyName}`,
+    // Choose template based on whether it's a pre-invoice
+    const template = invoice.preInvoice ? 'management/templates/pre-invoice' : 'management/templates/invoice';
+    const documentType = invoice.preInvoice ? 'Predračun' : 'Račun';
+
+    res.render(template, {
+      title: `${documentType} ${invoiceNumber} - ${companyData.companyName}`,
       company: companyData,
       invoice: invoice,
       isGuest: false
