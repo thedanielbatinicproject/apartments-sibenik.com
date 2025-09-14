@@ -9,6 +9,9 @@ class InvoicesManager {
         this.currentInvoiceId = null;
         this.invoiceToDelete = null;
         this.formDataKey = 'invoiceFormData';
+        this.currentPage = 0;
+        this.paginationInfo = null;
+        this.allLoadedInvoices = [];
         this.init();
     }
 
@@ -276,7 +279,8 @@ class InvoicesManager {
                 const data = await response.json();
                 this.currentCompany = data.company;
                 this.updateSubtitle(data.company.companyName);
-                this.loadInvoices();
+                
+                this.resetAndLoadInvoices();
             } else {
                 console.error('Failed to select company');
             }
@@ -307,7 +311,7 @@ class InvoicesManager {
                     }
                     
                     this.updateSubtitle(data.company.companyName);
-                    this.loadInvoices();
+                    this.resetAndLoadInvoices();
                 }
             }
         } catch (error) {
@@ -315,12 +319,33 @@ class InvoicesManager {
         }
     }
 
-    async loadInvoices() {
+    resetAndLoadInvoices() {
+        // Reset pagination when we want to reload from the beginning
+        this.currentPage = 0;
+        this.allLoadedInvoices = [];
+        this.paginationInfo = null;
+        this.loadInvoices();
+    }
+
+    async loadInvoices(loadMore = false) {
         try {
-            const response = await fetch('/management/api/invoices/list');
+            const page = loadMore ? this.currentPage + 1 : 0;
+            const response = await fetch(`/management/api/invoices/list?page=${page}&limit=5`);
             if (response.ok) {
                 const data = await response.json();
-                this.displayInvoices(data.invoices);
+                
+                if (loadMore) {
+                    // Append new invoices to existing ones
+                    this.allLoadedInvoices = [...this.allLoadedInvoices, ...data.invoices];
+                    this.currentPage = page;
+                } else {
+                    // Replace all invoices (fresh load)
+                    this.allLoadedInvoices = data.invoices;
+                    this.currentPage = 0;
+                }
+                
+                this.paginationInfo = data.pagination;
+                this.displayInvoices(this.allLoadedInvoices);
             } else {
                 console.error('Failed to load invoices');
             }
@@ -341,6 +366,7 @@ class InvoicesManager {
         if (invoices.length === 0) {
             if (tableContainer) tableContainer.style.display = 'none';
             if (emptyState) emptyState.style.display = 'block';
+            this.removeLoadMoreButton();
         } else {
             if (tableContainer) tableContainer.style.display = 'block';
             if (emptyState) emptyState.style.display = 'none';
@@ -368,6 +394,72 @@ class InvoicesManager {
                 `;
                 tbody.appendChild(row);
             });
+            
+            // Add or update load more button
+            this.updateLoadMoreButton();
+        }
+    }
+
+    updateLoadMoreButton() {
+        this.removeLoadMoreButton();
+        
+        if (this.paginationInfo && this.paginationInfo.hasMore) {
+            const tableContainer = document.querySelector('.invoices-table-container');
+            if (tableContainer) {
+                const loadMoreContainer = document.createElement('div');
+                loadMoreContainer.className = 'load-more-container';
+                loadMoreContainer.style.cssText = `
+                    text-align: center;
+                    margin: 20px 0;
+                    padding: 20px;
+                `;
+                
+                const loadMoreBtn = document.createElement('button');
+                loadMoreBtn.id = 'loadMoreBtn';
+                loadMoreBtn.className = 'btn-primary';
+                loadMoreBtn.textContent = `Učitaj više (${this.paginationInfo.loaded}/${this.paginationInfo.total})`;
+                loadMoreBtn.style.cssText = `
+                    background: #4CAF50;
+                    color: white;
+                    border: none;
+                    padding: 12px 24px;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    font-size: 14px;
+                    transition: background-color 0.3s;
+                `;
+                
+                loadMoreBtn.addEventListener('click', () => this.loadMoreInvoices());
+                loadMoreBtn.addEventListener('mouseenter', () => {
+                    loadMoreBtn.style.backgroundColor = '#45a049';
+                });
+                loadMoreBtn.addEventListener('mouseleave', () => {
+                    loadMoreBtn.style.backgroundColor = '#4CAF50';
+                });
+                
+                loadMoreContainer.appendChild(loadMoreBtn);
+                tableContainer.appendChild(loadMoreContainer);
+            }
+        }
+    }
+
+    removeLoadMoreButton() {
+        const existingContainer = document.querySelector('.load-more-container');
+        if (existingContainer) {
+            existingContainer.remove();
+        }
+    }
+
+    async loadMoreInvoices() {
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+        if (loadMoreBtn) {
+            const originalText = loadMoreBtn.textContent;
+            loadMoreBtn.textContent = 'Učitavanje...';
+            loadMoreBtn.disabled = true;
+            
+            await this.loadInvoices(true);
+            
+            loadMoreBtn.disabled = false;
         }
     }
 
@@ -423,7 +515,7 @@ class InvoicesManager {
             });
 
             if (response.ok) {
-                this.loadInvoices();
+                this.resetAndLoadInvoices();
                 this.closeDeleteModal();
             } else {
                 console.error('Failed to delete invoice');
@@ -543,7 +635,7 @@ class InvoicesManager {
                     this.clearSavedFormData();
                 }
                 
-                this.loadInvoices();
+                this.resetAndLoadInvoices();
                 this.closeInvoiceForm();
                 
                 // Auto-redirect to print page for new invoices

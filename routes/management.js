@@ -1030,6 +1030,8 @@ router.get('/api/invoices/selected-company', requireAuth, async (req, res) => {
 router.get('/api/invoices/list', requireAuth, async (req, res) => {
   try {
     const selectedCompanyId = req.session.selectedCompanyId;
+    const page = parseInt(req.query.page) || 0;
+    const limit = parseInt(req.query.limit) || 5;
 
     if (!selectedCompanyId || !isValidCompanyId(selectedCompanyId)) {
       return res.status(400).json({ error: 'No company selected' });
@@ -1040,9 +1042,33 @@ router.get('/api/invoices/list', requireAuth, async (req, res) => {
       return res.status(404).json({ error: 'Company not found' });
     }
 
+    // Sort invoices by creation date (newest first)
+    // We'll use the invoice ID as a timestamp since it contains the creation timestamp
+    const sortedInvoices = [...companyData.invoices].sort((a, b) => {
+      // Convert invoice ID to number for comparison (newer IDs are larger)
+      const idA = parseInt(a.id) || 0;
+      const idB = parseInt(b.id) || 0;
+      return idB - idA; // Descending order (newest first)
+    });
+
+    // Calculate pagination
+    const startIndex = page * limit;
+    const endIndex = startIndex + limit;
+    const paginatedInvoices = sortedInvoices.slice(startIndex, endIndex);
+    
+    const totalInvoices = sortedInvoices.length;
+    const hasMoreInvoices = endIndex < totalInvoices;
+
     res.json({ 
-      invoices: companyData.invoices,
-      company: companyData
+      invoices: paginatedInvoices,
+      company: companyData,
+      pagination: {
+        page: page,
+        limit: limit,
+        total: totalInvoices,
+        hasMore: hasMoreInvoices,
+        loaded: Math.min(endIndex, totalInvoices)
+      }
     });
   } catch (error) {
     console.error('Error getting invoices:', error);
